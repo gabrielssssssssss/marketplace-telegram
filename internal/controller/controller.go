@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
 	"github.com/go-telegram/bot"
 )
 
@@ -15,7 +17,10 @@ func Controller() {
 		log.Fatal(err)
 	}
 
-	accountController := account.NewAccountController()
+	accountRepository := repository.NewAccountRepository()
+	accountService := service.NewAccountService(accountRepository)
+	accountController := account.NewAccountController(&accountService)
+
 	accountController.Route(app)
 	app.Start(context.TODO())
 }
