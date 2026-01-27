@@ -1,15 +1,18 @@
 package helper
 
-import "math/rand/v2"
+import (
+	"crypto/rand"
+	"math/big"
+)
 
-func RandomString(size int) string {
-	var char = []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
-	var randomString string
+func RandomStringSecure(size int) string {
+	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	result := make([]byte, size)
 
-	for i := 0; i < size; i++ {
-		seeds := rand.NewPCG(0, 24)
-		randomString += char[rand.New(seeds).Uint64()]
+	for i := range result {
+		n, _ := rand.Int(rand.Reader, big.NewInt(int64(len(chars))))
+		result[i] = chars[n.Int64()]
 	}
 
-	return randomString
+	return string(result)
 }

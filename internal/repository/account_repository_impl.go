@@ -18,7 +18,7 @@ func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, er
 			username,
 			balance,
 			recovery_key,
-			updated_at,
+			updated_at
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING
@@ -32,7 +32,7 @@ func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, er
 		users.UserId,
 		users.Firstname,
 		users.Lastname,
-		users.UserId,
+		users.Username,
 		users.Balance,
 		users.RecoveryKey,
 		users.UpdatedAt,
