@@ -1,15 +1,16 @@
 package repository
 
 import (
-	"context"
 	"database/sql"
 
-	"github.com/go-telegram/bot"
-	"github.com/go-telegram/bot/models"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
 type AccountRepository interface {
-	Start(ctx context.Context, b *bot.Bot, update *models.Update)
+	CreateUser(users *entity.Users) (*model.Users, error)
+	GetUserByID(users *entity.Users) (*model.Users, error)
+	DeleteUser(users *entity.Users) (bool, error)
 }
 
 type accountRepositoryImpl struct {

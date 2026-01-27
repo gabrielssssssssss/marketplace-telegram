@@ -5,8 +5,9 @@ import (
 )
 
 type Users struct {
-	UserId      string
-	DisplayName string
+	UserId      int64
+	Firstname   string
+	Lastname    string
 	Username    string
 	Balance     float64
 	RecoveryKey string

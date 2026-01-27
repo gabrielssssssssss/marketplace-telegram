@@ -5,8 +5,9 @@ import (
 )
 
 type Users struct {
-	UserId      string    `json:"user_id"`
-	DisplayName string    `json:"display_name"`
+	UserId      int64     `json:"user_id"`
+	Firstname   string    `json:"firstname"`
+	Lastname    string    `json:"lastname"`
 	Username    string    `json:"username"`
 	Balance     float64   `json:"balance"`
 	RecoveryKey string    `json:"recovery_key"`

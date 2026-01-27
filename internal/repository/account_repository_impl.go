@@ -1,18 +1,10 @@
 package repository
 
 import (
-	"context"
-
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
-	"github.com/go-telegram/bot"
-	"github.com/go-telegram/bot/models"
 )
-
-func (r accountRepositoryImpl) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
-	b.SendMessage(ctx, &bot.SendMessageParams{ChatID: update.Message.Chat.ID, Text: "yo"})
-}
 
 func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, error) {
 	_, cancel := config.NewPostgresContext()
@@ -21,13 +13,14 @@ func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, er
 	query := `
 		INSERT INTO users (
 			user_id,
-			display_name,
+			firstname,
+			lastname,
 			username,
 			balance,
 			recovery_key,
 			updated_at,
 		)
-		VALUES ($1, $2, $3, $4, $5, $6)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING
 			"recovery_key"
 	`
@@ -37,8 +30,9 @@ func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, er
 	err := r.db.QueryRow(
 		query,
 		users.UserId,
-		users.DisplayName,
-		users.Username,
+		users.Firstname,
+		users.Lastname,
+		users.UserId,
 		users.Balance,
 		users.RecoveryKey,
 		users.UpdatedAt,
@@ -55,7 +49,16 @@ func (r accountRepositoryImpl) GetUserByID(users *entity.Users) (*model.Users, e
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
-	query := `SELECT * FROM users WHERE user_id = $1`
+	query := `SELECT (
+			user_id,
+			firstname,
+			lastname,
+			username,
+			balance,
+			recovery_key,
+			created_at,
+			updated_at
+		) FROM users WHERE user_id = $1;`
 
 	var response model.Users
 
@@ -64,7 +67,8 @@ func (r accountRepositoryImpl) GetUserByID(users *entity.Users) (*model.Users, e
 		users.UserId,
 	).Scan(
 		&response.UserId,
-		&response.DisplayName,
+		&response.Firstname,
+		&response.Lastname,
 		&response.Username,
 		&response.Balance,
 		&response.RecoveryKey,
