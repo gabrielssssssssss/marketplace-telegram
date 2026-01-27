@@ -16,6 +16,6 @@ func NewAccountController(AccountService *service.AccountService) AccountControl
 	return AccountController{AccountService: *AccountService}
 }
 
-func (controller *AccountController) Register(ctx context.Context, b *bot.Bot, update *models.Update) {
-	controller.AccountService.Register(ctx, b, update)
+func (controller *AccountController) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
+	controller.AccountService.Start(ctx, b, update)
 }

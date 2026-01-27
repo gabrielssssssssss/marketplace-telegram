@@ -7,6 +7,7 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
-func (s *accountServiceImpl) Register(ctx context.Context, b *bot.Bot, update *models.Update) {
-	s.repository.Register(ctx, b, update)
+func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
+
+	b.SendMessage(ctx, &bot.SendMessageParams{ChatID: update.Message.Chat.ID, Text: "yo"})
 }

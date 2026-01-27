@@ -9,7 +9,7 @@ import (
 )
 
 type AccountService interface {
-	Register(ctx context.Context, b *bot.Bot, update *models.Update)
+	Start(ctx context.Context, b *bot.Bot, update *models.Update)
 }
 
 type accountServiceImpl struct {

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -17,7 +18,12 @@ func Controller() {
 		log.Fatal(err)
 	}
 
-	accountRepository := repository.NewAccountRepository()
+	database, err := config.NewPostgresDatabase()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	accountRepository := repository.NewAccountRepository(database)
 	accountService := service.NewAccountService(accountRepository)
 	accountController := account.NewAccountController(&accountService)
 
