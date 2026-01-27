@@ -51,7 +51,33 @@ func (r accountRepositoryImpl) CreateUser(users *entity.Users) (*model.Users, er
 	return &response, nil
 }
 
-func (r accountRepositoryImpl) GetUserByID() {}
+func (r accountRepositoryImpl) GetUserByID(users *entity.Users) (*model.Users, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `SELECT * FROM users WHERE user_id = $1`
+
+	var response model.Users
+
+	err := r.db.QueryRow(
+		query,
+		users.UserId,
+	).Scan(
+		&response.UserId,
+		&response.DisplayName,
+		&response.Username,
+		&response.Balance,
+		&response.RecoveryKey,
+		&response.CreatedAt,
+		&response.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
 
 func (r accountRepositoryImpl) UpdateUser() {}
 
