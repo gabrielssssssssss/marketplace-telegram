@@ -46,8 +46,8 @@ func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *mode
 		ReplyMarkup: &models.InlineKeyboardMarkup{
 			InlineKeyboard: [][]models.InlineKeyboardButton{
 				{
-					{Text: "💳 Dêpot", CallbackData: "button_1"},
-					{Text: "🔑 Restauration", CallbackData: "button_2"},
+					{Text: "💳 Dêpot", CallbackData: "payment"},
+					{Text: "🔑 Restauration", CallbackData: "recovery"},
 				}, {
 					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
 						URL: os.Getenv("TELEGRAM_WEB_APP"),
