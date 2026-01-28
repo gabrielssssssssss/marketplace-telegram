@@ -7,19 +7,19 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-type PaymentRepository interface {
+type OrderRepository interface {
 	CreateOrder(orders *entity.Orders) (*model.Orders, error)
 	GetOrderByID(orders *entity.Orders) (*model.Orders, error)
 	GetOrdersByUserID(orders *entity.Orders) (*[]model.Orders, error)
 	DeleteOrderByID(orders *entity.Orders) (bool, error)
 }
 
-type paymentRepositoryImpl struct {
+type orderRepositoryImpl struct {
 	db *sql.DB
 }
 
-func NewPaymentRepository(client *sql.DB) PaymentRepository {
-	return &paymentRepositoryImpl{
+func NewOrderRepository(client *sql.DB) OrderRepository {
+	return &orderRepositoryImpl{
 		db: client,
 	}
 }

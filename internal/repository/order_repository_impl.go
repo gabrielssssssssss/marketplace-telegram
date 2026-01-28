@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r paymentRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders, error) {
+func (r orderRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -37,7 +37,7 @@ func (r paymentRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders
 	return &response, nil
 }
 
-func (r *paymentRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orders, error) {
+func (r *orderRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orders, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -74,7 +74,7 @@ func (r *paymentRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orde
 	return &response, nil
 }
 
-func (r *paymentRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model.Orders, error) {
+func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model.Orders, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -117,7 +117,7 @@ func (r *paymentRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]mod
 	return &response, nil
 }
 
-func (r *paymentRepositoryImpl) DeleteOrderByID(orders *entity.Orders) (bool, error) {
+func (r *orderRepositoryImpl) DeleteOrderByID(orders *entity.Orders) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
