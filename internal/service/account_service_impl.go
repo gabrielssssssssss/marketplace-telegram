@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
@@ -13,23 +14,47 @@ import (
 )
 
 func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
-	req := &entity.Users{UserId: update.Message.Chat.ID}
+	req := &entity.Users{
+		UserId: update.Message.Chat.ID,
+	}
+
 	resp, err := s.repository.GetUserByID(req)
 
-	if err != nil || resp.UserId != update.Message.Chat.ID {
+	if err != nil {
 		req = &entity.Users{
 			UserId:      update.Message.Chat.ID,
 			Username:    update.Message.Chat.Username,
 			Firstname:   update.Message.Chat.FirstName,
 			Lastname:    update.Message.Chat.LastName,
-			Balance:     0,
+			Balance:     0.0,
 			RecoveryKey: helper.RandomStringSecure(24),
 			UpdatedAt:   time.Now(),
 		}
+
 		resp, _ = s.repository.CreateUser(req)
-		message := fmt.Sprintf(messages.MessageRecoveryKey, resp.RecoveryKey)
-		b.SendMessage(ctx, &bot.SendMessageParams{ChatID: update.Message.Chat.ID, Text: message})
+
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID:    update.Message.Chat.ID,
+			ParseMode: "HTML",
+			Text:      fmt.Sprintf(messages.MessageRecoveryKey, resp.RecoveryKey),
+		})
 	}
 
-	b.SendMessage(ctx, &bot.SendMessageParams{ChatID: update.Message.Chat.ID, Text: "yo"})
+	b.SendMessage(ctx, &bot.SendMessageParams{
+		ChatID:    update.Message.Chat.ID,
+		ParseMode: "HTML",
+		ReplyMarkup: &models.InlineKeyboardMarkup{
+			InlineKeyboard: [][]models.InlineKeyboardButton{
+				{
+					{Text: "💳 Dêpot", CallbackData: "button_1"},
+					{Text: "🔑 Restauration", CallbackData: "button_2"},
+				}, {
+					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
+						URL: os.Getenv("TELEGRAM_WEB_APP"),
+					}},
+				},
+			},
+		},
+		Text: fmt.Sprintf(messages.MessageMenu, req.UserId, req.Username, req.Balance),
+	})
 }

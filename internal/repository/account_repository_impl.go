@@ -49,16 +49,19 @@ func (r accountRepositoryImpl) GetUserByID(users *entity.Users) (*model.Users, e
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
-	query := `SELECT (
-			user_id,
-			firstname,
-			lastname,
-			username,
-			balance,
-			recovery_key,
-			created_at,
-			updated_at
-		) FROM users WHERE user_id = $1;`
+	query := `
+	SELECT
+		user_id,
+		firstname,
+		lastname,
+		username,
+		balance,
+		recovery_key,
+		created_at,
+		updated_at
+	FROM users
+	WHERE user_id = $1
+	`
 
 	var response model.Users
 
