@@ -2,10 +2,13 @@ package model
 
 import "time"
 
-type Orders struct {
+type Payment struct {
 	ID          int64     `json:"id"`
 	UserID      int64     `json:"user_id"`
-	ProductName string    `json:"product_name"`
 	Amount      float64   `json:"amount"`
-	OrderAt     time.Time `json:"order_at"`
+	Currency    string    `json:"currency"`
+	TxID        string    `json:"tx_id"`
+	Status      string    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	ConfirmedAt time.Time `json:"confirmed_at"`
 }

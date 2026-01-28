@@ -2,10 +2,13 @@ package entity
 
 import "time"
 
-type Orders struct {
+type Payment struct {
 	ID          int64
 	UserID      int64
-	ProductName string
 	Amount      float64
-	OrderAt     time.Time
+	Currency    string
+	TxID        string
+	Status      string
+	CreatedAt   time.Time
+	ConfirmedAt time.Time
 }
