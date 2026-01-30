@@ -29,7 +29,7 @@ func (controller *AccountController) HandlerStart(ctx context.Context, b *bot.Bo
 		return
 	}
 
-	log.Info().Msg("Start command processed successfully")
+	log.Info().Msg("start command processed successfully")
 }
 
 func (controller *AccountController) HandlerAccount(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -44,5 +44,5 @@ func (controller *AccountController) HandlerAccount(ctx context.Context, b *bot.
 		return
 	}
 
-	log.Info().Msg("Account processed successfully")
+	log.Info().Msg("account processed successfully")
 }

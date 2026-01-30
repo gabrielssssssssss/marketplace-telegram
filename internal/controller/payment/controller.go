@@ -29,5 +29,20 @@ func (controller *PaymentController) HandlerPayment(ctx context.Context, b *bot.
 		return
 	}
 
-	log.Info().Msg("Payment processed successfully")
+	log.Info().Msg("payment processed successfully")
+}
+
+func (controller *PaymentController) HandlerPaymentCurrency(ctx context.Context, b *bot.Bot, update *models.Update) {
+	err := controller.PaymentService.PaymentCurrencyCallback(ctx, b, update)
+
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "PaymentController.HandlerPaymentCurrency").
+			Int64("user_id", update.Message.From.ID).
+			Msg("Failed to process payment callback")
+		return
+	}
+
+	log.Info().Msg("payment_currency processed successfully")
 }

@@ -5,3 +5,9 @@ const MessagePayment = `<b>🌊 Mint'AS - Rechargement</b>
 👛 <b>Veuillez sélectionnez votre méthode de paiement</b>
 
 <b><i>💡 En cas de problème ou question veuillez contacter @weee</i></b>`
+
+const MessagePaymentCurrency = `<b>🌊 Mint'AS - Rechargement</b>
+
+💸 <b>Veuillez écrire le montant que vous souhaitez recharger en €</b>
+
+<b><i>💡 En cas de problème ou question veuillez contacter @weee</i></b>`

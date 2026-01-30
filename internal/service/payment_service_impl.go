@@ -50,3 +50,30 @@ func (s *paymentServiceImpl) PaymentCallback(ctx context.Context, b *bot.Bot, up
 
 	return nil
 }
+
+func (s *paymentServiceImpl) PaymentCurrencyCallback(ctx context.Context, b *bot.Bot, update *models.Update) error {
+	cb := update.CallbackQuery
+	if cb == nil || cb.Message.Message == nil {
+		return fmt.Errorf("callback query or associated message is nil")
+	}
+
+	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+		CallbackQueryID: cb.ID,
+	})
+
+	b.EditMessageText(ctx, &bot.EditMessageTextParams{
+		ChatID:    cb.Message.Message.Chat.ID,
+		MessageID: cb.Message.Message.ID,
+		ParseMode: "HTML",
+		ReplyMarkup: &models.InlineKeyboardMarkup{
+			InlineKeyboard: [][]models.InlineKeyboardButton{
+				{
+					{Text: "👈 Retour", CallbackData: "payment"},
+				},
+			},
+		},
+		Text: messages.MessagePaymentCurrency,
+	})
+
+	return nil
+}
