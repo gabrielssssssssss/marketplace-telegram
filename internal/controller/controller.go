@@ -7,6 +7,8 @@ import (
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment"
+
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
 	"github.com/go-telegram/bot"
@@ -24,9 +26,16 @@ func Controller() {
 	}
 
 	accountRepository := repository.NewAccountRepository(database)
+	paymentRepository := repository.NewPaymentRepository(database)
+
 	accountService := service.NewAccountService(accountRepository)
+	paymentService := service.NewPaymentService(paymentRepository)
+
 	accountController := account.NewAccountController(&accountService)
+	paymentController := payment.NewPaymentController(&paymentService)
 
 	accountController.Route(app)
+	paymentController.Route(app)
+
 	app.Start(context.TODO())
 }

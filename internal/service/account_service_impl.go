@@ -13,15 +13,15 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
-func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
-	req := &entity.Users{
+func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, update *models.Update) {
+	users := &entity.Users{
 		UserId: update.Message.Chat.ID,
 	}
 
-	resp, err := s.repository.GetUserByID(req)
+	resp, err := s.repository.GetUserByID(users)
 
 	if err != nil {
-		req = &entity.Users{
+		users = &entity.Users{
 			UserId:      update.Message.Chat.ID,
 			Username:    update.Message.Chat.Username,
 			Firstname:   update.Message.Chat.FirstName,
@@ -31,7 +31,7 @@ func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *mode
 			UpdatedAt:   time.Now(),
 		}
 
-		resp, _ = s.repository.CreateUser(req)
+		resp, _ = s.repository.CreateUser(users)
 
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID:    update.Message.Chat.ID,
@@ -55,6 +55,45 @@ func (s *accountServiceImpl) Start(ctx context.Context, b *bot.Bot, update *mode
 				},
 			},
 		},
-		Text: fmt.Sprintf(messages.MessageMenu, req.UserId, req.Username, req.Balance),
+		Text: fmt.Sprintf(messages.MessageAccount, users.UserId, users.Username, users.Balance),
+	})
+}
+
+func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
+	cb := update.CallbackQuery
+	if cb == nil || cb.Message.Message == nil {
+		return
+	}
+
+	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
+		CallbackQueryID: cb.ID,
+	})
+
+	users := &entity.Users{
+		UserId: cb.Message.Message.Chat.ID,
+	}
+
+	resp, err := s.repository.GetUserByID(users)
+	if err != nil {
+		return
+	}
+
+	b.EditMessageText(ctx, &bot.EditMessageTextParams{
+		ChatID:    cb.Message.Message.Chat.ID,
+		MessageID: cb.Message.Message.ID,
+		ParseMode: "HTML",
+		ReplyMarkup: &models.InlineKeyboardMarkup{
+			InlineKeyboard: [][]models.InlineKeyboardButton{
+				{
+					{Text: "💳 Dêpot", CallbackData: "payment"},
+					{Text: "🔑 Restauration", CallbackData: "recovery"},
+				}, {
+					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
+						URL: os.Getenv("TELEGRAM_WEB_APP"),
+					}},
+				},
+			},
+		},
+		Text: fmt.Sprintf(messages.MessageAccount, resp.UserId, resp.Username, resp.Balance),
 	})
 }

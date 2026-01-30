@@ -16,6 +16,10 @@ func NewAccountController(AccountService *service.AccountService) AccountControl
 	return AccountController{AccountService: *AccountService}
 }
 
-func (controller *AccountController) Start(ctx context.Context, b *bot.Bot, update *models.Update) {
-	controller.AccountService.Start(ctx, b, update)
+func (controller *AccountController) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
+	controller.AccountService.StartCommand(ctx, b, update)
+}
+
+func (controller *AccountController) HandlerAccount(ctx context.Context, b *bot.Bot, update *models.Update) {
+	controller.AccountService.AccountCallback(ctx, b, update)
 }
