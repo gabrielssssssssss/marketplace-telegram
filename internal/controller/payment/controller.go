@@ -6,6 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
+	"github.com/rs/zerolog/log"
 )
 
 type PaymentController struct {
@@ -17,5 +18,16 @@ func NewPaymentController(PaymentService *service.PaymentService) PaymentControl
 }
 
 func (controller *PaymentController) HandlerPayment(ctx context.Context, b *bot.Bot, update *models.Update) {
-	controller.PaymentService.PaymentCallback(ctx, b, update)
+	err := controller.PaymentService.PaymentCallback(ctx, b, update)
+
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "PaymentController.HandlerPayment").
+			Int64("user_id", update.Message.From.ID).
+			Msg("Failed to process payment callback")
+		return
+	}
+
+	log.Info().Msg("Payment processed successfully")
 }

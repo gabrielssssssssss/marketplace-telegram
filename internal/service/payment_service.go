@@ -9,7 +9,7 @@ import (
 )
 
 type PaymentService interface {
-	PaymentCallback(ctx context.Context, b *bot.Bot, update *models.Update)
+	PaymentCallback(ctx context.Context, b *bot.Bot, update *models.Update) error
 }
 
 type paymentServiceImpl struct {

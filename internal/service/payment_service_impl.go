@@ -2,16 +2,17 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/messages"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 )
 
-func (s *paymentServiceImpl) PaymentCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
+func (s *paymentServiceImpl) PaymentCallback(ctx context.Context, b *bot.Bot, update *models.Update) error {
 	cb := update.CallbackQuery
 	if cb == nil || cb.Message.Message == nil {
-		return
+		return fmt.Errorf("callback query or associated message is nil")
 	}
 
 	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
@@ -46,4 +47,6 @@ func (s *paymentServiceImpl) PaymentCallback(ctx context.Context, b *bot.Bot, up
 		},
 		Text: messages.MessagePayment,
 	})
+
+	return nil
 }

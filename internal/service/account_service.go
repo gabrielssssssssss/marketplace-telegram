@@ -9,8 +9,8 @@ import (
 )
 
 type AccountService interface {
-	StartCommand(ctx context.Context, b *bot.Bot, update *models.Update)
-	AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update)
+	StartCommand(ctx context.Context, b *bot.Bot, update *models.Update) error
+	AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update) error
 }
 
 type accountServiceImpl struct {

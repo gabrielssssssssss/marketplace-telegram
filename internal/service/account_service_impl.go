@@ -13,7 +13,7 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
-func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, update *models.Update) {
+func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, update *models.Update) error {
 	users := &entity.Users{
 		UserId: update.Message.Chat.ID,
 	}
@@ -31,7 +31,10 @@ func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, updat
 			UpdatedAt:   time.Now(),
 		}
 
-		resp, _ = s.repository.CreateUser(users)
+		resp, err = s.repository.CreateUser(users)
+		if err != nil {
+			return err
+		}
 
 		b.SendMessage(ctx, &bot.SendMessageParams{
 			ChatID:    update.Message.Chat.ID,
@@ -57,12 +60,14 @@ func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, updat
 		},
 		Text: fmt.Sprintf(messages.MessageAccount, users.UserId, users.Username, users.Balance),
 	})
+
+	return nil
 }
 
-func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update) {
+func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update) error {
 	cb := update.CallbackQuery
 	if cb == nil || cb.Message.Message == nil {
-		return
+		return fmt.Errorf("callback query or associated message is nil")
 	}
 
 	b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
@@ -75,7 +80,7 @@ func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, up
 
 	resp, err := s.repository.GetUserByID(users)
 	if err != nil {
-		return
+		return err
 	}
 
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
@@ -96,4 +101,6 @@ func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, up
 		},
 		Text: fmt.Sprintf(messages.MessageAccount, resp.UserId, resp.Username, resp.Balance),
 	})
+
+	return nil
 }
