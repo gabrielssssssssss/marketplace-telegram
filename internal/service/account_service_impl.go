@@ -27,12 +27,25 @@ func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.Users, err
 	return resp, err
 }
 
-func (s *accountServiceImpl) FindUser(UserID int64) (*model.Users, error) {
+func (s *accountServiceImpl) FindUserByID(UserID int64) (*model.Users, error) {
 	users := entity.Users{
 		UserId: UserID,
 	}
 
 	resp, err := s.repository.GetUserByID(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *accountServiceImpl) FindUserByRecoveryKey(UserID int64) (*model.Users, error) {
+	users := entity.Users{
+		UserId: UserID,
+	}
+
+	resp, err := s.repository.GetUserByRecoveryKey(&users)
 	if err != nil {
 		return nil, err
 	}

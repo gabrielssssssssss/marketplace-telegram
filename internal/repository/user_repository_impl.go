@@ -86,6 +86,47 @@ func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.Users, error
 	return &response, nil
 }
 
+func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Users, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `
+	SELECT
+		user_id,
+		firstname,
+		lastname,
+		username,
+		balance,
+		recovery_key,
+		created_at,
+		updated_at
+	FROM users
+	WHERE recovery_key = $1
+	`
+
+	var response model.Users
+
+	err := r.db.QueryRow(
+		query,
+		user.RecoveryKey,
+	).Scan(
+		&response.UserId,
+		&response.Firstname,
+		&response.Lastname,
+		&response.Username,
+		&response.Balance,
+		&response.RecoveryKey,
+		&response.CreatedAt,
+		&response.UpdatedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
 func (r *userRepositoryImpl) UpdateUserByID(user *entity.Users) (*model.Users, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()

@@ -22,7 +22,7 @@ func NewAccountHandler(AccountService *service.AccountService) AccountHandler {
 }
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.AccountService.FindUser(update.Message.From.ID)
+	user, err := handler.AccountService.FindUserByID(update.Message.From.ID)
 	if user.UserId != update.Message.From.ID {
 		newUser := entity.Users{
 			UserId:    update.Message.From.ID,
@@ -57,7 +57,7 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 			InlineKeyboard: [][]models.InlineKeyboardButton{
 				{
 					{Text: "💳 Dêpot", CallbackData: "payment"},
-					{Text: "🔑 Restauration", CallbackData: "recovery"},
+					{Text: "🔑 Restauration", CallbackData: "restore"},
 				}, {
 					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
 						URL: os.Getenv("TELEGRAM_WEB_APP"),
@@ -90,7 +90,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		CallbackQueryID: cb.ID,
 	})
 
-	user, err := handler.AccountService.FindUser(cb.Message.Message.Chat.ID)
+	user, err := handler.AccountService.FindUserByID(cb.Message.Message.Chat.ID)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -107,7 +107,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 			InlineKeyboard: [][]models.InlineKeyboardButton{
 				{
 					{Text: "💳 Dêpot", CallbackData: "payment"},
-					{Text: "🔑 Restauration", CallbackData: "recovery"},
+					{Text: "🔑 Restauration", CallbackData: "restore"},
 				}, {
 					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
 						URL: os.Getenv("TELEGRAM_WEB_APP"),

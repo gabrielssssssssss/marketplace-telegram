@@ -7,7 +7,7 @@ const MessageAccount = `<b>🌊 Mint'AS - Menu principal</b>
 
 <b>• UserID:</b> <code>%v</code>
 <b>• Username:</b> <code>@%s</code>
-<b>• Solde:</b> <code>%v</code>
+<b>• Solde:</b> <code>%v€</code>
 
 <b><i>💡 En cas de problème ou question veuillez contacter @weee</i></b>`
 

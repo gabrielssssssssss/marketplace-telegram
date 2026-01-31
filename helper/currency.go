@@ -2,7 +2,6 @@ package helper
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -18,12 +17,11 @@ func CurrencyPrice(currency string) float64 {
 	upperCurrency := strings.ToUpper(currency)
 
 	if strings.Contains(upperCurrency, "USDT") {
-		upperCurrency = "EUR" + upperCurrency
+		upperCurrency = "EURUSDT"
 	} else {
 		upperCurrency = upperCurrency + "EUR"
 	}
 
-	fmt.Println(upperCurrency)
 	url := "https://api.binance.com/api/v3/ticker/price?symbol=" + upperCurrency
 
 	resp, err := http.Get(url)

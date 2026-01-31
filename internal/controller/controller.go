@@ -10,6 +10,7 @@ import (
 	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account/handlers"
 	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/handlers"
 	wh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/webhooks"
+	rh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/restore/handlers"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -33,17 +34,20 @@ func Controller() {
 	accountService := service.NewAccountService(userRepository)
 	paymentService := service.NewPaymentService(paymentRepository)
 
-	accountController := ah.NewAccountHandler(&accountService)
+	accountHandlers := ah.NewAccountHandler(&accountService)
 	paymentHandlers := ph.NewPaymentHandler(&paymentService)
-	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &accountService)
+	restoreHandlers := rh.NewRestoreHandler(&accountService)
 
-	accountController.Handlers(bot)
-	paymentHandlers.Handlers(bot)
+	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &accountService)
 
 	go func() {
 		http.HandleFunc("/callback", paymentWebhooks.WebhookPayment)
 		http.ListenAndServe(os.Getenv("CALLBACK_PORT"), nil)
 	}()
+
+	accountHandlers.Handlers(bot)
+	paymentHandlers.Handlers(bot)
+	restoreHandlers.Handlers(bot)
 
 	bot.Start(context.TODO())
 }

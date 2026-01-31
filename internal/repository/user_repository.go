@@ -8,10 +8,11 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(users *entity.Users) (*model.Users, error)
-	GetUserByID(users *entity.Users) (*model.Users, error)
+	CreateUser(user *entity.Users) (*model.Users, error)
+	GetUserByID(user *entity.Users) (*model.Users, error)
+	GetUserByRecoveryKey(user *entity.Users) (*model.Users, error)
 	UpdateUserByID(user *entity.Users) (*model.Users, error)
-	DeleteUser(users *entity.Users) (bool, error)
+	DeleteUser(user *entity.Users) (bool, error)
 }
 
 type userRepositoryImpl struct {

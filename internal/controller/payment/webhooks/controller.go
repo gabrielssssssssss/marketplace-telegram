@@ -37,8 +37,8 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		Status:             r.URL.Query().Get("state"),
 	}
 
-	checkPayment, err := webhook.PaymentService.FindPayment(&paymentCallback)
-	if err != nil || checkPayment.ID == "" {
+	findPayment, err := webhook.PaymentService.FindPayment(&paymentCallback)
+	if err != nil || findPayment.ID == "" {
 		log.Error().
 			Err(err).
 			Str("component", "webhook.PaymentWebhook.WebhookPayment").
@@ -59,7 +59,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 	currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
 
-	user, err := webhook.AccountService.FindUser(confirmPayment.UserID)
+	user, err := webhook.AccountService.FindUserByID(confirmPayment.UserID)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -71,7 +71,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 	updatedUser := entity.Users{
 		UserId:    confirmPayment.UserID,
-		Balance:   *user.Balance + currencyPrice,
+		Balance:   user.Balance + currencyPrice,
 		UpdatedAt: time.Now(),
 	}
 
@@ -85,7 +85,8 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	message := fmt.Sprintf(messages.MessagePaymentConfirmed,
+	message := fmt.Sprintf(
+		messages.MessagePaymentConfirmed,
 		confirmPayment.ValueForwardedCoin,
 		strings.ToUpper(confirmPayment.Currency),
 		confirmPayment.ID,
@@ -94,17 +95,9 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		confirmPayment.ConfirmedAt,
 	)
 
-	err = helper.SendMessage(
+	helper.SendMessage(
 		os.Getenv("TELEGRAM_TOKEN"),
 		strconv.FormatInt(confirmPayment.UserID, 10),
 		message,
 	)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("component", "webhook.PaymentWebhook.WebhookPayment").
-			Str("payment_id", paymentCallback.PaymentID).
-			Msg("Failed to process payment validation")
-		return
-	}
 }
