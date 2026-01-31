@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/messages"
 	cryptapi "github.com/gabrielssssssssss/marketplace-telegram/libs/crypt-api"
 	"github.com/go-telegram/bot"
@@ -64,12 +65,21 @@ func (s *paymentServiceImpl) PaymentCurrencyCallback(ctx context.Context, b *bot
 		CallbackQueryID: cb.ID,
 	})
 
+	chatID := cb.Message.Message.Chat.ID
 	currency := strings.Split(cb.Data, "_")[2]
 
-	client := cryptapi.NewCryptAPI(
-		"https://api.cryptapi.io/",
-		os.Getenv("CALLBACK_URL"),
-	)
+	payment := entity.Payment{
+		UserID:   chatID,
+		Currency: currency,
+	}
+
+	transaction, err := s.repository.CreatePayment(&payment)
+	if err != nil {
+		return err
+	}
+
+	callbackUrl := fmt.Sprintf("%s?payment_id=%s", os.Getenv("CALLBACK_URL"), transaction.ID)
+	client := cryptapi.NewCryptAPI("https://api.cryptapi.io/", callbackUrl)
 
 	response, err := client.CreatePayment(ctx, cryptapi.PaymentRequest{
 		Address:  os.Getenv(strings.ToUpper(currency)),
@@ -79,24 +89,25 @@ func (s *paymentServiceImpl) PaymentCurrencyCallback(ctx context.Context, b *bot
 		return err
 	}
 
+	message := fmt.Sprintf(messages.MessagePaymentCurrency,
+		strings.ToUpper(currency),
+		transaction.ID,
+		response.Status,
+		response.AddressOut,
+		response.MinimumTransactionCoin,
+		response.Priority,
+	)
+
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		ChatID:    cb.Message.Message.Chat.ID,
+		ChatID:    chatID,
 		MessageID: cb.Message.Message.ID,
 		ParseMode: "HTML",
+		Text:      message,
 		ReplyMarkup: &models.InlineKeyboardMarkup{
 			InlineKeyboard: [][]models.InlineKeyboardButton{
-				{
-					{Text: "👈 Retour", CallbackData: "payment"},
-				},
+				{{Text: "👈 Retour", CallbackData: "payment"}},
 			},
 		},
-		Text: fmt.Sprintf(messages.MessagePaymentCurrency,
-			strings.ToUpper(currency),
-			response.Status,
-			response.AddressOut,
-			response.MinimumTransactionCoin,
-			response.Priority,
-		),
 	})
 
 	return nil

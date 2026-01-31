@@ -13,9 +13,9 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 	query := `
 		INSERT INTO payments (
 			user_id,
-			amount,
 			currency,
-			tx_id,
+			address_out,
+			address_in,
 			status
 		)
 		VALUES ($1, $2, $3, $4, $5)
@@ -28,9 +28,9 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 	err := r.db.QueryRow(
 		query,
 		payment.UserID,
-		payment.Amount,
 		payment.Currency,
-		payment.TxID,
+		payment.AddressOut,
+		payment.AddressIn,
 		payment.Status,
 	).Scan(&response.ID)
 

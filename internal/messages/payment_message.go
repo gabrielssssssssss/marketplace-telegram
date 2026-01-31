@@ -6,19 +6,12 @@ const MessagePayment = `<b>🌊 Mint'AS - Rechargement</b>
 
 <b><i>💡 En cas de problème ou question veuillez contacter @weee</i></b>`
 
-type PaymentResponse struct {
-	Status                 string `json:"status"`
-	AddressIn              string `json:"address_in"`
-	AddressOut             string `json:"address_out"`
-	CallbackUrl            string `json:"callback_url"`
-	Priority               string `json:"priority"`
-	MinimumTransactionCoin string `json:"minimum_transaction_coin"`
-}
-
+// @params: %s = currency, %s = transaction id, %s = address_in, %s = minimum_transaction_coin, %s = priority
 const MessagePaymentCurrency = `<b>🌊 Mint'AS - Rechargement (%s)</b>
 
 ✅ <b>Votre paiement a été crée avec succès !</b>
 
+ <b><code>•</code> Transaction ID: <code>%s</code></b>
  <b><code>•</code> Statut: <code>%s</code></b>
  <b><code>•</code> Adresse: <code>%s</code></b>
  <b><code>•</code> Dêpot minimum: <code>%s</code></b>
