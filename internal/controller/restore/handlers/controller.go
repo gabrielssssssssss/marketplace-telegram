@@ -54,7 +54,25 @@ func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, 
 	if err != nil {
 		return
 	}
+
 	if user.RecoveryKey != "" {
+		message := fmt.Sprintf(messages.MessageRestoreConfirm,
+			user.UserId,
+			user.Username,
+			user.Balance,
+			user.CreatedAt,
+			user.UpdatedAt,
+		)
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID:    update.Message.Chat.ID,
+			ParseMode: "HTML",
+			ReplyMarkup: &models.InlineKeyboardMarkup{
+				InlineKeyboard: [][]models.InlineKeyboardButton{
+					{{Text: "✅ Transférer", CallbackData: "restore_transfer"}},
+				},
+			},
+			Text: message,
+		})
 		log.Info().Msg("account processed successfully")
 	}
 }
