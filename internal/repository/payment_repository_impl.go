@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
@@ -13,14 +15,11 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 	query := `
 		INSERT INTO payments (
 			user_id,
-			currency,
-			address_out,
-			address_in,
-			status
+			currency
 		)
-		VALUES ($1, $2, $3, $4, $5)
+		VALUES ($1, $2)
 		RETURNING
-			"id"
+			"id",
 			"currency"
 	`
 
@@ -30,12 +29,10 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		query,
 		payment.UserID,
 		payment.Currency,
-		payment.AddressOut,
-		payment.AddressIn,
-		payment.Status,
 	).Scan(&response.ID, &response.Currency)
 
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 

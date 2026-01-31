@@ -18,12 +18,12 @@ func (s *paymentServiceImpl) CreatePayment(ctx context.Context, callback *models
 	parts := strings.Split(callback.Data, "_")
 	currency := parts[2]
 
-	newPayment := &entity.Payment{
+	newPayment := entity.Payment{
 		UserID:   &callback.Message.Message.Chat.ID,
 		Currency: &currency,
 	}
 
-	payment, err := s.repository.CreatePayment(newPayment)
+	payment, err := s.repository.CreatePayment(&newPayment)
 	if err != nil {
 		return nil, nil, err
 	}
