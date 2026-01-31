@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	cryptapi "github.com/gabrielssssssssss/marketplace-telegram/libs/crypt-api"
@@ -10,7 +11,9 @@ import (
 )
 
 type PaymentService interface {
-	PaymentCurrencyCallback(ctx context.Context, callback *models.CallbackQuery) (*model.Payment, *cryptapi.PaymentResponse, error)
+	CreatePayment(ctx context.Context, callback *models.CallbackQuery) (*model.Payment, *cryptapi.PaymentResponse, error)
+	FindPayment(payment *entity.PaymentCallback) (*model.Payment, error)
+	ConfirmPayment(payment *entity.PaymentCallback) (*model.Payment, error)
 }
 
 type paymentServiceImpl struct {

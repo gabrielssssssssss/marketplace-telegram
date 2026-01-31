@@ -35,9 +35,9 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "PaymentController.HandlerPayment").
+				Str("component", "AccountService.RegisterUser").
 				Int64("user_id", update.Message.From.ID).
-				Msg("Failed to process payment callback")
+				Msg("Failed to process register user")
 			return
 		}
 
@@ -80,7 +80,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 	if cb == nil || cb.Message.Message == nil {
 		log.Error().
 			Err(fmt.Errorf("callback query or associated message is nil")).
-			Str("component", "PaymentController.HandlerPayment").
+			Str("component", "handler.HandlerAccount").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process payment callback")
 		return

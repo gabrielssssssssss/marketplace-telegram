@@ -25,7 +25,7 @@ func (handler *PaymentHandler) HandlerPayment(ctx context.Context, b *bot.Bot, u
 	if cb == nil || cb.Message.Message == nil {
 		log.Error().
 			Err(fmt.Errorf("callback query or associated message is nil")).
-			Str("component", "PaymentController.HandlerPayment").
+			Str("component", "handler.HandlerPayment").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process payment callback")
 		return
@@ -72,7 +72,7 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 	if cb == nil || cb.Message.Message == nil {
 		log.Error().
 			Err(fmt.Errorf("callback query or associated message is nil")).
-			Str("component", "PaymentController.HandlerPayment").
+			Str("component", "handler.HandlerPaymentCurrency").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process payment callback")
 		return
@@ -84,11 +84,11 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 
 	chatID := cb.Message.Message.Chat.ID
 
-	createdPayment, providerResponse, err := handler.PaymentService.PaymentCurrencyCallback(ctx, cb)
+	createdPayment, providerResponse, err := handler.PaymentService.CreatePayment(ctx, cb)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "PaymentController.HandlerPayment").
+			Str("component", "handler.PaymentService.PaymentCurrencyCallback").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process payment callback")
 		return

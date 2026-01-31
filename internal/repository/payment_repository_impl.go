@@ -42,7 +42,7 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 	return &response, nil
 }
 
-func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.Payment, error) {
+func (r *paymentRepositoryImpl) GetPaymentByID(paymentID string) (*model.Payment, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -50,9 +50,7 @@ func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.
 	SELECT
 		id,
 		user_id,
-		amount,
 		currency,
-		tx_id,
 		status,
 		created_at,
 		confirmed_at
@@ -64,16 +62,83 @@ func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.
 
 	err := r.db.QueryRow(
 		query,
+		paymentID,
+	).Scan(
+		&response.ID,
+		&response.UserID,
+		&response.Currency,
+		&response.Status,
+		&response.CreatedAt,
+		&response.ConfirmedAt,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
+func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*model.Payment, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `
+	UPDATE payments
+	SET (
+		value_coin,
+		value_forwarded_coin,
+		currency,
+		status,
+		address_in,
+		address_out,
+		txid_in,
+		txid_out,
+		confirmed_at
+	) = ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+	WHERE id = $10
+	RETURNING
+		"id",
+		"user_id",
+		"value_coin",
+		"value_forwarded_coin",
+		"currency",
+		"status",
+		"address_in",
+		"address_out",
+		"txid_in",
+		"txid_out",
+		"confirmed_at",
+		"created_at"
+	`
+
+	var response model.Payment
+
+	err := r.db.QueryRow(
+		query,
+		payment.ValueCoin,
+		payment.ValueForwardedCoin,
+		payment.Currency,
+		payment.Status,
+		payment.AddressIn,
+		payment.AddressOut,
+		payment.TxidIn,
+		payment.TxidOut,
+		payment.ConfirmedAt,
 		payment.ID,
 	).Scan(
 		&response.ID,
 		&response.UserID,
-		&response.Amount,
+		&response.ValueCoin,
+		&response.ValueForwardedCoin,
 		&response.Currency,
-		&response.TxID,
 		&response.Status,
-		&response.CreatedAt,
+		&response.AddressIn,
+		&response.AddressOut,
+		&response.TxidIn,
+		&response.TxidOut,
 		&response.ConfirmedAt,
+		&response.CreatedAt,
 	)
 
 	if err != nil {
@@ -91,9 +156,7 @@ func (r *paymentRepositoryImpl) GetPaymentsByUserID(payment *entity.Payment) (*[
 	SELECT
 		id,
 		user_id,
-		amount,
 		currency,
-		tx_id,
 		status,
 		created_at,
 		confirmed_at
@@ -116,9 +179,7 @@ func (r *paymentRepositoryImpl) GetPaymentsByUserID(payment *entity.Payment) (*[
 		if err := rows.Scan(
 			&payment.ID,
 			&payment.UserID,
-			&payment.Amount,
 			&payment.Currency,
-			&payment.TxID,
 			&payment.Status,
 			&payment.CreatedAt,
 			&payment.ConfirmedAt,

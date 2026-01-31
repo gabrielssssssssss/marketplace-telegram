@@ -3,14 +3,28 @@ package entity
 import "time"
 
 type Payment struct {
-	ID          string
-	UserID      int64
-	Amount      float64
-	Currency    string
-	TxID        string
-	Status      string
-	AddressIn   string
-	AddressOut  string
-	CreatedAt   time.Time
-	ConfirmedAt time.Time
+	ID                 *string
+	UserID             *int64
+	ValueCoin          *float64
+	ValueForwardedCoin *float64
+	Currency           *string
+	Status             *string
+	AddressIn          *string
+	AddressOut         *string
+	TxidIn             *string
+	TxidOut            *string
+	CreatedAt          *time.Time
+	ConfirmedAt        *time.Time
+}
+
+type PaymentCallback struct {
+	PaymentID          string
+	AddressIn          string
+	AdddressOut        string
+	ValueCoin          string
+	ValueForwardedCoin string
+	TxidIn             string
+	TxidOut            string
+	Confirmations      string
+	Status             string
 }

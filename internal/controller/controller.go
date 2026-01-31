@@ -9,6 +9,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account/handlers"
 	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/handlers"
+	wh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/webhooks"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -16,7 +17,7 @@ import (
 )
 
 func Controller() {
-	app, err := bot.New(os.Getenv("TELEGRAM_TOKEN"))
+	bot, err := bot.New(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,15 +35,15 @@ func Controller() {
 
 	accountController := ah.NewAccountHandler(&accountService)
 	paymentHandlers := ph.NewPaymentHandler(&paymentService)
-	// paymentWebhooks := wh.NewPaymentWebhook(&paymentService)
+	paymentWebhooks := wh.NewPaymentWebhook(&paymentService)
 
-	accountController.Handlers(app)
-	paymentHandlers.Handlers(app)
+	accountController.Handlers(bot)
+	paymentHandlers.Handlers(bot)
 
 	go func() {
-		// http.HandleFunc("/callback", paymentWebhooks.HandleCallback)
-		http.ListenAndServe(":5000", nil)
+		http.HandleFunc("/callback", paymentWebhooks.WebhookPayment)
+		http.ListenAndServe(os.Getenv("CALLBACK_PORT"), nil)
 	}()
 
-	app.Start(context.TODO())
+	bot.Start(context.TODO())
 }
