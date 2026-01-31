@@ -13,8 +13,8 @@ type Payment struct {
 	AddressOut         *string
 	TxidIn             *string
 	TxidOut            *string
-	CreatedAt          *time.Time
-	ConfirmedAt        *time.Time
+	CreatedAt          time.Time
+	ConfirmedAt        time.Time
 }
 
 type PaymentCallback struct {

@@ -84,33 +84,32 @@ func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*mod
 	defer cancel()
 
 	query := `
-	UPDATE payments
-	SET (
-		value_coin,
-		value_forwarded_coin,
-		currency,
-		status,
-		address_in,
-		address_out,
-		txid_in,
-		txid_out,
-		confirmed_at
-	) = ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-	WHERE id = $10
-	RETURNING
-		"id",
-		"user_id",
-		"value_coin",
-		"value_forwarded_coin",
-		"currency",
-		"status",
-		"address_in",
-		"address_out",
-		"txid_in",
-		"txid_out",
-		"confirmed_at",
-		"created_at"
-	`
+    UPDATE payments
+    SET 
+        value_coin           = COALESCE($1, value_coin),
+        value_forwarded_coin = COALESCE($2, value_forwarded_coin),
+        currency             = COALESCE($3, currency),
+        status               = COALESCE($4, status),
+        address_in           = COALESCE($5, address_in),
+        address_out          = COALESCE($6, address_out),
+        txid_in              = COALESCE($7, txid_in),
+        txid_out             = COALESCE($8, txid_out),
+        confirmed_at         = COALESCE($9, confirmed_at)
+    WHERE id = $10
+    RETURNING
+        id,
+        user_id,
+        value_coin,
+        value_forwarded_coin,
+        currency,
+        status,
+        address_in,
+        address_out,
+        txid_in,
+        txid_out,
+        created_at,
+        confirmed_at
+    `
 
 	var response model.Payment
 

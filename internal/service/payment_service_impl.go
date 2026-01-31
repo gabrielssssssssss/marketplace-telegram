@@ -72,7 +72,7 @@ func (s *paymentServiceImpl) ConfirmPayment(payment *entity.PaymentCallback) (*m
 		ValueForwardedCoin: &valueForwardedCoin,
 		TxidIn:             &payment.TxidIn,
 		TxidOut:            &payment.TxidOut,
-		ConfirmedAt:        &time.Time{},
+		ConfirmedAt:        time.Now(),
 		Status:             &payment.Status,
 	}
 

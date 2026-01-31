@@ -1,6 +1,7 @@
 package webhooks
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -39,4 +40,14 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	confirmPayment, err := webhook.PaymentService.ConfirmPayment(&paymentCallback)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "webhook.PaymentWebhook.WebhookPayment").
+			Str("payment_id", paymentCallback.PaymentID).
+			Msg("Failed to process payment validation")
+		return
+	}
+	fmt.Println(confirmPayment)
 }
