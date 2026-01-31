@@ -9,7 +9,7 @@ import (
 type AccountService interface {
 	RegisterUser(*entity.Users) (*model.Users, error)
 	FindUserByID(UserID int64) (*model.Users, error)
-	FindUserByRecoveryKey(UserID int64) (*model.Users, error)
+	FindUserByRecoveryKey(Key string) (*model.Users, error)
 	UpdateUserBalance(user *entity.Users) (*model.Users, error)
 }
 

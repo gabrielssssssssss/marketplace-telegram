@@ -40,12 +40,8 @@ func (s *accountServiceImpl) FindUserByID(UserID int64) (*model.Users, error) {
 	return resp, nil
 }
 
-func (s *accountServiceImpl) FindUserByRecoveryKey(UserID int64) (*model.Users, error) {
-	users := entity.Users{
-		UserId: UserID,
-	}
-
-	resp, err := s.repository.GetUserByRecoveryKey(&users)
+func (s *accountServiceImpl) FindUserByRecoveryKey(Key string) (*model.Users, error) {
+	resp, err := s.repository.GetUserByRecoveryKey(Key)
 	if err != nil {
 		return nil, err
 	}

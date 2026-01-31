@@ -48,3 +48,13 @@ func (handler *RestoreHandler) HandlerRestore(ctx context.Context, b *bot.Bot, u
 
 	log.Info().Msg("account processed successfully")
 }
+
+func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, update *models.Update) {
+	user, err := handler.AccountService.FindUserByRecoveryKey(update.Message.Text)
+	if err != nil {
+		return
+	}
+	if user.RecoveryKey != "" {
+		log.Info().Msg("account processed successfully")
+	}
+}

@@ -86,7 +86,7 @@ func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.Users, error
 	return &response, nil
 }
 
-func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Users, error) {
+func (r userRepositoryImpl) GetUserByRecoveryKey(key string) (*model.Users, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -108,7 +108,7 @@ func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Use
 
 	err := r.db.QueryRow(
 		query,
-		user.RecoveryKey,
+		key,
 	).Scan(
 		&response.UserId,
 		&response.Firstname,

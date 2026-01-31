@@ -23,14 +23,13 @@ func NewAccountHandler(AccountService *service.AccountService) AccountHandler {
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
 	user, err := handler.AccountService.FindUserByID(update.Message.From.ID)
-	if user.UserId != update.Message.From.ID {
+	if err != nil {
 		newUser := entity.Users{
 			UserId:    update.Message.From.ID,
 			Username:  update.Message.From.Username,
 			Firstname: update.Message.From.FirstName,
 			Lastname:  update.Message.From.LastName,
 		}
-
 		user, err = handler.AccountService.RegisterUser(&newUser)
 		if err != nil {
 			log.Error().
