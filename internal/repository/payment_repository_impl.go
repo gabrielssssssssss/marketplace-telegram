@@ -21,6 +21,7 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		VALUES ($1, $2, $3, $4, $5)
 		RETURNING
 			"id"
+			"currency"
 	`
 
 	var response model.Payment
@@ -32,7 +33,7 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		payment.AddressOut,
 		payment.AddressIn,
 		payment.Status,
-	).Scan(&response.ID)
+	).Scan(&response.ID, &response.Currency)
 
 	if err != nil {
 		return nil, err

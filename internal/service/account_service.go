@@ -1,16 +1,14 @@
 package service
 
 import (
-	"context"
-
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
-	"github.com/go-telegram/bot"
-	"github.com/go-telegram/bot/models"
 )
 
 type AccountService interface {
-	StartCommand(ctx context.Context, b *bot.Bot, update *models.Update) error
-	AccountCallback(ctx context.Context, b *bot.Bot, update *models.Update) error
+	RegisterUser(*entity.Users) (*model.Users, error)
+	FindUser(UserID int64) (*model.Users, error)
 }
 
 type accountServiceImpl struct {

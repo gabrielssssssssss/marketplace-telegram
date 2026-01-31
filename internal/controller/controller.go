@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
@@ -31,16 +32,17 @@ func Controller() {
 	accountService := service.NewAccountService(accountRepository)
 	paymentService := service.NewPaymentService(paymentRepository)
 
-	accountController := ah.NewAccountController(&accountService)
-	paymentHandlers := ph.NewPaymentController(&paymentService)
+	accountController := ah.NewAccountHandler(&accountService)
+	paymentHandlers := ph.NewPaymentHandler(&paymentService)
+	// paymentWebhooks := wh.NewPaymentWebhook(&paymentService)
 
 	accountController.Handlers(app)
 	paymentHandlers.Handlers(app)
 
-	// go func() {
-	// 	http.HandleFunc("/callback", webhookApi.HandleCallback)
-	// 	http.ListenAndServe(":5000", nil)
-	// }()
+	go func() {
+		// http.HandleFunc("/callback", paymentWebhooks.HandleCallback)
+		http.ListenAndServe(":5000", nil)
+	}()
 
 	app.Start(context.TODO())
 }

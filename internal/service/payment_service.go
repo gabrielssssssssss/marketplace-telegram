@@ -3,14 +3,14 @@ package service
 import (
 	"context"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
-	"github.com/go-telegram/bot"
+	cryptapi "github.com/gabrielssssssssss/marketplace-telegram/libs/crypt-api"
 	"github.com/go-telegram/bot/models"
 )
 
 type PaymentService interface {
-	PaymentCallback(ctx context.Context, b *bot.Bot, update *models.Update) error
-	PaymentCurrencyCallback(ctx context.Context, b *bot.Bot, update *models.Update) error
+	PaymentCurrencyCallback(ctx context.Context, callback *models.CallbackQuery) (*model.Payment, *cryptapi.PaymentResponse, error)
 }
 
 type paymentServiceImpl struct {
