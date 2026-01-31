@@ -9,14 +9,15 @@ import (
 type AccountService interface {
 	RegisterUser(*entity.Users) (*model.Users, error)
 	FindUser(UserID int64) (*model.Users, error)
+	UpdateUserBalance(user *entity.Users) (*model.Users, error)
 }
 
 type accountServiceImpl struct {
-	repository repository.AccountRepository
+	repository repository.UserRepository
 }
 
-func NewAccountService(accountRepository repository.AccountRepository) AccountService {
+func NewAccountService(userRepository repository.UserRepository) AccountService {
 	return &accountServiceImpl{
-		repository: accountRepository,
+		repository: userRepository,
 	}
 }

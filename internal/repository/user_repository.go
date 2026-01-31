@@ -7,18 +7,19 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-type AccountRepository interface {
+type UserRepository interface {
 	CreateUser(users *entity.Users) (*model.Users, error)
 	GetUserByID(users *entity.Users) (*model.Users, error)
+	UpdateUserByID(user *entity.Users) (*model.Users, error)
 	DeleteUser(users *entity.Users) (bool, error)
 }
 
-type accountRepositoryImpl struct {
+type userRepositoryImpl struct {
 	db *sql.DB
 }
 
-func NewAccountRepository(client *sql.DB) AccountRepository {
-	return &accountRepositoryImpl{
+func NewUserRepository(client *sql.DB) UserRepository {
+	return &userRepositoryImpl{
 		db: client,
 	}
 }

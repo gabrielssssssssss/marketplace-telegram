@@ -27,15 +27,15 @@ func Controller() {
 		log.Fatal(err)
 	}
 
-	accountRepository := repository.NewAccountRepository(database)
+	userRepository := repository.NewUserRepository(database)
 	paymentRepository := repository.NewPaymentRepository(database)
 
-	accountService := service.NewAccountService(accountRepository)
+	accountService := service.NewAccountService(userRepository)
 	paymentService := service.NewPaymentService(paymentRepository)
 
 	accountController := ah.NewAccountHandler(&accountService)
 	paymentHandlers := ph.NewPaymentHandler(&paymentService)
-	paymentWebhooks := wh.NewPaymentWebhook(&paymentService)
+	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &accountService)
 
 	accountController.Handlers(bot)
 	paymentHandlers.Handlers(bot)

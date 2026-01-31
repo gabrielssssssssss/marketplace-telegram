@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -16,10 +17,11 @@ import (
 
 type PaymentWebhook struct {
 	PaymentService service.PaymentService
+	AccountService service.AccountService
 }
 
-func NewPaymentWebhook(service *service.PaymentService) PaymentWebhook {
-	return PaymentWebhook{PaymentService: *service}
+func NewPaymentWebhook(paymentService *service.PaymentService, accountService *service.AccountService) PaymentWebhook {
+	return PaymentWebhook{PaymentService: *paymentService, AccountService: *accountService}
 }
 
 func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +43,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			Err(err).
 			Str("component", "webhook.PaymentWebhook.WebhookPayment").
 			Str("payment_id", paymentCallback.PaymentID).
-			Msg("Failed to process payment validation")
+			Msg("Failed to process payment finding")
 		return
 	}
 
@@ -49,9 +51,37 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "webhook.PaymentWebhook.WebhookPayment").
+			Str("component", "webhook.PaymentService.ConfirmPayment").
 			Str("payment_id", paymentCallback.PaymentID).
-			Msg("Failed to process payment validation")
+			Msg("Failed to process payment confirmation")
+		return
+	}
+
+	currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
+
+	user, err := webhook.AccountService.FindUser(confirmPayment.UserID)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "webhook.AccountService.FindUser").
+			Str("payment_id", paymentCallback.PaymentID).
+			Msg("Failed to process update user finding")
+		return
+	}
+
+	updatedUser := entity.Users{
+		UserId:    confirmPayment.UserID,
+		Balance:   *user.Balance + currencyPrice,
+		UpdatedAt: time.Now(),
+	}
+
+	_, err = webhook.AccountService.UpdateUserBalance(&updatedUser)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "webhook.AccountService.UpdateUserBalance").
+			Str("payment_id", paymentCallback.PaymentID).
+			Msg("Failed to process update user balance")
 		return
 	}
 
@@ -59,7 +89,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		confirmPayment.ValueForwardedCoin,
 		strings.ToUpper(confirmPayment.Currency),
 		confirmPayment.ID,
-		confirmPayment.ValueForwardedCoin,
+		currencyPrice,
 		confirmPayment.CreatedAt,
 		confirmPayment.ConfirmedAt,
 	)

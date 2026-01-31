@@ -23,7 +23,7 @@ const MessagePaymentConfirmed = `
 <b>✅ Votre paiement de %v %s a été validé avec succès!</b>
 
  <b><code>•</code> Transaction ID: <code>%s</code></b>
- <b><code>•</code> Montant reçu: <code>%v</code></b>
+ <b><code>•</code> Montant reçu: <code>%v€</code></b>
  <b><code>•</code> Créer le: <code>%v</code></b>
  <b><code>•</code> Confirmer le: <code>%v</code></b>
 

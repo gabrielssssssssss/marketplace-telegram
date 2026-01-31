@@ -39,3 +39,23 @@ func (s *accountServiceImpl) FindUser(UserID int64) (*model.Users, error) {
 
 	return resp, nil
 }
+
+func (s *accountServiceImpl) UpdateUserBalance(user *entity.Users) (*model.Users, error) {
+	users := entity.Users{
+		UserId:      user.UserId,
+		Firstname:   user.Firstname,
+		Lastname:    user.Lastname,
+		Username:    user.Username,
+		Balance:     user.Balance,
+		RecoveryKey: user.RecoveryKey,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+	}
+
+	resp, err := s.repository.UpdateUserByID(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
