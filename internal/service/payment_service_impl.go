@@ -3,8 +3,11 @@ package service
 import (
 	"context"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/messages"
+	cryptapi "github.com/gabrielssssssssss/marketplace-telegram/libs/crypt-api"
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
 )
@@ -61,6 +64,21 @@ func (s *paymentServiceImpl) PaymentCurrencyCallback(ctx context.Context, b *bot
 		CallbackQueryID: cb.ID,
 	})
 
+	currency := strings.Split(cb.Data, "_")[2]
+
+	client := cryptapi.NewCryptAPI(
+		"https://api.cryptapi.io/",
+		os.Getenv("CALLBACK_URL"),
+	)
+
+	response, err := client.CreatePayment(ctx, cryptapi.PaymentRequest{
+		Address:  os.Getenv(strings.ToUpper(currency)),
+		Currency: currency,
+	})
+	if err != nil {
+		return err
+	}
+
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
 		ChatID:    cb.Message.Message.Chat.ID,
 		MessageID: cb.Message.Message.ID,
@@ -72,7 +90,13 @@ func (s *paymentServiceImpl) PaymentCurrencyCallback(ctx context.Context, b *bot
 				},
 			},
 		},
-		Text: messages.MessagePaymentCurrency,
+		Text: fmt.Sprintf(messages.MessagePaymentCurrency,
+			strings.ToUpper(currency),
+			response.Status,
+			response.AddressOut,
+			response.MinimumTransactionCoin,
+			response.Priority,
+		),
 	})
 
 	return nil

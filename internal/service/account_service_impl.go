@@ -58,7 +58,11 @@ func (s *accountServiceImpl) StartCommand(ctx context.Context, b *bot.Bot, updat
 				},
 			},
 		},
-		Text: fmt.Sprintf(messages.MessageAccount, users.UserId, users.Username, users.Balance),
+		Text: fmt.Sprintf(messages.MessageAccount,
+			users.UserId,
+			users.Username,
+			users.Balance,
+		),
 	})
 
 	return nil
@@ -99,7 +103,11 @@ func (s *accountServiceImpl) AccountCallback(ctx context.Context, b *bot.Bot, up
 				},
 			},
 		},
-		Text: fmt.Sprintf(messages.MessageAccount, resp.UserId, resp.Username, resp.Balance),
+		Text: fmt.Sprintf(messages.MessageAccount,
+			resp.UserId,
+			resp.Username,
+			resp.Balance,
+		),
 	})
 
 	return nil
