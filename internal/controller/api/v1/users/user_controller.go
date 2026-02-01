@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -50,4 +51,34 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 		Msg("Fetch user request processed successfully")
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": user})
+}
+
+func (controller UserController) DiscardUserByID(c *gin.Context) {
+	var req model.Users
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "invalid_request",
+			"message": "StatusBadRequest",
+		})
+		return
+	}
+
+	_, err := controller.AccountService.RemoveUserByID(req.UserId)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.AccountService.RemoveUserByID").
+			Int64("user_id", req.UserId).
+			Msg("Failed to discard user request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "discard_user_failed", "message": "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "204").
+		Int64("user_id", req.UserId).
+		Msg("Discard user request processed successfully")
+
+	c.Status(http.StatusNoContent)
 }
