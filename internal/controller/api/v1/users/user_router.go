@@ -7,6 +7,6 @@ import (
 
 func (controller *UserController) Route(rg *gin.RouterGroup) {
 	rg.GET("/users", controller.FetchUserByID)
-	rg.DELETE("/users", middlewares.Grant(controller.AccountService), controller.DiscardUserByID)
-	rg.PUT("/users", middlewares.Grant(controller.AccountService), controller.EditUserByID)
+	rg.DELETE("/users", middlewares.Grant(), controller.DiscardUserByID)
+	rg.PUT("/users", middlewares.Grant(), controller.EditUserByID)
 }

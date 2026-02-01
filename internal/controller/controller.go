@@ -49,7 +49,7 @@ func Controller() {
 	userRouter := users.NewUserController(&accountService)
 
 	apiGroup := app.Group("/api/v1/")
-	apiGroup.Use(middlewares.CORS(), middlewares.Authentification)
+	apiGroup.Use(middlewares.CORS(), middlewares.Authorization)
 	userRouter.Route(apiGroup)
 
 	accountHandlers.Handlers(bot)

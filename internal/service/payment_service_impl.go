@@ -14,6 +14,7 @@ import (
 	"github.com/go-telegram/bot/models"
 )
 
+// Change
 func (s *paymentServiceImpl) CreatePayment(ctx context.Context, callback *models.CallbackQuery) (*model.Payment, *cryptapi.PaymentResponse, error) {
 	parts := strings.Split(callback.Data, "_")
 	currency := parts[2]

@@ -67,7 +67,7 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 		log.Info().Msg("register user processed successfully")
 	}
 
-	newSession, err := helper.NewJwtToken(user.UserId, os.Getenv("JWT_SECRET_KEY"))
+	newSession, err := helper.NewJwtToken(user.UserId, user.Role, os.Getenv("JWT_SECRET_KEY"))
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -129,7 +129,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 			Msg("Failed to process start callback")
 	}
 
-	newSession, err := helper.NewJwtToken(user.UserId, os.Getenv("JWT_SECRET_KEY"))
+	newSession, err := helper.NewJwtToken(user.UserId, user.Role, os.Getenv("JWT_SECRET_KEY"))
 	if err != nil {
 		log.Error().
 			Err(err).

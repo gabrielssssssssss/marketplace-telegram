@@ -79,10 +79,5 @@ func (s *accountServiceImpl) RemoveUserByID(UserID int64) (bool, error) {
 		UserId: UserID,
 	}
 
-	_, err := s.repository.DeleteUser(&users)
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
+	return s.repository.DeleteUser(&users)
 }

@@ -1,23 +1,22 @@
 package helper
 
 import (
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type Claims struct {
-	UserID int64 `json:"user_id"`
+	UserID int64  `json:"user_id"`
+	Role   string `json:"role"`
 	jwt.RegisteredClaims
 }
 
-func NewJwtToken(userID int64, secretKey string) (string, error) {
+func NewJwtToken(userID int64, role, secretKey string) (string, error) {
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userID,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 300)),
 		},
@@ -38,26 +37,24 @@ func VerifyJwtToken(token, secretKey string) (*jwt.Token, error) {
 	return jwt, err
 }
 
-func GetJwtValue(token, key string) (int64, error) {
-	parts := strings.Split(token, ".")
-	if len(parts) != 3 {
-		return 0, fmt.Errorf("invalid token format")
-	}
-
-	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
+func GetUserID(tokenStr, secretKey string) (int64, error) {
+	claims := &Claims{}
+	_, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secretKey), nil
+	})
 	if err != nil {
-		return 0, fmt.Errorf("decode payload: %w", err)
+		return 0, err
 	}
+	return claims.UserID, nil
+}
 
-	var payload map[string]int64
-	if err := json.Unmarshal(payloadBytes, &payload); err != nil {
-		return 0, fmt.Errorf("unmarshal payload: %w", err)
+func GetRole(tokenStr, secretKey string) (string, error) {
+	claims := &Claims{}
+	_, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secretKey), nil
+	})
+	if err != nil {
+		return "", err
 	}
-
-	val, ok := payload[key]
-	if !ok {
-		return 0, fmt.Errorf("key %q not found", key)
-	}
-
-	return val, nil
+	return claims.Role, nil
 }

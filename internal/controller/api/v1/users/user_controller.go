@@ -2,6 +2,7 @@ package users
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
@@ -23,7 +24,7 @@ func NewUserController(AccountService *service.AccountService) UserController {
 func (controller UserController) FetchUserByID(c *gin.Context) {
 	authorization := c.GetHeader("Authorization")
 
-	userID, err := helper.GetJwtValue(authorization, "user_id")
+	userID, err := helper.GetUserID(authorization, os.Getenv("JWT_SECRET_KEY"))
 	if err != nil {
 		log.Error().
 			Err(err).

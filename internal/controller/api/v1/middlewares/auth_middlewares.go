@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func Authentification(c *gin.Context) {
+func Authorization(c *gin.Context) {
 	authorization := c.GetHeader("Authorization")
 	if authorization == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing_token", "message": "Unauthorized"})
