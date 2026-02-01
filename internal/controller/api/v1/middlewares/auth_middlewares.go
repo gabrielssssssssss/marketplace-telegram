@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -11,27 +10,21 @@ import (
 )
 
 func Authentification(c *gin.Context) {
-	token := c.GetHeader("Authorization")
-	if token == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error":   "missing_token",
-			"message": "Authorization header is absent or empty",
-		})
+	authorization := c.GetHeader("Authorization")
+	if authorization == "" {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing_token", "message": "Unauthorized"})
 		return
 	}
 
-	jwt, err := helper.VerifyJwtToken(token, os.Getenv("JWT_SECRET_KEY"))
-	if err != nil || !jwt.Valid {
+	token, err := helper.VerifyJwtToken(authorization, os.Getenv("JWT_SECRET_KEY"))
+	if err != nil || !token.Valid {
 		log.Error().
 			Err(err).
 			Str("component", "helper.VerifyJwtToken").
-			Str("session", token).
-			Msg("Failed to process verify jwt")
+			Str("session", authorization).
+			Msg("Failed to process verify session token")
 
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error":   "invalid_token",
-			"message": fmt.Sprintf("JWT validation failed: %v", err),
-		})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid_token", "message": "Unauthorized"})
 		return
 	}
 

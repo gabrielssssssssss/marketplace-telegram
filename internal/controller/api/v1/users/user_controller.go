@@ -105,7 +105,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 			Err(err).
 			Str("component", "controller.AccountService.ModifyUserByID").
 			Int64("user_id", req.UserId).
-			Msg("Failed to edit user request")
+			Msg("Failed to discard user request")
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_user_failed", "message": "InternalServerError"})
 		return
