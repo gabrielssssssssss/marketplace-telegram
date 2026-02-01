@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r orderRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders, error) {
+func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -21,13 +21,13 @@ func (r orderRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders, 
 			"id"
 	`
 
-	var response model.Orders
+	var response model.Order
 
 	err := r.db.QueryRow(
 		query,
-		orders.UserID,
-		orders.ProductName,
-		orders.Amount,
+		order.UserID,
+		order.ProductName,
+		order.Amount,
 	).Scan(&response.ID)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (r orderRepositoryImpl) CreateOrder(orders *entity.Orders) (*model.Orders, 
 	return &response, nil
 }
 
-func (r *orderRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orders, error) {
+func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -53,16 +53,16 @@ func (r *orderRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orders
 	AND user_id = $2
 	`
 
-	var response model.Orders
+	var response model.Order
 
 	err := r.db.QueryRow(
 		query,
-		orders.ID,
-		orders.UserID,
+		order.ID,
+		order.UserID,
 	).Scan(
 		&response.ID,
 		&response.UserID,
-		&response.ProductName,
+		&response.Product,
 		&response.Amount,
 		&response.OrderAt,
 	)
@@ -74,7 +74,7 @@ func (r *orderRepositoryImpl) GetOrderByID(orders *entity.Orders) (*model.Orders
 	return &response, nil
 }
 
-func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model.Orders, error) {
+func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Order) (*[]model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -89,7 +89,7 @@ func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model
 	WHERE user_id = $1
 	`
 
-	var response []model.Orders
+	var response []model.Order
 
 	rows, err := r.db.Query(query)
 
@@ -99,12 +99,12 @@ func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model
 	defer rows.Close()
 
 	for rows.Next() {
-		var order model.Orders
+		var order model.Order
 
 		if err := rows.Scan(
 			&order.ID,
 			&order.UserID,
-			&order.ProductName,
+			&order.Product,
 			&order.Amount,
 			&order.OrderAt,
 		); err != nil {
@@ -117,7 +117,7 @@ func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Orders) (*[]model
 	return &response, nil
 }
 
-func (r *orderRepositoryImpl) DeleteOrderByID(orders *entity.Orders) (bool, error) {
+func (r *orderRepositoryImpl) DeleteOrderByID(order *entity.Order) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -129,7 +129,7 @@ func (r *orderRepositoryImpl) DeleteOrderByID(orders *entity.Orders) (bool, erro
 
 	err := r.db.QueryRow(
 		query,
-		orders.ID,
+		order.ID,
 	).Scan()
 
 	if err != nil {
