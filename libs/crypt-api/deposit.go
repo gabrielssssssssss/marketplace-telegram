@@ -3,6 +3,7 @@ package cryptapi
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -10,14 +11,15 @@ import (
 
 func (c *CryptAPI) CreatePayment(ctx context.Context, request PaymentRequest) (*PaymentResponse, error) {
 	params := "?" + url.Values{
-		"callback": {c.callbackUrl},
-		"address":  {request.Address},
-		"post":     {"1"},
-		"json":     {"1"},
-		"convert":  {"1"},
+		"callback":      {c.callbackUrl},
+		"address":       {request.Address},
+		"pending":       {"1"},
+		"confirmations": {"1"},
 	}.Encode()
 
 	url, _ := url.JoinPath(c.url, request.Currency, "create")
+
+	fmt.Println(url + params)
 	resp, err := http.Get(url + params)
 	if err != nil {
 		return nil, err

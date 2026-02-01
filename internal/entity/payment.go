@@ -21,6 +21,7 @@ type PaymentCallback struct {
 	PaymentID          string
 	AddressIn          string
 	AdddressOut        string
+	Coin               string
 	ValueCoin          string
 	ValueForwardedCoin string
 	TxidIn             string

@@ -7,10 +7,10 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
-	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/account/handlers"
-	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/handlers"
-	wh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/payment/webhooks"
-	rh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/restore/handlers"
+	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/account/handlers"
+	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/payment/handlers"
+	wh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/payment/webhooks"
+	rh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/restore/handlers"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
