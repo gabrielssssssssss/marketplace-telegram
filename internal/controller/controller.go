@@ -48,13 +48,7 @@ func Controller() {
 
 	userRouter := users.NewUserController(&accountService)
 
-	go func() {
-		http.HandleFunc("/callback", paymentWebhooks.WebhookPayment)
-		http.ListenAndServe(os.Getenv("CALLBACK_PORT"), nil)
-	}()
-
-	apiGroup := app.Group("/api/v1")
-
+	apiGroup := app.Group("/api/v1/")
 	apiGroup.Use(middlewares.CORS(), middlewares.Authentification)
 	userRouter.Route(apiGroup)
 
@@ -62,6 +56,14 @@ func Controller() {
 	paymentHandlers.Handlers(bot)
 	restoreHandlers.Handlers(bot)
 
-	app.Run()
-	bot.Start(context.TODO())
+	go func() {
+		http.HandleFunc("/callback", paymentWebhooks.WebhookPayment)
+		http.ListenAndServe(os.Getenv("CALLBACK_PORT"), nil)
+	}()
+
+	go func() {
+		bot.Start(context.TODO())
+	}()
+
+	app.Run(":6060")
 }

@@ -20,7 +20,7 @@ func Authentification(c *gin.Context) {
 	}
 
 	jwt, err := helper.VerifyJwtToken(token, os.Getenv("JWT_SECRET_KEY"))
-	if err != nil || jwt.Valid {
+	if err != nil || !jwt.Valid {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"error":   "invalid_token",
 			"message": fmt.Sprintf("JWT validation failed: %v", err),

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/messages"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -49,6 +50,19 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 		log.Info().Msg("register user processed successfully")
 	}
 
+	newSession, err := helper.NewJwtToken(user.UserId, os.Getenv("JWT_SECRET_KEY"))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "helper.NewJwtToken").
+			Int64("user_id", update.Message.From.ID).
+			Msg("Failed to process jwt generation")
+		return
+	}
+
+	webAppUrl := os.Getenv("TELEGRAM_WEB_APP") + "?token=" + newSession
+	fmt.Println(webAppUrl)
+
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID:    update.Message.Chat.ID,
 		ParseMode: "HTML",
@@ -59,7 +73,7 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 					{Text: "🔑 Restauration", CallbackData: "restore"},
 				}, {
 					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
-						URL: os.Getenv("TELEGRAM_WEB_APP"),
+						URL: webAppUrl,
 					}},
 				},
 			},
@@ -98,6 +112,18 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 			Msg("Failed to process start callback")
 	}
 
+	newSession, err := helper.NewJwtToken(user.UserId, os.Getenv("JWT_SECRET_KEY"))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "helper.NewJwtToken").
+			Int64("user_id", update.Message.From.ID).
+			Msg("Failed to process jwt generation")
+		return
+	}
+
+	webAppUrl := os.Getenv("TELEGRAM_WEB_APP") + "?token=" + newSession
+
 	b.EditMessageText(ctx, &bot.EditMessageTextParams{
 		ChatID:    cb.Message.Message.Chat.ID,
 		MessageID: cb.Message.Message.ID,
@@ -109,7 +135,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 					{Text: "🔑 Restauration", CallbackData: "restore"},
 				}, {
 					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
-						URL: os.Getenv("TELEGRAM_WEB_APP"),
+						URL: webAppUrl,
 					}},
 				},
 			},

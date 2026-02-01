@@ -11,25 +11,17 @@ import (
 )
 
 type Claims struct {
-	UserID int64
+	UserID int64 `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
-func GetUserID(claims *Claims) int64 {
-	return claims.UserID
-}
-
-func GetClaims(claims *Claims) *Claims {
-	return claims
-}
-
-func NewJwtToken(userID int64, secretKey []byte) (string, error) {
+func NewJwtToken(userID int64, secretKey string) (string, error) {
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 300)),
 		},
-	}).SignedString(secretKey)
+	}).SignedString([]byte(secretKey))
 	if err != nil {
 		return "", fmt.Errorf("Unable to create JWT with the given parameters.")
 	}
@@ -41,31 +33,31 @@ func VerifyJwtToken(token, secretKey string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return false, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return secretKey, nil
+		return []byte(secretKey), nil
 	})
 	return jwt, err
 }
 
-func GetJwtValue(token, secretKey string) (string, error) {
+func GetJwtValue(token, key string) (int64, error) {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
-		return "", fmt.Errorf("JWT token is invalid.")
+		return 0, fmt.Errorf("invalid token format")
 	}
 
 	payloadBytes, err := base64.RawURLEncoding.DecodeString(parts[1])
 	if err != nil {
-		return "", err
+		return 0, fmt.Errorf("decode payload: %w", err)
 	}
 
-	var payload map[string]interface{}
+	var payload map[string]int64
 	if err := json.Unmarshal(payloadBytes, &payload); err != nil {
-		return "", err
+		return 0, fmt.Errorf("unmarshal payload: %w", err)
 	}
 
-	key, ok := payload[secretKey].(string)
+	val, ok := payload[key]
 	if !ok {
-		return "", fmt.Errorf("JWT key not found.")
+		return 0, fmt.Errorf("key %q not found", key)
 	}
 
-	return key, nil
+	return val, nil
 }
