@@ -11,6 +11,7 @@ type AccountService interface {
 	FindUserByID(UserID int64) (*model.Users, error)
 	FindUserByRecoveryKey(Key string) (*model.Users, error)
 	UpdateUserBalance(user *entity.Users) (*model.Users, error)
+	RemoveUserByID(UserID int64) (bool, error)
 }
 
 type accountServiceImpl struct {

@@ -40,8 +40,25 @@ func (s *accountServiceImpl) FindUserByID(UserID int64) (*model.Users, error) {
 	return resp, nil
 }
 
+func (s *accountServiceImpl) RemoveUserByID(UserID int64) (bool, error) {
+	users := entity.Users{
+		UserId: UserID,
+	}
+
+	_, err := s.repository.DeleteUser(&users)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func (s *accountServiceImpl) FindUserByRecoveryKey(Key string) (*model.Users, error) {
-	resp, err := s.repository.GetUserByRecoveryKey(Key)
+	users := entity.Users{
+		RecoveryKey: Key,
+	}
+
+	resp, err := s.repository.GetUserByRecoveryKey(&users)
 	if err != nil {
 		return nil, err
 	}
