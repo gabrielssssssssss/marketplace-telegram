@@ -55,7 +55,7 @@ func Controller() {
 
 	apiGroup := app.Group("/api/v1")
 
-	apiGroup.Use(middlewares.CORS())
+	apiGroup.Use(middlewares.CORS(), middlewares.Authentification)
 	userRouter.Route(apiGroup)
 
 	accountHandlers.Handlers(bot)

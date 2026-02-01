@@ -36,14 +36,14 @@ func NewJwtToken(userID int64, secretKey []byte) (string, error) {
 	return token, nil
 }
 
-func VerifyJwtToken(tokens, secretKey string) (bool, error) {
-	token, err := jwt.Parse(tokens, func(token *jwt.Token) (interface{}, error) {
+func VerifyJwtToken(token, secretKey string) (*jwt.Token, error) {
+	jwt, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return false, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 		return secretKey, nil
 	})
-	return token.Valid, err
+	return jwt, err
 }
 
 func GetJwtValue(token, secretKey string) (string, error) {
