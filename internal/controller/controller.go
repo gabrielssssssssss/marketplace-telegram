@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/middlewares"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/users"
 	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/account/handlers"
 	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/payment/handlers"
@@ -53,6 +54,8 @@ func Controller() {
 	}()
 
 	apiGroup := app.Group("/api/v1")
+
+	apiGroup.Use(middlewares.CORS())
 	userRouter.Route(apiGroup)
 
 	accountHandlers.Handlers(bot)

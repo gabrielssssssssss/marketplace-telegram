@@ -15,23 +15,38 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateJwtToken(UserID int64, SecretKey []byte) (string, error) {
-	claims := Claims{
-		UserID: UserID,
+func GetUserID(claims *Claims) int64 {
+	return claims.UserID
+}
+
+func GetClaims(claims *Claims) *Claims {
+	return claims
+}
+
+func NewJwtToken(userID int64, secretKey []byte) (string, error) {
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
+		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 300)),
 		},
-	}
-
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(SecretKey)
+	}).SignedString(secretKey)
 	if err != nil {
 		return "", fmt.Errorf("Unable to create JWT with the given parameters.")
 	}
-
 	return token, nil
 }
 
-func GetJwtValue(token, key string) (string, error) {
+func VerifyJwtToken(tokens, secretKey string) (bool, error) {
+	token, err := jwt.Parse(tokens, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return false, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return secretKey, nil
+	})
+	return token.Valid, err
+}
+
+func GetJwtValue(token, secretKey string) (string, error) {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
 		return "", fmt.Errorf("JWT token is invalid.")
@@ -44,10 +59,10 @@ func GetJwtValue(token, key string) (string, error) {
 
 	var payload map[string]interface{}
 	if err := json.Unmarshal(payloadBytes, &payload); err != nil {
-		panic(err)
+		return "", err
 	}
 
-	key, ok := payload[key].(string)
+	key, ok := payload[secretKey].(string)
 	if !ok {
 		return "", fmt.Errorf("JWT key not found.")
 	}
