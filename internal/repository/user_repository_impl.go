@@ -16,11 +16,12 @@ func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.Users, error)
 			firstname,
 			lastname,
 			username,
+			role,
 			balance,
 			recovery_key,
 			updated_at
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING
 			"recovery_key"
 	`
@@ -33,6 +34,7 @@ func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.Users, error)
 		user.Firstname,
 		user.Lastname,
 		user.Username,
+		user.Role,
 		user.Balance,
 		user.RecoveryKey,
 		user.UpdatedAt,

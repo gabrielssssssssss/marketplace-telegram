@@ -121,7 +121,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		UpdatedAt: time.Now(),
 	}
 
-	_, err = handler.AccountService.UpdateUserBalance(&userUpdate)
+	_, err = handler.AccountService.ModifyUserByID(&userUpdate)
 	if err != nil {
 		log.Error().
 			Err(err).

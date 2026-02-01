@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -30,7 +31,23 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 			Username:  update.Message.From.Username,
 			Firstname: update.Message.From.FirstName,
 			Lastname:  update.Message.From.LastName,
+			Role:      "user",
 		}
+
+		ownerID, err := strconv.ParseInt(os.Getenv("OWNER_ID"), 10, 64)
+		if err != nil {
+			log.Error().
+				Err(err).
+				Str("component", "strconv.ParseInt").
+				Int64("user_id", update.Message.From.ID).
+				Msg("Failed to process int64 parser")
+			return
+		}
+
+		if update.Message.From.ID == ownerID {
+			newUser.Role = "admin"
+		}
+
 		user, err = handler.AccountService.RegisterUser(&newUser)
 		if err != nil {
 			log.Error().

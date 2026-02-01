@@ -9,6 +9,7 @@ type Users struct {
 	Firstname   string
 	Lastname    string
 	Username    string
+	Role        string
 	Balance     float64
 	RecoveryKey string
 	CreatedAt   time.Time

@@ -14,6 +14,7 @@ func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.Users, err
 		Username:    user.Username,
 		Firstname:   user.Firstname,
 		Lastname:    user.Lastname,
+		Role:        user.Role,
 		Balance:     0.0,
 		RecoveryKey: helper.RandomStringSecure(24),
 		UpdatedAt:   time.Now(),
@@ -27,12 +28,45 @@ func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.Users, err
 	return resp, err
 }
 
-func (s *accountServiceImpl) FindUserByID(UserID int64) (*model.Users, error) {
+func (s *accountServiceImpl) FindUserByID(userID int64) (*model.Users, error) {
 	users := entity.Users{
-		UserId: UserID,
+		UserId: userID,
 	}
 
 	resp, err := s.repository.GetUserByID(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *accountServiceImpl) FindUserByRecoveryKey(recoveryKey string) (*model.Users, error) {
+	users := entity.Users{
+		RecoveryKey: recoveryKey,
+	}
+
+	resp, err := s.repository.GetUserByRecoveryKey(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (s *accountServiceImpl) ModifyUserByID(user *entity.Users) (*model.Users, error) {
+	users := entity.Users{
+		UserId:      user.UserId,
+		Firstname:   user.Firstname,
+		Lastname:    user.Lastname,
+		Username:    user.Username,
+		Balance:     user.Balance,
+		RecoveryKey: user.RecoveryKey,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+	}
+
+	resp, err := s.repository.UpdateUserByID(&users)
 	if err != nil {
 		return nil, err
 	}
@@ -51,37 +85,4 @@ func (s *accountServiceImpl) RemoveUserByID(UserID int64) (bool, error) {
 	}
 
 	return true, nil
-}
-
-func (s *accountServiceImpl) FindUserByRecoveryKey(Key string) (*model.Users, error) {
-	users := entity.Users{
-		RecoveryKey: Key,
-	}
-
-	resp, err := s.repository.GetUserByRecoveryKey(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-}
-
-func (s *accountServiceImpl) UpdateUserBalance(user *entity.Users) (*model.Users, error) {
-	users := entity.Users{
-		UserId:      user.UserId,
-		Firstname:   user.Firstname,
-		Lastname:    user.Lastname,
-		Username:    user.Username,
-		Balance:     user.Balance,
-		RecoveryKey: user.RecoveryKey,
-		CreatedAt:   user.CreatedAt,
-		UpdatedAt:   user.UpdatedAt,
-	}
-
-	resp, err := s.repository.UpdateUserByID(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
 }

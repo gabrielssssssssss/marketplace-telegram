@@ -96,7 +96,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			UpdatedAt: time.Now(),
 		}
 
-		_, err = webhook.AccountService.UpdateUserBalance(&updatedUser)
+		_, err = webhook.AccountService.ModifyUserByID(&updatedUser)
 		if err != nil {
 			log.Error().
 				Err(err).
