@@ -98,7 +98,7 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 		strings.ToUpper(createdPayment.Currency),
 		createdPayment.ID,
 		providerResponse.Status,
-		providerResponse.AddressOut,
+		providerResponse.AddressIn,
 		providerResponse.MinimumTransactionCoin,
 		providerResponse.Priority,
 	)

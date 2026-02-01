@@ -7,10 +7,12 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/users"
 	ah "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/account/handlers"
 	ph "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/payment/handlers"
 	wh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/payment/webhooks"
 	rh "github.com/gabrielssssssssss/marketplace-telegram/internal/controller/telegram/restore/handlers"
+	"github.com/gin-gonic/gin"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -18,6 +20,9 @@ import (
 )
 
 func Controller() {
+	// gin.SetMode(gin.ReleaseMode)
+	app := gin.Default()
+
 	bot, err := bot.New(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
@@ -40,14 +45,20 @@ func Controller() {
 
 	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &accountService)
 
+	userRouter := users.NewUserController(&accountService)
+
 	go func() {
 		http.HandleFunc("/callback", paymentWebhooks.WebhookPayment)
 		http.ListenAndServe(os.Getenv("CALLBACK_PORT"), nil)
 	}()
 
+	apiGroup := app.Group("/api/v1")
+	userRouter.Route(apiGroup)
+
 	accountHandlers.Handlers(bot)
 	paymentHandlers.Handlers(bot)
 	restoreHandlers.Handlers(bot)
 
+	app.Run()
 	bot.Start(context.TODO())
 }

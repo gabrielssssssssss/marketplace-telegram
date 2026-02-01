@@ -3,7 +3,6 @@ package cryptapi
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -19,7 +18,6 @@ func (c *CryptAPI) CreatePayment(ctx context.Context, request PaymentRequest) (*
 
 	url, _ := url.JoinPath(c.url, request.Currency, "create")
 
-	fmt.Println(url + params)
 	resp, err := http.Get(url + params)
 	if err != nil {
 		return nil, err

@@ -54,7 +54,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			paymentCallback.ValueCoin,
 			strings.ToUpper(paymentCallback.Coin),
 			paymentCallback.PaymentID,
-			paymentCallback.ValueForwardedCoin,
+			paymentCallback.ValueCoin,
 			paymentCallback.TxidIn,
 			findPayment.CreatedAt,
 		)
