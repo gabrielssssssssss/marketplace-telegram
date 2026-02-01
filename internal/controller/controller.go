@@ -21,7 +21,7 @@ import (
 )
 
 func Controller() {
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.TestMode)
 	app := gin.Default()
 
 	bot, err := bot.New(os.Getenv("TELEGRAM_TOKEN"))
