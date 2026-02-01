@@ -57,7 +57,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 }
 
 func (controller UserController) DiscardUserByID(c *gin.Context) {
-	var req model.Users
+	var req model.User
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
 		return
@@ -84,7 +84,7 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 }
 
 func (controller UserController) EditUserByID(c *gin.Context) {
-	var req model.Users
+	var req model.User
 	if err := c.ShouldBindJSON(&req); err != nil || req.UserId == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
 		return

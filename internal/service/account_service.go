@@ -7,10 +7,10 @@ import (
 )
 
 type AccountService interface {
-	RegisterUser(user *entity.Users) (*model.Users, error)
-	FindUserByID(userID int64) (*model.Users, error)
-	FindUserByRecoveryKey(recoveryKey string) (*model.Users, error)
-	ModifyUserByID(user *entity.Users) (*model.Users, error)
+	RegisterUser(user *entity.Users) (*model.User, error)
+	FindUserByID(userID int64) (*model.User, error)
+	FindUserByRecoveryKey(recoveryKey string) (*model.User, error)
+	ModifyUserByID(user *entity.Users) (*model.User, error)
 	RemoveUserByID(UserID int64) (bool, error)
 }
 

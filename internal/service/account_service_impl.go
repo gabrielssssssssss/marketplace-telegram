@@ -8,7 +8,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.Users, error) {
+func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.User, error) {
 	users := entity.Users{
 		UserId:      user.UserId,
 		Username:    user.Username,
@@ -28,7 +28,7 @@ func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.Users, err
 	return resp, err
 }
 
-func (s *accountServiceImpl) FindUserByID(userID int64) (*model.Users, error) {
+func (s *accountServiceImpl) FindUserByID(userID int64) (*model.User, error) {
 	users := entity.Users{
 		UserId: userID,
 	}
@@ -41,7 +41,7 @@ func (s *accountServiceImpl) FindUserByID(userID int64) (*model.Users, error) {
 	return resp, nil
 }
 
-func (s *accountServiceImpl) FindUserByRecoveryKey(recoveryKey string) (*model.Users, error) {
+func (s *accountServiceImpl) FindUserByRecoveryKey(recoveryKey string) (*model.User, error) {
 	users := entity.Users{
 		RecoveryKey: recoveryKey,
 	}
@@ -54,7 +54,7 @@ func (s *accountServiceImpl) FindUserByRecoveryKey(recoveryKey string) (*model.U
 	return resp, nil
 }
 
-func (s *accountServiceImpl) ModifyUserByID(user *entity.Users) (*model.Users, error) {
+func (s *accountServiceImpl) ModifyUserByID(user *entity.Users) (*model.User, error) {
 	users := entity.Users{
 		UserId:      user.UserId,
 		Firstname:   user.Firstname,

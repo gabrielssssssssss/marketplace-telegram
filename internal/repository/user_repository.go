@@ -8,10 +8,10 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(user *entity.Users) (*model.Users, error)
-	GetUserByID(user *entity.Users) (*model.Users, error)
-	GetUserByRecoveryKey(user *entity.Users) (*model.Users, error)
-	UpdateUserByID(user *entity.Users) (*model.Users, error)
+	CreateUser(user *entity.Users) (*model.User, error)
+	GetUserByID(user *entity.Users) (*model.User, error)
+	GetUserByRecoveryKey(user *entity.Users) (*model.User, error)
+	UpdateUserByID(user *entity.Users) (*model.User, error)
 	DeleteUser(user *entity.Users) (bool, error)
 }
 

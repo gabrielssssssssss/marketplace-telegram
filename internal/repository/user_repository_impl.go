@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.Users, error) {
+func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -26,7 +26,7 @@ func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.Users, error)
 			"recovery_key"
 	`
 
-	var response model.Users
+	var response model.User
 
 	err := r.db.QueryRow(
 		query,
@@ -47,7 +47,7 @@ func (r userRepositoryImpl) CreateUser(user *entity.Users) (*model.Users, error)
 	return &response, nil
 }
 
-func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.Users, error) {
+func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -66,7 +66,7 @@ func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.Users, error
 	WHERE user_id = $1
 	`
 
-	var response model.Users
+	var response model.User
 
 	err := r.db.QueryRow(
 		query,
@@ -90,7 +90,7 @@ func (r userRepositoryImpl) GetUserByID(user *entity.Users) (*model.Users, error
 	return &response, nil
 }
 
-func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Users, error) {
+func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -109,7 +109,7 @@ func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Use
 	WHERE recovery_key = $1
 	`
 
-	var response model.Users
+	var response model.User
 
 	err := r.db.QueryRow(
 		query,
@@ -133,7 +133,7 @@ func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.Users) (*model.Use
 	return &response, nil
 }
 
-func (r *userRepositoryImpl) UpdateUserByID(user *entity.Users) (*model.Users, error) {
+func (r *userRepositoryImpl) UpdateUserByID(user *entity.Users) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -160,7 +160,7 @@ func (r *userRepositoryImpl) UpdateUserByID(user *entity.Users) (*model.Users, e
 		updated_at
     `
 
-	var response model.Users
+	var response model.User
 
 	err := r.db.QueryRow(
 		query,
