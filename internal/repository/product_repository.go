@@ -18,8 +18,8 @@ type productRepositoryImpl struct {
 	db *sql.DB
 }
 
-func NewProductRepository(client *sql.DB) productRepositoryImpl {
-	return productRepositoryImpl{
+func NewProductRepository(client *sql.DB) ProductRepository {
+	return &productRepositoryImpl{
 		db: client,
 	}
 }

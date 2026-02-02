@@ -1,0 +1,22 @@
+package service
+
+import (
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
+)
+
+func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Product, error) {
+	return s.repository.CreateProduct(product)
+}
+
+func (s *productServiceImpl) FindProductByID(product *entity.Product) (*model.Product, error) {
+	return s.repository.GetProductByID(product)
+}
+
+func (s *productServiceImpl) ModifyProductByID(product *entity.Product) (*model.Product, error) {
+	return s.repository.UpdateProductByID(product)
+}
+
+func (s *productServiceImpl) RemoveProductByID(product *entity.Product) (bool, error) {
+	return s.repository.DeleteProductByID(product)
+}
