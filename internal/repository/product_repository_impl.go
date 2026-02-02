@@ -17,7 +17,11 @@ func (r productRepositoryImpl) CreateProduct(product *entity.Product) (*model.Pr
 		)
 		VALUES ($1, $2)
 		RETURNING
-			"id"
+			id,
+			details,
+			price,
+			created_at,
+			updated_at
 	`
 
 	var response model.Product
@@ -26,7 +30,13 @@ func (r productRepositoryImpl) CreateProduct(product *entity.Product) (*model.Pr
 		query,
 		product.Details,
 		product.Price,
-	).Scan(&response.ID)
+	).Scan(
+		&response.ID,
+		&response.Details,
+		&response.Price,
+		&response.CreatedAt,
+		&response.UpdatedAt,
+	)
 
 	if err != nil {
 		return nil, err

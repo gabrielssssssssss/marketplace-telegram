@@ -1,10 +1,13 @@
 package entity
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Product struct {
 	ID        string
-	Details   any
+	Details   json.RawMessage
 	Price     int64
 	CreatedAt time.Time
 	UpdatedAt time.Time

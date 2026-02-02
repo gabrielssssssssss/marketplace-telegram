@@ -43,10 +43,10 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	}
 
 	log.Info().
-		Str("status_code", "200").
+		Str("status_code", "201").
 		Msg("Insert product request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": product})
+	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": product})
 
 }
 
