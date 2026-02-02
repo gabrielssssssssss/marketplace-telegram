@@ -13,10 +13,9 @@ func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, err
 	query := `
 		INSERT INTO orders (
 			user_id,
-			product_name,
 			amount
 		)
-		VALUES ($1, $2, $3)
+		VALUES ($1, $2)
 		RETURNING
 			"id"
 	`
@@ -26,7 +25,6 @@ func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, err
 	err := r.db.QueryRow(
 		query,
 		order.UserID,
-		order.ProductName,
 		order.Amount,
 	).Scan(&response.ID)
 
