@@ -39,7 +39,7 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 	return &response, nil
 }
 
-func (r *paymentRepositoryImpl) GetPaymentByID(paymentID string) (*model.Payment, error) {
+func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.Payment, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -59,7 +59,7 @@ func (r *paymentRepositoryImpl) GetPaymentByID(paymentID string) (*model.Payment
 
 	err := r.db.QueryRow(
 		query,
-		paymentID,
+		payment.ID,
 	).Scan(
 		&response.ID,
 		&response.UserID,

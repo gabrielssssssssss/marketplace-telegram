@@ -28,12 +28,14 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 	user, err := handler.AccountService.FindUserByID(&entity.User{UserId: update.Message.From.ID})
 	if err != nil {
 		newUser := entity.User{
-			UserId:    update.Message.From.ID,
-			Username:  update.Message.From.Username,
-			Firstname: update.Message.From.FirstName,
-			Lastname:  update.Message.From.LastName,
-			Role:      "user",
-			UpdatedAt: time.Now(),
+			UserId:      update.Message.From.ID,
+			Username:    update.Message.From.Username,
+			Firstname:   update.Message.From.FirstName,
+			Lastname:    update.Message.From.LastName,
+			Role:        "user",
+			Balance:     0.0,
+			RecoveryKey: helper.RandomStringSecure(24),
+			UpdatedAt:   time.Now(),
 		}
 
 		ownerID, err := strconv.ParseInt(os.Getenv("OWNER_ID"), 10, 64)

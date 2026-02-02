@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func (c *CryptAPI) CreatePayment(ctx context.Context, request PaymentRequest) (*PaymentResponse, error) {
+func (c *CryptAPI) NewPayment(ctx context.Context, request PaymentRequest) (*PaymentResponse, error) {
 	params := "?" + url.Values{
 		"callback":      {c.callbackUrl},
 		"address":       {request.Address},

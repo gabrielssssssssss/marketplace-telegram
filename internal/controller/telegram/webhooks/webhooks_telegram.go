@@ -25,37 +25,38 @@ func NewPaymentWebhook(paymentService *service.PaymentService, accountService *s
 }
 
 func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Request) {
-	paymentCallback := entity.PaymentCallback{
-		PaymentID:          r.URL.Query().Get("payment_id"),
+	f := func(s string) float64 { v, _ := strconv.ParseFloat(s, 64); return v }
+
+	payment := entity.Payment{
+		ID:                 r.URL.Query().Get("payment_id"),
 		AddressIn:          r.URL.Query().Get("address_in"),
-		AdddressOut:        r.URL.Query().Get("address_out"),
-		Coin:               r.URL.Query().Get("coin"),
-		ValueCoin:          r.URL.Query().Get("value_coin"),
-		ValueForwardedCoin: r.URL.Query().Get("value_forwarded_coin"),
+		AddressOut:         r.URL.Query().Get("address_out"),
+		Currency:           r.URL.Query().Get("coin"),
+		ValueCoin:          f(r.URL.Query().Get("value_coin")),
+		ValueForwardedCoin: f(r.URL.Query().Get("value_forwarded_coin")),
 		TxidIn:             r.URL.Query().Get("txid_in"),
 		TxidOut:            r.URL.Query().Get("txid_out"),
-		Confirmations:      r.URL.Query().Get("confirmations"),
 		Status:             r.URL.Query().Get("result"),
 	}
 
-	findPayment, err := webhook.PaymentService.FindPayment(&paymentCallback)
+	findPayment, err := webhook.PaymentService.FindPayment(&payment)
 	if err != nil || findPayment.ID == "" {
 		log.Error().
 			Err(err).
 			Str("component", "webhook.PaymentWebhook.WebhookPayment").
-			Str("payment_id", paymentCallback.PaymentID).
+			Str("payment_id", payment.ID).
 			Msg("Failed to process payment finding")
 		return
 	}
 
-	switch paymentCallback.Status {
+	switch payment.Status {
 	case "pending":
 		message := fmt.Sprintf(messages.MessagePaymentPending,
-			paymentCallback.ValueCoin,
-			strings.ToUpper(paymentCallback.Coin),
-			paymentCallback.PaymentID,
-			paymentCallback.ValueCoin,
-			paymentCallback.TxidIn,
+			payment.ValueCoin,
+			strings.ToUpper(payment.Currency),
+			payment.ID,
+			payment.ValueCoin,
+			payment.TxidIn,
 			findPayment.CreatedAt,
 		)
 
@@ -68,12 +69,23 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		log.Info().Msg("pending payment processed successfully")
 
 	case "sent":
-		confirmPayment, err := webhook.PaymentService.ConfirmPayment(&paymentCallback)
+		updatePayment := entity.Payment{
+			ID:                 payment.ID,
+			AddressIn:          payment.AddressIn,
+			AddressOut:         payment.AddressOut,
+			ValueCoin:          payment.ValueCoin,
+			ValueForwardedCoin: payment.ValueForwardedCoin,
+			TxidIn:             payment.TxidIn,
+			TxidOut:            payment.TxidOut,
+			ConfirmedAt:        time.Now(),
+			Status:             payment.Status,
+		}
+		confirmPayment, err := webhook.PaymentService.ConfirmPayment(&updatePayment)
 		if err != nil {
 			log.Error().
 				Err(err).
 				Str("component", "webhook.PaymentService.ConfirmPayment").
-				Str("payment_id", paymentCallback.PaymentID).
+				Str("payment_id", payment.ID).
 				Msg("Failed to process payment confirmation")
 			return
 		}
@@ -85,7 +97,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			log.Error().
 				Err(err).
 				Str("component", "webhook.AccountService.FindUser").
-				Str("payment_id", paymentCallback.PaymentID).
+				Str("payment_id", payment.ID).
 				Msg("Failed to process update user finding")
 			return
 		}
@@ -101,7 +113,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			log.Error().
 				Err(err).
 				Str("component", "webhook.AccountService.UpdateUserBalance").
-				Str("payment_id", paymentCallback.PaymentID).
+				Str("payment_id", payment.ID).
 				Msg("Failed to process update user balance")
 			return
 		}

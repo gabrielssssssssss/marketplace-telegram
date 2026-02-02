@@ -9,7 +9,7 @@ import (
 
 type PaymentRepository interface {
 	CreatePayment(payment *entity.Payment) (*model.Payment, error)
-	GetPaymentByID(payment string) (*model.Payment, error)
+	GetPaymentByID(payment *entity.Payment) (*model.Payment, error)
 	UpdatePaymentByID(payment *entity.Payment) (*model.Payment, error)
 	DeletePaymentByID(payment *entity.Payment) (bool, error)
 	GetPaymentsByUserID(payment *entity.Payment) (*[]model.Payment, error)

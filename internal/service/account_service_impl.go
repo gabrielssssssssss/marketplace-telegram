@@ -6,16 +6,6 @@ import (
 )
 
 func (s *accountServiceImpl) RegisterUser(user *entity.User) (*model.User, error) {
-	// users := entity.Users{
-	// 	UserId:      user.UserId,
-	// 	Username:    user.Username,
-	// 	Firstname:   user.Firstname,
-	// 	Lastname:    user.Lastname,
-	// 	Role:        user.Role,
-	// 	Balance:     0.0,
-	// 	RecoveryKey: helper.RandomStringSecure(24),
-	// 	UpdatedAt:   time.Now(),
-	// }
 	return s.repository.CreateUser(user)
 }
 
