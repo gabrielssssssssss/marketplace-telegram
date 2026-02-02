@@ -53,7 +53,7 @@ func (handler *RestoreHandler) HandlerRestore(ctx context.Context, b *bot.Bot, u
 }
 
 func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.AccountService.FindUserByRecoveryKey(update.Message.Text)
+	user, err := handler.AccountService.FindUserByRecoveryKey(&entity.User{RecoveryKey: update.Message.Text})
 	if err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 	recoveryKey := strings.Split(cb.Data, "_")[2]
 	chatID := cb.Message.Message.Chat.ID
 
-	userSender, err := handler.AccountService.FindUserByRecoveryKey(recoveryKey)
+	userSender, err := handler.AccountService.FindUserByRecoveryKey(&entity.User{RecoveryKey: recoveryKey})
 	if err != nil {
 		b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
 			CallbackQueryID: cb.ID,
@@ -105,7 +105,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		return
 	}
 
-	userRecipient, err := handler.AccountService.FindUserByID(chatID)
+	userRecipient, err := handler.AccountService.FindUserByID(&entity.User{UserId: chatID})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -115,7 +115,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		return
 	}
 
-	userUpdate := entity.Users{
+	userUpdate := entity.User{
 		UserId:    userRecipient.UserId,
 		Balance:   userSender.Balance + userRecipient.Balance,
 		UpdatedAt: time.Now(),
@@ -131,7 +131,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		return
 	}
 
-	_, err = handler.AccountService.RemoveUserByID(userSender.UserId)
+	_, err = handler.AccountService.RemoveUserByID(&entity.User{UserId: userSender.UserId})
 	if err != nil {
 		log.Error().
 			Err(err).

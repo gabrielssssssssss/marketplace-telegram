@@ -2,9 +2,10 @@ package products
 
 import (
 	"net/http"
-	"strconv"
+	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -18,21 +19,41 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 	return ProductController{ProductService: *ProductService}
 }
 
-func (controller ProductController) FetchProductByID(c *gin.Context) {
-	productID, err := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("component", "strconv.ParseInt").
-			Str("product_id", c.Param("id")).
-			Msg("Failed to fetch product request")
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_product_failed", "message": "InternalServerError"})
+func (controller ProductController) InsertProduct(c *gin.Context) {
+	var req model.Product
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
 		return
 	}
 
+	newProduct := entity.Product{
+		Details: req.Details,
+		Price:   req.Price,
+	}
+
+	product, err := controller.ProductService.RegisterProduct(&newProduct)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.ProductService.RegisterProduct").
+			Msg("Failed to insert product request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "insert_product_failed", "message": "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "200").
+		Msg("Insert product request processed successfully")
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": product})
+
+}
+
+func (controller ProductController) FetchProductByID(c *gin.Context) {
+	productID := c.Param("id")
 	findProduct := entity.Product{
-		ID: &productID,
+		ID: productID,
 	}
 
 	product, err := controller.ProductService.FindProductByID(&findProduct)
@@ -40,7 +61,7 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 		log.Error().
 			Err(err).
 			Str("component", "controller.ProductService.FindProductByID").
-			Int64("product_id", productID).
+			Str("product_id", productID).
 			Msg("Failed to fetch product request")
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_product_failed", "message": "InternalServerError"})
@@ -49,8 +70,42 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 
 	log.Info().
 		Str("status_code", "200").
-		Int64("product_id", productID).
+		Str("product_id", productID).
 		Msg("Fetch product request processed successfully")
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": product})
+}
+
+func (controller ProductController) EditProductByID(c *gin.Context) {
+	var req model.Product
+	if err := c.ShouldBindJSON(&req); err != nil || req.ID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
+		return
+	}
+
+	updateProduct := entity.Product{
+		ID:        req.ID,
+		Details:   req.Details,
+		Price:     req.Price,
+		UpdatedAt: time.Now(),
+	}
+
+	_, err := controller.ProductService.ModifyProductByID(&updateProduct)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.ProductService.ModifyProductByID").
+			Str("product_id", req.ID).
+			Msg("Failed to edit product request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_product_failed", "message": "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "204").
+		Str("product_id", req.ID).
+		Msg("Edit product request processed successfully")
+
+	c.Status(http.StatusNoContent)
 }

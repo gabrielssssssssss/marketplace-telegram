@@ -1,83 +1,36 @@
 package service
 
 import (
-	"time"
-
-	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (s *accountServiceImpl) RegisterUser(user *entity.Users) (*model.User, error) {
-	users := entity.Users{
-		UserId:      user.UserId,
-		Username:    user.Username,
-		Firstname:   user.Firstname,
-		Lastname:    user.Lastname,
-		Role:        user.Role,
-		Balance:     0.0,
-		RecoveryKey: helper.RandomStringSecure(24),
-		UpdatedAt:   time.Now(),
-	}
-
-	resp, err := s.repository.CreateUser(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, err
+func (s *accountServiceImpl) RegisterUser(user *entity.User) (*model.User, error) {
+	// users := entity.Users{
+	// 	UserId:      user.UserId,
+	// 	Username:    user.Username,
+	// 	Firstname:   user.Firstname,
+	// 	Lastname:    user.Lastname,
+	// 	Role:        user.Role,
+	// 	Balance:     0.0,
+	// 	RecoveryKey: helper.RandomStringSecure(24),
+	// 	UpdatedAt:   time.Now(),
+	// }
+	return s.repository.CreateUser(user)
 }
 
-func (s *accountServiceImpl) FindUserByID(userID int64) (*model.User, error) {
-	users := entity.Users{
-		UserId: userID,
-	}
-
-	resp, err := s.repository.GetUserByID(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+func (s *accountServiceImpl) FindUserByID(user *entity.User) (*model.User, error) {
+	return s.repository.GetUserByID(user)
 }
 
-func (s *accountServiceImpl) FindUserByRecoveryKey(recoveryKey string) (*model.User, error) {
-	users := entity.Users{
-		RecoveryKey: recoveryKey,
-	}
-
-	resp, err := s.repository.GetUserByRecoveryKey(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+func (s *accountServiceImpl) FindUserByRecoveryKey(user *entity.User) (*model.User, error) {
+	return s.repository.GetUserByRecoveryKey(user)
 }
 
-func (s *accountServiceImpl) ModifyUserByID(user *entity.Users) (*model.User, error) {
-	users := entity.Users{
-		UserId:      user.UserId,
-		Firstname:   user.Firstname,
-		Lastname:    user.Lastname,
-		Username:    user.Username,
-		Balance:     user.Balance,
-		RecoveryKey: user.RecoveryKey,
-		CreatedAt:   user.CreatedAt,
-		UpdatedAt:   user.UpdatedAt,
-	}
-
-	resp, err := s.repository.UpdateUserByID(&users)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
+func (s *accountServiceImpl) ModifyUserByID(user *entity.User) (*model.User, error) {
+	return s.repository.UpdateUserByID(user)
 }
 
-func (s *accountServiceImpl) RemoveUserByID(UserID int64) (bool, error) {
-	users := entity.Users{
-		UserId: UserID,
-	}
-
-	return s.repository.DeleteUser(&users)
+func (s *accountServiceImpl) RemoveUserByID(user *entity.User) (bool, error) {
+	return s.repository.DeleteUser(user)
 }

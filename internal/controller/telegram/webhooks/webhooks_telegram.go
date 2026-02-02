@@ -80,7 +80,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 		currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
 
-		user, err := webhook.AccountService.FindUserByID(confirmPayment.UserID)
+		user, err := webhook.AccountService.FindUserByID(&entity.User{UserId: confirmPayment.UserID})
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -90,7 +90,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			return
 		}
 
-		updatedUser := entity.Users{
+		updatedUser := entity.User{
 			UserId:    confirmPayment.UserID,
 			Balance:   user.Balance + currencyPrice,
 			UpdatedAt: time.Now(),

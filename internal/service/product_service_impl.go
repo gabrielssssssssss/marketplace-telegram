@@ -1,11 +1,14 @@
 package service
 
 import (
+	"encoding/json"
+
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
 func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Product, error) {
+	product.Details, _ = json.Marshal(product.Details)
 	return s.repository.CreateProduct(product)
 }
 

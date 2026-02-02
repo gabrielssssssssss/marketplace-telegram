@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -24,14 +25,15 @@ func NewAccountHandler(AccountService *service.AccountService) AccountHandler {
 }
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.AccountService.FindUserByID(update.Message.From.ID)
+	user, err := handler.AccountService.FindUserByID(&entity.User{UserId: update.Message.From.ID})
 	if err != nil {
-		newUser := entity.Users{
+		newUser := entity.User{
 			UserId:    update.Message.From.ID,
 			Username:  update.Message.From.Username,
 			Firstname: update.Message.From.FirstName,
 			Lastname:  update.Message.From.LastName,
 			Role:      "user",
+			UpdatedAt: time.Now(),
 		}
 
 		ownerID, err := strconv.ParseInt(os.Getenv("OWNER_ID"), 10, 64)
@@ -120,7 +122,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		CallbackQueryID: cb.ID,
 	})
 
-	user, err := handler.AccountService.FindUserByID(cb.Message.Message.Chat.ID)
+	user, err := handler.AccountService.FindUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
 	if err != nil {
 		log.Error().
 			Err(err).

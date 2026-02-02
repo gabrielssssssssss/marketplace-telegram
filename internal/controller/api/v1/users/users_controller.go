@@ -36,7 +36,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.AccountService.FindUserByID(userID)
+	user, err := controller.AccountService.FindUserByID(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -63,7 +63,7 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 		return
 	}
 
-	_, err := controller.AccountService.RemoveUserByID(req.UserId)
+	_, err := controller.AccountService.RemoveUserByID(&entity.User{UserId: req.UserId})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -90,7 +90,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		return
 	}
 
-	updateUser := entity.Users{
+	updateUser := entity.User{
 		UserId:      req.UserId,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
