@@ -17,8 +17,8 @@ type productServiceImpl struct {
 	repository repository.ProductRepository
 }
 
-func NewProductService(productRepository repository.PaymentRepository) PaymentService {
-	return &paymentServiceImpl{
+func NewProductService(productRepository repository.ProductRepository) ProductService {
+	return &productServiceImpl{
 		repository: productRepository,
 	}
 }
