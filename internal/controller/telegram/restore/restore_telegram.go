@@ -59,7 +59,7 @@ func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, 
 	}
 
 	if user.RecoveryKey != "" {
-		message := fmt.Sprintf(messages.MessageRestoreConfirm,
+		text := fmt.Sprintf(messages.MessageRestoreConfirm,
 			user.UserId,
 			user.Username,
 			user.Balance,
@@ -76,7 +76,7 @@ func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, 
 					{{Text: "✅ Transférer", CallbackData: data}},
 				},
 			},
-			Text: message,
+			Text: text,
 		})
 		log.Info().Msg("restore listener processed successfully")
 	}
@@ -94,7 +94,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 	}
 
 	recoveryKey := strings.Split(cb.Data, "_")[2]
-	chatID := cb.Message.Message.Chat.ID
+	chatID := cb.From.ID
 
 	userSender, err := handler.UserService.GetUserByRecoveryKey(&entity.User{RecoveryKey: recoveryKey})
 	if err != nil {
@@ -115,13 +115,11 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		return
 	}
 
-	userUpdate := entity.User{
+	_, err = handler.UserService.ModifyUserByID(&entity.User{
 		UserId:    userRecipient.UserId,
 		Balance:   userSender.Balance + userRecipient.Balance,
 		UpdatedAt: time.Now(),
-	}
-
-	_, err = handler.UserService.ModifyUserByID(&userUpdate)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).

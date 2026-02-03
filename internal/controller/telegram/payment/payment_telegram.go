@@ -86,19 +86,19 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 	})
 
 	currency := strings.Split(cb.Data, "_")[2]
-	chatID := cb.Message.Message.Chat.ID
+	chatID := cb.From.ID
 
-	createdPayment, err := handler.PaymentService.RegisterPayment(&entity.Payment{UserID: chatID, Currency: currency})
+	payment, err := handler.PaymentService.RegisterPayment(&entity.Payment{UserID: chatID, Currency: currency})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "handler.PaymentService.CreatePayment").
-			Int64("user_id", update.Message.From.ID).
+			Str("component", "handler.PaymentService.RegisterPayment").
+			Int64("user_id", chatID).
 			Msg("Failed to process payment callback")
 		return
 	}
 
-	hook := fmt.Sprintf("%s?payment_id=%s", os.Getenv("CALLBACK_URL"), createdPayment.ID)
+	hook := fmt.Sprintf("%s?payment_id=%s", os.Getenv("CALLBACK_URL"), payment.ID)
 	client := cryptapi.NewCryptAPI("https://api.cryptapi.io/", hook)
 
 	providerResponse, err := client.NewPayment(ctx, cryptapi.PaymentRequest{
@@ -109,14 +109,14 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 		log.Error().
 			Err(err).
 			Str("component", "client.NewPayment").
-			Int64("user_id", update.Message.From.ID).
+			Int64("user_id", chatID).
 			Msg("Failed to process payment callback")
 		return
 	}
 
-	message := fmt.Sprintf(messages.MessagePaymentCurrency,
-		strings.ToUpper(createdPayment.Currency),
-		createdPayment.ID,
+	text := fmt.Sprintf(messages.MessagePaymentCurrency,
+		strings.ToUpper(payment.Currency),
+		payment.ID,
 		providerResponse.Status,
 		providerResponse.AddressIn,
 		providerResponse.MinimumTransactionCoin,
@@ -127,7 +127,7 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 		ChatID:    chatID,
 		MessageID: cb.Message.Message.ID,
 		ParseMode: "HTML",
-		Text:      message,
+		Text:      text,
 		ReplyMarkup: &models.InlineKeyboardMarkup{
 			InlineKeyboard: [][]models.InlineKeyboardButton{
 				{{Text: "👈 Retour", CallbackData: "payment"}},

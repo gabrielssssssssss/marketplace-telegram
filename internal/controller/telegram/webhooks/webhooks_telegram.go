@@ -51,7 +51,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 	switch payment.Status {
 	case "pending":
-		message := fmt.Sprintf(messages.MessagePaymentPending,
+		text := fmt.Sprintf(messages.MessagePaymentPending,
 			payment.ValueCoin,
 			strings.ToUpper(payment.Currency),
 			payment.ID,
@@ -63,13 +63,13 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		helper.SendMessage(
 			os.Getenv("TELEGRAM_TOKEN"),
 			strconv.FormatInt(findPayment.UserID, 10),
-			message,
+			text,
 		)
 
 		log.Info().Msg("pending payment processed successfully")
 
 	case "sent":
-		updatePayment := entity.Payment{
+		confirmPayment, err := webhook.PaymentService.ModifyPaymentByID(&entity.Payment{
 			ID:                 payment.ID,
 			AddressIn:          payment.AddressIn,
 			AddressOut:         payment.AddressOut,
@@ -79,8 +79,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			TxidOut:            payment.TxidOut,
 			ConfirmedAt:        time.Now(),
 			Status:             payment.Status,
-		}
-		confirmPayment, err := webhook.PaymentService.ModifyPaymentByID(&updatePayment)
+		})
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -102,13 +101,11 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			return
 		}
 
-		updatedUser := entity.User{
+		_, err = webhook.UserService.ModifyUserByID(&entity.User{
 			UserId:    confirmPayment.UserID,
 			Balance:   user.Balance + currencyPrice,
 			UpdatedAt: time.Now(),
-		}
-
-		_, err = webhook.UserService.ModifyUserByID(&updatedUser)
+		})
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -118,7 +115,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			return
 		}
 
-		message := fmt.Sprintf(messages.MessagePaymentConfirmed,
+		text := fmt.Sprintf(messages.MessagePaymentConfirmed,
 			confirmPayment.ValueForwardedCoin,
 			strings.ToUpper(confirmPayment.Currency),
 			confirmPayment.ID,
@@ -131,7 +128,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		helper.SendMessage(
 			os.Getenv("TELEGRAM_TOKEN"),
 			strconv.FormatInt(confirmPayment.UserID, 10),
-			message,
+			text,
 		)
 
 		log.Info().Msg("sent payment processed successfully")
