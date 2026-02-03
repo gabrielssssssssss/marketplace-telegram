@@ -9,11 +9,11 @@ func (s *cartServiceImpl) RegisterCart(cart *entity.Cart) (*model.Cart, error) {
 	return s.repository.InsertCart(cart)
 }
 
-func (s *cartServiceImpl) FindCartByID(cart *entity.Cart) (*model.Cart, error) {
+func (s *cartServiceImpl) GetCartByID(cart *entity.Cart) (*model.Cart, error) {
 	return s.repository.SelectCartByID(cart)
 }
 
-func (s *cartServiceImpl) FindCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
+func (s *cartServiceImpl) GetCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
 	return s.repository.SelectCartsByUserID(cart)
 }
 

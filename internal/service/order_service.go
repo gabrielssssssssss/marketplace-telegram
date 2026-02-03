@@ -8,8 +8,8 @@ import (
 
 type OrderService interface {
 	RegisterOrder(order *entity.Order) (*model.Order, error)
-	FindOrderByID(order *entity.Order) (*model.Order, error)
-	FindOrdersByUserID(order *entity.Order) (*[]model.Order, error)
+	GetOrderByID(order *entity.Order) (*model.Order, error)
+	GetOrdersByUserID(order *entity.Order) (*[]model.Order, error)
 	RemoveOrderByID(order *entity.Order) (bool, error)
 }
 

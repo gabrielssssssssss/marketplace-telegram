@@ -8,8 +8,8 @@ import (
 
 type UserService interface {
 	RegisterUser(user *entity.User) (*model.User, error)
-	FindUserByID(user *entity.User) (*model.User, error)
-	FindUserByRecoveryKey(user *entity.User) (*model.User, error)
+	GetUserByID(user *entity.User) (*model.User, error)
+	GetUserByRecoveryKey(user *entity.User) (*model.User, error)
 	ModifyUserByID(user *entity.User) (*model.User, error)
 	RemoveUserByID(user *entity.User) (bool, error)
 }

@@ -9,11 +9,11 @@ func (s *orderServiceImpl) RegisterOrder(order *entity.Order) (*model.Order, err
 	return s.repository.InsertOrder(order)
 }
 
-func (s *orderServiceImpl) FindOrderByID(order *entity.Order) (*model.Order, error) {
+func (s *orderServiceImpl) GetOrderByID(order *entity.Order) (*model.Order, error) {
 	return s.repository.SelectOrderByID(order)
 }
 
-func (s *orderServiceImpl) FindOrdersByUserID(order *entity.Order) (*[]model.Order, error) {
+func (s *orderServiceImpl) GetOrdersByUserID(order *entity.Order) (*[]model.Order, error) {
 	return s.repository.SelectOrdersByUserID(order)
 }
 
