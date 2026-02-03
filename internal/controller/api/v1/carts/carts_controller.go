@@ -27,12 +27,10 @@ func (controller CartController) InsertCart(c *gin.Context) {
 		return
 	}
 
-	newCart := entity.Cart{
+	cart, err := controller.CartService.RegisterCart(&entity.Cart{
 		UserID:    req.UserID,
 		ProductID: req.ProductID,
-	}
-
-	cart, err := controller.CartService.RegisterCart(&newCart)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -52,11 +50,10 @@ func (controller CartController) InsertCart(c *gin.Context) {
 
 func (controller CartController) FetchCartByID(c *gin.Context) {
 	cartID := c.Param("id")
-	findCart := entity.Cart{
-		ID: cartID,
-	}
 
-	cart, err := controller.CartService.GetCartByID(&findCart)
+	cart, err := controller.CartService.GetCartByID(&entity.Cart{
+		ID: cartID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -91,11 +88,9 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 		return
 	}
 
-	findCarts := entity.Cart{
+	carts, err := controller.CartService.GetCartsByUserID(&entity.Cart{
 		UserID: userID,
-	}
-
-	carts, err := controller.CartService.GetCartsByUserID(&findCarts)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -122,14 +117,12 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 		return
 	}
 
-	updateCart := entity.Cart{
+	_, err := controller.CartService.ModifyCartByID(&entity.Cart{
 		ID:        c.Param("id"),
 		UserID:    req.UserID,
 		ProductID: req.ProductID,
 		UpdatedAt: time.Now(),
-	}
-
-	_, err := controller.CartService.ModifyCartByID(&updateCart)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -151,11 +144,10 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 
 func (controller CartController) DiscardCartByID(c *gin.Context) {
 	cartID := c.Param("id")
-	removeCart := entity.Cart{
-		ID: cartID,
-	}
 
-	_, err := controller.CartService.RemoveCartByID(&removeCart)
+	_, err := controller.CartService.RemoveCartByID(&entity.Cart{
+		ID: cartID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).

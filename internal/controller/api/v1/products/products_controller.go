@@ -26,12 +26,10 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 		return
 	}
 
-	newProduct := entity.Product{
+	product, err := controller.ProductService.RegisterProduct(&entity.Product{
 		Details: &req.Details,
 		Price:   &req.Price,
-	}
-
-	product, err := controller.ProductService.RegisterProduct(&newProduct)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -51,11 +49,10 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 
 func (controller ProductController) FetchProductByID(c *gin.Context) {
 	productID := c.Param("id")
-	findProduct := entity.Product{
-		ID: productID,
-	}
 
-	product, err := controller.ProductService.GetProductByID(&findProduct)
+	product, err := controller.ProductService.GetProductByID(&entity.Product{
+		ID: productID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -82,19 +79,19 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 		return
 	}
 
-	updateProduct := entity.Product{
-		ID:        c.Param("id"),
+	productID := c.Param("id")
+
+	_, err := controller.ProductService.ModifyProductByID(&entity.Product{
+		ID:        productID,
 		Details:   &req.Details,
 		Price:     &req.Price,
 		UpdatedAt: time.Now(),
-	}
-
-	_, err := controller.ProductService.ModifyProductByID(&updateProduct)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
 			Str("component", "controller.ProductService.ModifyProductByID").
-			Str("product_id", c.Param("id")).
+			Str("product_id", productID).
 			Msg("Failed to edit product request")
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_product_failed", "message": "InternalServerError"})
@@ -103,7 +100,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 
 	log.Info().
 		Str("status_code", "204").
-		Str("product_id", c.Param("id")).
+		Str("product_id", productID).
 		Msg("Edit product request processed successfully")
 
 	c.Status(http.StatusNoContent)
@@ -111,11 +108,10 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 
 func (controller ProductController) DiscardProductByID(c *gin.Context) {
 	productID := c.Param("id")
-	removeProduct := entity.Product{
-		ID: productID,
-	}
 
-	_, err := controller.ProductService.RemoveProductByID(&removeProduct)
+	_, err := controller.ProductService.RemoveProductByID(&entity.Product{
+		ID: productID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).

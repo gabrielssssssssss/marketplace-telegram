@@ -90,7 +90,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		return
 	}
 
-	updateUser := entity.User{
+	_, err := controller.UserService.ModifyUserByID(&entity.User{
 		UserId:      req.UserId,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
@@ -98,9 +98,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		Balance:     req.Balance,
 		RecoveryKey: req.RecoveryKey,
 		UpdatedAt:   time.Now(),
-	}
-
-	_, err := controller.UserService.ModifyUserByID(&updateUser)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).

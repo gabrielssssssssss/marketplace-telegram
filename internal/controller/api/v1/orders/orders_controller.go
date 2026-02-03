@@ -26,13 +26,11 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 		return
 	}
 
-	newOrder := entity.Order{
+	order, err := controller.OrderService.RegisterOrder(&entity.Order{
 		UserID:  req.UserID,
 		Product: req.Product,
 		Amount:  req.Amount,
-	}
-
-	order, err := controller.OrderService.RegisterOrder(&newOrder)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -52,11 +50,10 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 
 func (controller OrderController) FetchOrderByID(c *gin.Context) {
 	orderID := c.Param("id")
-	findOrder := entity.Order{
-		ID: orderID,
-	}
 
-	order, err := controller.OrderService.GetOrderByID(&findOrder)
+	order, err := controller.OrderService.GetOrderByID(&entity.Order{
+		ID: orderID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -91,11 +88,9 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 		return
 	}
 
-	findOrder := entity.Order{
+	orders, err := controller.OrderService.GetOrdersByUserID(&entity.Order{
 		UserID: userID,
-	}
-
-	orders, err := controller.OrderService.GetOrdersByUserID(&findOrder)
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -117,11 +112,10 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 
 func (controller OrderController) DiscardOrderByID(c *gin.Context) {
 	orderID := c.Param("id")
-	removeOrder := entity.Order{
-		ID: orderID,
-	}
 
-	_, err := controller.OrderService.RemoveOrderByID(&removeOrder)
+	_, err := controller.OrderService.RemoveOrderByID(&entity.Order{
+		ID: orderID,
+	})
 	if err != nil {
 		log.Error().
 			Err(err).
