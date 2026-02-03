@@ -170,20 +170,20 @@ func (r *paymentRepositoryImpl) GetPaymentsByUserID(payment *entity.Payment) (*[
 	defer rows.Close()
 
 	for rows.Next() {
-		var payment model.Payment
+		var row model.Payment
 
 		if err := rows.Scan(
-			&payment.ID,
-			&payment.UserID,
-			&payment.Currency,
-			&payment.Status,
-			&payment.CreatedAt,
-			&payment.ConfirmedAt,
+			&row.ID,
+			&row.UserID,
+			&row.Currency,
+			&row.Status,
+			&row.CreatedAt,
+			&row.ConfirmedAt,
 		); err != nil {
 			return nil, err
 		}
 
-		response = append(response, payment)
+		response = append(response, row)
 	}
 
 	return &response, nil

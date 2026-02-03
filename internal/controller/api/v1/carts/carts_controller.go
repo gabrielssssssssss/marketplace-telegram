@@ -2,6 +2,7 @@ package carts
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -55,11 +56,11 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 		ID: cartID,
 	}
 
-	cart, err := controller.CartService.FindCardByID(&findCart)
+	cart, err := controller.CartService.FindCartByID(&findCart)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.FindCardByID").
+			Str("component", "controller.CartService.FindCartByID").
 			Str("cart_id", cartID).
 			Msg("Failed to fetch cart request")
 
@@ -73,6 +74,45 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 		Msg("Fetch cart request processed successfully")
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": cart})
+}
+
+func (controller CartController) FetchCartsByUserID(c *gin.Context) {
+	params := c.Param("id")
+
+	userID, err := strconv.ParseInt(params, 10, 64)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "strconv.ParseInt").
+			Int64("user_id", userID).
+			Msg("Failed to fetch cart request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_cart_failed", "message": "InternalServerError"})
+		return
+	}
+
+	findCarts := entity.Cart{
+		UserID: userID,
+	}
+
+	carts, err := controller.CartService.FindCartsByUserID(&findCarts)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.CartService.FindCartsByUserID").
+			Int64("user_id", userID).
+			Msg("Failed to fetch cart request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_cart_failed", "message": "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "200").
+		Int64("user_id", userID).
+		Msg("Fetch cart request processed successfully")
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": carts})
 }
 
 func (controller CartController) EditCartByID(c *gin.Context) {

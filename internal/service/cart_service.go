@@ -8,7 +8,8 @@ import (
 
 type CartService interface {
 	RegisterCart(cart *entity.Cart) (*model.Cart, error)
-	FindCardByID(cart *entity.Cart) (*model.Cart, error)
+	FindCartByID(cart *entity.Cart) (*model.Cart, error)
+	FindCartsByUserID(cart *entity.Cart) (*[]model.Cart, error)
 	ModifyCartByID(cart *entity.Cart) (*model.Cart, error)
 	RemoveCartByID(cart *entity.Cart) (bool, error)
 }

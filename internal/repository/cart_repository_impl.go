@@ -72,6 +72,47 @@ func (r cartRepositoryImpl) GetCartByID(cart *entity.Cart) (*model.Cart, error) 
 	return &response, err
 }
 
+func (r cartRepositoryImpl) GetCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `
+	SELECT
+		id,
+		user_id,
+		product_id,
+		created_at,
+		updated_at
+	FROM cart
+	WHERE user_id = $1
+	`
+
+	var response []model.Cart
+
+	rows, err := r.db.Query(query, cart.UserID)
+	if err != nil {
+		return &response, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var row model.Cart
+
+		if err := rows.Scan(
+			&row.ID,
+			&row.UserID,
+			&row.ProductID,
+			&row.CreatedAt,
+			&row.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		response = append(response, row)
+	}
+
+	return &response, err
+}
+
 func (r *cartRepositoryImpl) UpdateCartByID(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()

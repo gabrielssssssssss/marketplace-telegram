@@ -17,15 +17,15 @@ import (
 )
 
 type AccountHandler struct {
-	AccountService service.AccountService
+	UserService service.UserService
 }
 
-func NewAccountHandler(AccountService *service.AccountService) AccountHandler {
-	return AccountHandler{AccountService: *AccountService}
+func NewAccountHandler(UserService *service.UserService) AccountHandler {
+	return AccountHandler{UserService: *UserService}
 }
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.AccountService.FindUserByID(&entity.User{UserId: update.Message.From.ID})
+	user, err := handler.UserService.FindUserByID(&entity.User{UserId: update.Message.From.ID})
 	if err != nil {
 		newUser := entity.User{
 			UserId:      update.Message.From.ID,
@@ -52,11 +52,11 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 			newUser.Role = "admin"
 		}
 
-		user, err = handler.AccountService.RegisterUser(&newUser)
+		user, err = handler.UserService.RegisterUser(&newUser)
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "AccountService.RegisterUser").
+				Str("component", "UserService.RegisterUser").
 				Int64("user_id", update.Message.From.ID).
 				Msg("Failed to process register user")
 			return
@@ -124,7 +124,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		CallbackQueryID: cb.ID,
 	})
 
-	user, err := handler.AccountService.FindUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
+	user, err := handler.UserService.FindUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
 	if err != nil {
 		log.Error().
 			Err(err).

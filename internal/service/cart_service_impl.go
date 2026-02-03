@@ -9,8 +9,12 @@ func (s *cartServiceImpl) RegisterCart(cart *entity.Cart) (*model.Cart, error) {
 	return s.repository.CreateCart(cart)
 }
 
-func (s *cartServiceImpl) FindCardByID(cart *entity.Cart) (*model.Cart, error) {
+func (s *cartServiceImpl) FindCartByID(cart *entity.Cart) (*model.Cart, error) {
 	return s.repository.GetCartByID(cart)
+}
+
+func (s *cartServiceImpl) FindCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
+	return s.repository.GetCartsByUserID(cart)
 }
 
 func (s *cartServiceImpl) ModifyCartByID(cart *entity.Cart) (*model.Cart, error) {
