@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/carts"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/middlewares"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/products"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/users"
@@ -38,10 +39,12 @@ func Controller() {
 	userRepository := repository.NewUserRepository(database)
 	paymentRepository := repository.NewPaymentRepository(database)
 	productRepository := repository.NewProductRepository(database)
+	cartRepository := repository.NewCartRepository(database)
 
 	accountService := service.NewAccountService(userRepository)
 	paymentService := service.NewPaymentService(paymentRepository)
 	productService := service.NewProductService(productRepository)
+	cartService := service.NewCartService(cartRepository)
 
 	accountHandlers := ah.NewAccountHandler(&accountService)
 	paymentHandlers := ph.NewPaymentHandler(&paymentService)
@@ -51,12 +54,14 @@ func Controller() {
 
 	usersRouter := users.NewUserController(&accountService)
 	productsRouter := products.NewProductController(&productService)
+	cartsRouter := carts.NewCartController(&cartService)
 
 	apiGroup := app.Group("/api/v1/")
 
 	apiGroup.Use(middlewares.CORS(), middlewares.Authorization)
 	usersRouter.Route(apiGroup)
 	productsRouter.Route(apiGroup)
+	cartsRouter.Route(apiGroup)
 
 	accountHandlers.Handlers(bot)
 	paymentHandlers.Handlers(bot)

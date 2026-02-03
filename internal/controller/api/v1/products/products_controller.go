@@ -47,7 +47,6 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 		Msg("Insert product request processed successfully")
 
 	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": product})
-
 }
 
 func (controller ProductController) FetchProductByID(c *gin.Context) {
