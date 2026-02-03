@@ -53,6 +53,7 @@ func (r productRepositoryImpl) GetProductByID(product *entity.Product) (*model.P
 	SELECT
 		id,
 		details,
+		price,
 		created_at,
 		updated_at
 	FROM products
@@ -67,6 +68,7 @@ func (r productRepositoryImpl) GetProductByID(product *entity.Product) (*model.P
 	).Scan(
 		&response.ID,
 		&response.Details,
+		&response.Price,
 		&response.CreatedAt,
 		&response.UpdatedAt,
 	)
@@ -85,7 +87,7 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 	query := `
     UPDATE products
     SET 
-		details      = COALESCE($1, details),
+		details      = COALESCE(NULLIF($1, '')::jsonb, details),
 		price        = COALESCE($2, price),
 		updated_at   = COALESCE($3, updated_at)
     WHERE id = $4

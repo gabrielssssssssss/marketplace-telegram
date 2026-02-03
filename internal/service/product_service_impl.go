@@ -6,7 +6,6 @@ import (
 )
 
 func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Product, error) {
-	// product.Details, _ = json.Marshal(product.Details)
 	return s.repository.CreateProduct(product)
 }
 

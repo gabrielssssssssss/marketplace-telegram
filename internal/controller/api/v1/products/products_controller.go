@@ -1,6 +1,7 @@
 package products
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -26,9 +27,10 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 		return
 	}
 
+	fmt.Println(req.Price)
 	newProduct := entity.Product{
-		Details: req.Details,
-		Price:   req.Price,
+		Details: &req.Details,
+		Price:   &req.Price,
 	}
 
 	product, err := controller.ProductService.RegisterProduct(&newProduct)
@@ -78,15 +80,15 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 
 func (controller ProductController) EditProductByID(c *gin.Context) {
 	var req model.Product
-	if err := c.ShouldBindJSON(&req); err != nil || req.ID == "" {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
 		return
 	}
 
 	updateProduct := entity.Product{
-		ID:        req.ID,
-		Details:   req.Details,
-		Price:     req.Price,
+		ID:        c.Param("id"),
+		Details:   &req.Details,
+		Price:     &req.Price,
 		UpdatedAt: time.Now(),
 	}
 
@@ -95,7 +97,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 		log.Error().
 			Err(err).
 			Str("component", "controller.ProductService.ModifyProductByID").
-			Str("product_id", req.ID).
+			Str("product_id", c.Param("id")).
 			Msg("Failed to edit product request")
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_product_failed", "message": "InternalServerError"})
@@ -104,7 +106,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 
 	log.Info().
 		Str("status_code", "204").
-		Str("product_id", req.ID).
+		Str("product_id", c.Param("id")).
 		Msg("Edit product request processed successfully")
 
 	c.Status(http.StatusNoContent)
