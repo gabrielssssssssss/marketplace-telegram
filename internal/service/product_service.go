@@ -8,7 +8,7 @@ import (
 
 type ProductService interface {
 	RegisterProduct(product *entity.Product) (*model.Product, error)
-	FindProductByID(product *entity.Product) (*model.Product, error)
+	GetProductByID(product *entity.Product) (*model.Product, error)
 	ModifyProductByID(product *entity.Product) (*model.Product, error)
 	RemoveProductByID(product *entity.Product) (bool, error)
 }

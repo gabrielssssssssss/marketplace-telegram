@@ -9,11 +9,11 @@ func (s *userServiceImpl) RegisterUser(user *entity.User) (*model.User, error) {
 	return s.repository.InsertUser(user)
 }
 
-func (s *userServiceImpl) FindUserByID(user *entity.User) (*model.User, error) {
+func (s *userServiceImpl) GetUserByID(user *entity.User) (*model.User, error) {
 	return s.repository.SelectUserByID(user)
 }
 
-func (s *userServiceImpl) FindUserByRecoveryKey(user *entity.User) (*model.User, error) {
+func (s *userServiceImpl) GetUserByRecoveryKey(user *entity.User) (*model.User, error) {
 	return s.repository.SelectUserByRecoveryKey(user)
 }
 

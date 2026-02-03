@@ -69,40 +69,7 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 		log.Info().Msg("register user processed successfully")
 	}
 
-	newSession, err := helper.NewJwtToken(user.UserId, user.Role, os.Getenv("JWT_SECRET_KEY"))
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("component", "helper.NewJwtToken").
-			Int64("user_id", update.Message.From.ID).
-			Msg("Failed to process jwt generation")
-		return
-	}
-
-	webAppUrl := os.Getenv("TELEGRAM_WEB_APP") + "?token=" + newSession
-	fmt.Println(webAppUrl)
-
-	b.SendMessage(ctx, &bot.SendMessageParams{
-		ChatID:    update.Message.Chat.ID,
-		ParseMode: "HTML",
-		ReplyMarkup: &models.InlineKeyboardMarkup{
-			InlineKeyboard: [][]models.InlineKeyboardButton{
-				{
-					{Text: "💳 Dêpot", CallbackData: "payment"},
-					{Text: "🔑 Restauration", CallbackData: "restore"},
-				}, {
-					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
-						URL: webAppUrl,
-					}},
-				},
-			},
-		},
-		Text: fmt.Sprintf(messages.MessageAccount,
-			user.UserId,
-			user.Username,
-			user.Balance,
-		),
-	})
+	handler.renderAccountMenu(ctx, b, nil, update.Message.From.ID)
 
 	log.Info().Msg("start command processed successfully")
 }
@@ -122,13 +89,20 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		CallbackQueryID: cb.ID,
 	})
 
-	user, err := handler.UserService.GetUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
+	handler.renderAccountMenu(ctx, b, cb, cb.From.ID)
+
+	log.Info().Msg("account processed successfully")
+}
+
+func (handler *AccountHandler) renderAccountMenu(ctx context.Context, b *bot.Bot, cb *models.CallbackQuery, chatID int64) {
+	user, err := handler.UserService.GetUserByID(&entity.User{UserId: chatID})
 	if err != nil {
 		log.Error().
 			Err(err).
 			Str("component", "handler.UserService.FindUserByID").
-			Int64("user_id", update.Message.From.ID).
+			Int64("user_id", chatID).
 			Msg("Failed to process start callback")
+		return
 	}
 
 	newSession, err := helper.NewJwtToken(user.UserId, user.Role, os.Getenv("JWT_SECRET_KEY"))
@@ -136,35 +110,39 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		log.Error().
 			Err(err).
 			Str("component", "helper.NewJwtToken").
-			Int64("user_id", update.Message.From.ID).
+			Int64("user_id", chatID).
 			Msg("Failed to process jwt generation")
 		return
 	}
 
 	webAppUrl := os.Getenv("TELEGRAM_WEB_APP") + "?token=" + newSession
-
-	b.EditMessageText(ctx, &bot.EditMessageTextParams{
-		ChatID:    cb.Message.Message.Chat.ID,
-		MessageID: cb.Message.Message.ID,
-		ParseMode: "HTML",
-		ReplyMarkup: &models.InlineKeyboardMarkup{
-			InlineKeyboard: [][]models.InlineKeyboardButton{
-				{
-					{Text: "💳 Dêpot", CallbackData: "payment"},
-					{Text: "🔑 Restauration", CallbackData: "restore"},
-				}, {
-					{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{
-						URL: webAppUrl,
-					}},
-				},
+	markup := &models.InlineKeyboardMarkup{
+		InlineKeyboard: [][]models.InlineKeyboardButton{
+			{
+				{Text: "💳 Dêpot", CallbackData: "payment"},
+				{Text: "🔑 Restauration", CallbackData: "restore"},
+			}, {
+				{Text: "🛍 Boutique", WebApp: &models.WebAppInfo{URL: webAppUrl}},
 			},
 		},
-		Text: fmt.Sprintf(messages.MessageAccount,
-			user.UserId,
-			user.Username,
-			user.Balance,
-		),
-	})
+	}
 
-	log.Info().Msg("account processed successfully")
+	text := fmt.Sprintf(messages.MessageAccount, user.UserId, user.Username, user.Balance)
+
+	if cb != nil {
+		b.EditMessageText(ctx, &bot.EditMessageTextParams{
+			ChatID:      chatID,
+			MessageID:   cb.Message.Message.ID,
+			ParseMode:   "HTML",
+			ReplyMarkup: markup,
+			Text:        text,
+		})
+	} else {
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID:      chatID,
+			ParseMode:   "HTML",
+			ReplyMarkup: markup,
+			Text:        text,
+		})
+	}
 }

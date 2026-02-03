@@ -9,7 +9,7 @@ func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Pr
 	return s.repository.InsertProduct(product)
 }
 
-func (s *productServiceImpl) FindProductByID(product *entity.Product) (*model.Product, error) {
+func (s *productServiceImpl) GetProductByID(product *entity.Product) (*model.Product, error) {
 	return s.repository.SelectProductByID(product)
 }
 
