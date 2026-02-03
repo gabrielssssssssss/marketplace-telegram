@@ -1,7 +1,6 @@
 package products
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -27,7 +26,6 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(req.Price)
 	newProduct := entity.Product{
 		Details: &req.Details,
 		Price:   &req.Price,
@@ -108,6 +106,32 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 		Str("status_code", "204").
 		Str("product_id", c.Param("id")).
 		Msg("Edit product request processed successfully")
+
+	c.Status(http.StatusNoContent)
+}
+
+func (controller ProductController) DiscardProductByID(c *gin.Context) {
+	productID := c.Param("id")
+	removeProduct := entity.Product{
+		ID: productID,
+	}
+
+	_, err := controller.ProductService.RemoveProductByID(&removeProduct)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.ProductService.RemoveProductByID").
+			Str("product_id", productID).
+			Msg("Failed to fetch product request")
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "discard_product_failed", "message": "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "204").
+		Str("product_id", productID).
+		Msg("Discard product request processed successfully")
 
 	c.Status(http.StatusNoContent)
 }
