@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r cartRepositoryImpl) CreateCart(cart *entity.Cart) (*model.Cart, error) {
+func (r cartRepositoryImpl) InsertCart(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -41,7 +41,7 @@ func (r cartRepositoryImpl) CreateCart(cart *entity.Cart) (*model.Cart, error) {
 	return &response, err
 }
 
-func (r cartRepositoryImpl) GetCartByID(cart *entity.Cart) (*model.Cart, error) {
+func (r cartRepositoryImpl) SelectCartByID(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -72,7 +72,7 @@ func (r cartRepositoryImpl) GetCartByID(cart *entity.Cart) (*model.Cart, error) 
 	return &response, err
 }
 
-func (r cartRepositoryImpl) GetCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
+func (r cartRepositoryImpl) SelectCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

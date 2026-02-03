@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
@@ -35,7 +34,6 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 			Role:        "user",
 			Balance:     0.0,
 			RecoveryKey: helper.RandomStringSecure(24),
-			UpdatedAt:   time.Now(),
 		}
 
 		ownerID, err := strconv.ParseInt(os.Getenv("OWNER_ID"), 10, 64)
@@ -56,7 +54,7 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "UserService.RegisterUser").
+				Str("component", "handler.UserService.RegisterUser").
 				Int64("user_id", update.Message.From.ID).
 				Msg("Failed to process register user")
 			return
@@ -128,7 +126,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "AccountController.HandlerAccount").
+			Str("component", "handler.UserService.FindUserByID").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process start callback")
 	}

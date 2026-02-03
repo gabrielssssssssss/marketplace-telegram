@@ -43,7 +43,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 	if err != nil || findPayment.ID == "" {
 		log.Error().
 			Err(err).
-			Str("component", "webhook.PaymentWebhook.WebhookPayment").
+			Str("component", "webhook.PaymentService.FindPayment").
 			Str("payment_id", payment.ID).
 			Msg("Failed to process payment finding")
 		return
@@ -96,7 +96,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "webhook.AccountService.FindUser").
+				Str("component", "webhook.UserService.FindUser").
 				Str("payment_id", payment.ID).
 				Msg("Failed to process update user finding")
 			return
@@ -112,7 +112,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "webhook.AccountService.UpdateUserBalance").
+				Str("component", "webhook.UserService.UpdateUserBalance").
 				Str("payment_id", payment.ID).
 				Msg("Failed to process update user balance")
 			return

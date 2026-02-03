@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r productRepositoryImpl) CreateProduct(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -41,7 +41,7 @@ func (r productRepositoryImpl) CreateProduct(product *entity.Product) (*model.Pr
 	return &response, err
 }
 
-func (r productRepositoryImpl) GetProductByID(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

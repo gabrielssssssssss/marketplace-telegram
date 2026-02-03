@@ -6,11 +6,11 @@ import (
 )
 
 func (s *paymentServiceImpl) CreatePayment(payment *entity.Payment) (*model.Payment, error) {
-	return s.repository.CreatePayment(payment)
+	return s.repository.InsertPayment(payment)
 }
 
 func (s *paymentServiceImpl) FindPayment(payment *entity.Payment) (*model.Payment, error) {
-	return s.repository.GetPaymentByID(payment)
+	return s.repository.SelectPaymentByID(payment)
 }
 
 func (s *paymentServiceImpl) ConfirmPayment(payment *entity.Payment) (*model.Payment, error) {

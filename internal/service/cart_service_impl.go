@@ -6,15 +6,15 @@ import (
 )
 
 func (s *cartServiceImpl) RegisterCart(cart *entity.Cart) (*model.Cart, error) {
-	return s.repository.CreateCart(cart)
+	return s.repository.InsertCart(cart)
 }
 
 func (s *cartServiceImpl) FindCartByID(cart *entity.Cart) (*model.Cart, error) {
-	return s.repository.GetCartByID(cart)
+	return s.repository.SelectCartByID(cart)
 }
 
 func (s *cartServiceImpl) FindCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
-	return s.repository.GetCartsByUserID(cart)
+	return s.repository.SelectCartsByUserID(cart)
 }
 
 func (s *cartServiceImpl) ModifyCartByID(cart *entity.Cart) (*model.Cart, error) {

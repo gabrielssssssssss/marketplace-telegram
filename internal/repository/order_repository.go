@@ -8,9 +8,9 @@ import (
 )
 
 type OrderRepository interface {
-	CreateOrder(orders *entity.Order) (*model.Order, error)
-	GetOrderByID(orders *entity.Order) (*model.Order, error)
-	GetOrdersByUserID(orders *entity.Order) (*[]model.Order, error)
+	InsertOrder(orders *entity.Order) (*model.Order, error)
+	SelectOrderByID(orders *entity.Order) (*model.Order, error)
+	SelectOrdersByUserID(orders *entity.Order) (*[]model.Order, error)
 	DeleteOrderByID(orders *entity.Order) (bool, error)
 }
 

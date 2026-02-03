@@ -6,15 +6,15 @@ import (
 )
 
 func (s *userServiceImpl) RegisterUser(user *entity.User) (*model.User, error) {
-	return s.repository.CreateUser(user)
+	return s.repository.InsertUser(user)
 }
 
 func (s *userServiceImpl) FindUserByID(user *entity.User) (*model.User, error) {
-	return s.repository.GetUserByID(user)
+	return s.repository.SelectUserByID(user)
 }
 
 func (s *userServiceImpl) FindUserByRecoveryKey(user *entity.User) (*model.User, error) {
-	return s.repository.GetUserByRecoveryKey(user)
+	return s.repository.SelectUserByRecoveryKey(user)
 }
 
 func (s *userServiceImpl) ModifyUserByID(user *entity.User) (*model.User, error) {
@@ -22,5 +22,5 @@ func (s *userServiceImpl) ModifyUserByID(user *entity.User) (*model.User, error)
 }
 
 func (s *userServiceImpl) RemoveUserByID(user *entity.User) (bool, error) {
-	return s.repository.DeleteUser(user)
+	return s.repository.DeleteUserByID(user)
 }

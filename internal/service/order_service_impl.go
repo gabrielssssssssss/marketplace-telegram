@@ -6,15 +6,15 @@ import (
 )
 
 func (s *orderServiceImpl) RegisterOrder(order *entity.Order) (*model.Order, error) {
-	return s.repository.CreateOrder(order)
+	return s.repository.InsertOrder(order)
 }
 
 func (s *orderServiceImpl) FindOrderByID(order *entity.Order) (*model.Order, error) {
-	return s.repository.GetOrderByID(order)
+	return s.repository.SelectOrderByID(order)
 }
 
 func (s *orderServiceImpl) FindOrdersByUserID(order *entity.Order) (*[]model.Order, error) {
-	return s.repository.GetOrdersByUserID(order)
+	return s.repository.SelectOrdersByUserID(order)
 }
 
 // func (s *orderServiceImpl) ModifyCartByID(cart *entity.Cart) (*model.Cart, error) {

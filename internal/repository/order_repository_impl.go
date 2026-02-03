@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, error) {
+func (r orderRepositoryImpl) InsertOrder(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -43,7 +43,7 @@ func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, err
 	return &response, err
 }
 
-func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, error) {
+func (r *orderRepositoryImpl) SelectOrderByID(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -76,7 +76,7 @@ func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, e
 	return &response, err
 }
 
-func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Order) (*[]model.Order, error) {
+func (r *orderRepositoryImpl) SelectOrdersByUserID(orders *entity.Order) (*[]model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

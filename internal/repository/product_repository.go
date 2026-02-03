@@ -8,8 +8,8 @@ import (
 )
 
 type ProductRepository interface {
-	CreateProduct(product *entity.Product) (*model.Product, error)
-	GetProductByID(product *entity.Product) (*model.Product, error)
+	InsertProduct(product *entity.Product) (*model.Product, error)
+	SelectProductByID(product *entity.Product) (*model.Product, error)
 	UpdateProductByID(product *entity.Product) (*model.Product, error)
 	DeleteProductByID(product *entity.Product) (bool, error)
 }

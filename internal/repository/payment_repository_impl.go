@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Payment, error) {
+func (r paymentRepositoryImpl) InsertPayment(payment *entity.Payment) (*model.Payment, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -17,8 +17,8 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		)
 		VALUES ($1, $2)
 		RETURNING
-			"id",
-			"currency"
+			id,
+			currency
 	`
 
 	var response model.Payment
@@ -27,12 +27,15 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		query,
 		payment.UserID,
 		payment.Currency,
-	).Scan(&response.ID, &response.Currency)
+	).Scan(
+		&response.ID,
+		&response.Currency,
+	)
 
 	return &response, err
 }
 
-func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.Payment, error) {
+func (r *paymentRepositoryImpl) SelectPaymentByID(payment *entity.Payment) (*model.Payment, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -129,7 +132,7 @@ func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*mod
 	return &response, err
 }
 
-func (r *paymentRepositoryImpl) GetPaymentsByUserID(payment *entity.Payment) (*[]model.Payment, error) {
+func (r *paymentRepositoryImpl) SelectPaymentsByUserID(payment *entity.Payment) (*[]model.Payment, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

@@ -27,7 +27,7 @@ func (handler *RestoreHandler) HandlerRestore(ctx context.Context, b *bot.Bot, u
 	if cb == nil || cb.Message.Message == nil {
 		log.Error().
 			Err(fmt.Errorf("callback query or associated message is nil")).
-			Str("component", "handler.HandlerRestore").
+			Str("component", "update.CallbackQuery").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process restore callback")
 		return

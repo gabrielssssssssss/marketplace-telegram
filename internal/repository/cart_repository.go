@@ -8,9 +8,9 @@ import (
 )
 
 type CartRepository interface {
-	CreateCart(cart *entity.Cart) (*model.Cart, error)
-	GetCartByID(cart *entity.Cart) (*model.Cart, error)
-	GetCartsByUserID(cart *entity.Cart) (*[]model.Cart, error)
+	InsertCart(cart *entity.Cart) (*model.Cart, error)
+	SelectCartByID(cart *entity.Cart) (*model.Cart, error)
+	SelectCartsByUserID(cart *entity.Cart) (*[]model.Cart, error)
 	UpdateCartByID(cart *entity.Cart) (*model.Cart, error)
 	DeleteCartByID(cart *entity.Cart) (bool, error)
 }

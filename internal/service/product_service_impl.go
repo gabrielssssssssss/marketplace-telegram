@@ -6,11 +6,11 @@ import (
 )
 
 func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Product, error) {
-	return s.repository.CreateProduct(product)
+	return s.repository.InsertProduct(product)
 }
 
 func (s *productServiceImpl) FindProductByID(product *entity.Product) (*model.Product, error) {
-	return s.repository.GetProductByID(product)
+	return s.repository.SelectProductByID(product)
 }
 
 func (s *productServiceImpl) ModifyProductByID(product *entity.Product) (*model.Product, error) {
