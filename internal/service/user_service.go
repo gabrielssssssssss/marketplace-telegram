@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/repository"
 )
 
-type AccountService interface {
+type UserService interface {
 	RegisterUser(user *entity.User) (*model.User, error)
 	FindUserByID(user *entity.User) (*model.User, error)
 	FindUserByRecoveryKey(user *entity.User) (*model.User, error)
@@ -14,12 +14,12 @@ type AccountService interface {
 	RemoveUserByID(user *entity.User) (bool, error)
 }
 
-type accountServiceImpl struct {
+type userServiceImpl struct {
 	repository repository.UserRepository
 }
 
-func NewAccountService(userRepository repository.UserRepository) AccountService {
-	return &accountServiceImpl{
+func NewUserService(userRepository repository.UserRepository) UserService {
+	return &userServiceImpl{
 		repository: userRepository,
 	}
 }

@@ -15,11 +15,11 @@ import (
 )
 
 type RestoreHandler struct {
-	AccountService service.AccountService
+	UserService service.UserService
 }
 
-func NewRestoreHandler(AccountService *service.AccountService) RestoreHandler {
-	return RestoreHandler{AccountService: *AccountService}
+func NewRestoreHandler(UserService *service.UserService) RestoreHandler {
+	return RestoreHandler{UserService: *UserService}
 }
 
 func (handler *RestoreHandler) HandlerRestore(ctx context.Context, b *bot.Bot, update *models.Update) {
@@ -53,7 +53,7 @@ func (handler *RestoreHandler) HandlerRestore(ctx context.Context, b *bot.Bot, u
 }
 
 func (handler *RestoreHandler) ListenerRestore(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.AccountService.FindUserByRecoveryKey(&entity.User{RecoveryKey: update.Message.Text})
+	user, err := handler.UserService.FindUserByRecoveryKey(&entity.User{RecoveryKey: update.Message.Text})
 	if err != nil {
 		return
 	}
@@ -96,7 +96,7 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 	recoveryKey := strings.Split(cb.Data, "_")[2]
 	chatID := cb.Message.Message.Chat.ID
 
-	userSender, err := handler.AccountService.FindUserByRecoveryKey(&entity.User{RecoveryKey: recoveryKey})
+	userSender, err := handler.UserService.FindUserByRecoveryKey(&entity.User{RecoveryKey: recoveryKey})
 	if err != nil {
 		b.AnswerCallbackQuery(ctx, &bot.AnswerCallbackQueryParams{
 			CallbackQueryID: cb.ID,
@@ -105,11 +105,11 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		return
 	}
 
-	userRecipient, err := handler.AccountService.FindUserByID(&entity.User{UserId: chatID})
+	userRecipient, err := handler.UserService.FindUserByID(&entity.User{UserId: chatID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "handler.AccountService.FindUserByID").
+			Str("component", "handler.UserService.FindUserByID").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process restore callback")
 		return
@@ -121,21 +121,21 @@ func (handler *RestoreHandler) HandlerRestoreTransfer(ctx context.Context, b *bo
 		UpdatedAt: time.Now(),
 	}
 
-	_, err = handler.AccountService.ModifyUserByID(&userUpdate)
+	_, err = handler.UserService.ModifyUserByID(&userUpdate)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "handler.AccountService.UpdateUserBalance").
+			Str("component", "handler.UserService.UpdateUserBalance").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process restore callback")
 		return
 	}
 
-	_, err = handler.AccountService.RemoveUserByID(&entity.User{UserId: userSender.UserId})
+	_, err = handler.UserService.RemoveUserByID(&entity.User{UserId: userSender.UserId})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "handler.AccountService.RemoveUserByID").
+			Str("component", "handler.UserService.RemoveUserByID").
 			Int64("user_id", update.Message.From.ID).
 			Msg("Failed to process restore callback")
 		return

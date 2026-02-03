@@ -14,11 +14,11 @@ import (
 )
 
 type UserController struct {
-	AccountService service.AccountService
+	UserService service.UserService
 }
 
-func NewUserController(AccountService *service.AccountService) UserController {
-	return UserController{AccountService: *AccountService}
+func NewUserController(UserService *service.UserService) UserController {
+	return UserController{UserService: *UserService}
 }
 
 func (controller UserController) FetchUserByID(c *gin.Context) {
@@ -28,7 +28,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.AccountService.FindUserByID").
+			Str("component", "controller.UserService.FindUserByID").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -36,11 +36,11 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.AccountService.FindUserByID(&entity.User{UserId: userID})
+	user, err := controller.UserService.FindUserByID(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.AccountService.FindUserByID").
+			Str("component", "controller.UserService.FindUserByID").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -63,11 +63,11 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 		return
 	}
 
-	_, err := controller.AccountService.RemoveUserByID(&entity.User{UserId: req.UserId})
+	_, err := controller.UserService.RemoveUserByID(&entity.User{UserId: req.UserId})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.AccountService.RemoveUserByID").
+			Str("component", "controller.UserService.RemoveUserByID").
 			Int64("user_id", req.UserId).
 			Msg("Failed to discard user request")
 
@@ -100,11 +100,11 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		UpdatedAt:   time.Now(),
 	}
 
-	_, err := controller.AccountService.ModifyUserByID(&updateUser)
+	_, err := controller.UserService.ModifyUserByID(&updateUser)
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.AccountService.ModifyUserByID").
+			Str("component", "controller.UserService.ModifyUserByID").
 			Int64("user_id", req.UserId).
 			Msg("Failed to discard user request")
 

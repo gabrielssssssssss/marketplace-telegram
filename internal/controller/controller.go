@@ -41,18 +41,18 @@ func Controller() {
 	productRepository := repository.NewProductRepository(database)
 	cartRepository := repository.NewCartRepository(database)
 
-	accountService := service.NewAccountService(userRepository)
+	userService := service.NewUserService(userRepository)
 	paymentService := service.NewPaymentService(paymentRepository)
 	productService := service.NewProductService(productRepository)
 	cartService := service.NewCartService(cartRepository)
 
-	accountHandlers := ah.NewAccountHandler(&accountService)
+	accountHandlers := ah.NewAccountHandler(&userService)
 	paymentHandlers := ph.NewPaymentHandler(&paymentService)
-	restoreHandlers := rh.NewRestoreHandler(&accountService)
+	restoreHandlers := rh.NewRestoreHandler(&userService)
 
-	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &accountService)
+	paymentWebhooks := wh.NewPaymentWebhook(&paymentService, &userService)
 
-	usersRouter := users.NewUserController(&accountService)
+	usersRouter := users.NewUserController(&userService)
 	productsRouter := products.NewProductController(&productService)
 	cartsRouter := carts.NewCartController(&cartService)
 

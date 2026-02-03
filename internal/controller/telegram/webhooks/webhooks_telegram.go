@@ -17,11 +17,11 @@ import (
 
 type PaymentWebhook struct {
 	PaymentService service.PaymentService
-	AccountService service.AccountService
+	UserService    service.UserService
 }
 
-func NewPaymentWebhook(paymentService *service.PaymentService, accountService *service.AccountService) PaymentWebhook {
-	return PaymentWebhook{PaymentService: *paymentService, AccountService: *accountService}
+func NewPaymentWebhook(paymentService *service.PaymentService, userService *service.UserService) PaymentWebhook {
+	return PaymentWebhook{PaymentService: *paymentService, UserService: *userService}
 }
 
 func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +92,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 		currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
 
-		user, err := webhook.AccountService.FindUserByID(&entity.User{UserId: confirmPayment.UserID})
+		user, err := webhook.UserService.FindUserByID(&entity.User{UserId: confirmPayment.UserID})
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -108,7 +108,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			UpdatedAt: time.Now(),
 		}
 
-		_, err = webhook.AccountService.ModifyUserByID(&updatedUser)
+		_, err = webhook.UserService.ModifyUserByID(&updatedUser)
 		if err != nil {
 			log.Error().
 				Err(err).
