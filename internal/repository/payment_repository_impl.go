@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
@@ -31,12 +29,7 @@ func (r paymentRepositoryImpl) CreatePayment(payment *entity.Payment) (*model.Pa
 		payment.Currency,
 	).Scan(&response.ID, &response.Currency)
 
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.Payment, error) {
@@ -69,11 +62,7 @@ func (r *paymentRepositoryImpl) GetPaymentByID(payment *entity.Payment) (*model.
 		&response.ConfirmedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*model.Payment, error) {
@@ -137,11 +126,7 @@ func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*mod
 		&response.CreatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *paymentRepositoryImpl) GetPaymentsByUserID(payment *entity.Payment) (*[]model.Payment, error) {
@@ -193,16 +178,7 @@ func (r *paymentRepositoryImpl) DeletePaymentByID(payment *entity.Payment) (bool
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
-	query := `
-	DELETE
-	FROM payments
-	WHERE id = $1;
-	`
-
-	err := r.db.QueryRow(
-		query,
-		payment.ID,
-	).Scan()
+	err := r.db.QueryRow(`DELETE FROM payments WHERE id = $1;`, payment.ID).Scan()
 
 	if err != nil {
 		return false, err

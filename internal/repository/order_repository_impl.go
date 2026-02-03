@@ -13,11 +13,16 @@ func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, err
 	query := `
 		INSERT INTO orders (
 			user_id,
+			product,
 			amount
 		)
-		VALUES ($1, $2)
+		VALUES ($1, $2, $3)
 		RETURNING
-			"id"
+			id,
+			user_id,
+			product,
+			amount,
+			order_at
 	`
 
 	var response model.Order
@@ -25,14 +30,17 @@ func (r orderRepositoryImpl) CreateOrder(order *entity.Order) (*model.Order, err
 	err := r.db.QueryRow(
 		query,
 		order.UserID,
+		order.Product,
 		order.Amount,
-	).Scan(&response.ID)
+	).Scan(
+		&response.ID,
+		&response.UserID,
+		&response.Product,
+		&response.Amount,
+		&response.OrderAt,
+	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, error) {
@@ -43,7 +51,7 @@ func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, e
 	SELECT
 		id,
 		user_id,
-		product_name,
+		product,
 		amount,
 		order_at
 	FROM orders
@@ -65,11 +73,7 @@ func (r *orderRepositoryImpl) GetOrderByID(order *entity.Order) (*model.Order, e
 		&response.OrderAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Order) (*[]model.Order, error) {
@@ -80,7 +84,7 @@ func (r *orderRepositoryImpl) GetOrdersByUserID(orders *entity.Order) (*[]model.
 	SELECT
 		id,
 		user_id,
-		product_name,
+		product,
 		amount,
 		order_at
 	FROM orders
@@ -119,14 +123,8 @@ func (r *orderRepositoryImpl) DeleteOrderByID(order *entity.Order) (bool, error)
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
-	query := `
-	DELETE
-	FROM orders
-	WHERE id = $1;
-	`
-
 	err := r.db.QueryRow(
-		query,
+		`DELETE FROM orders WHERE id = $1;`,
 		order.ID,
 	).Scan()
 

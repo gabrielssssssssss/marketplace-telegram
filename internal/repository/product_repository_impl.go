@@ -38,11 +38,7 @@ func (r productRepositoryImpl) CreateProduct(product *entity.Product) (*model.Pr
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r productRepositoryImpl) GetProductByID(product *entity.Product) (*model.Product, error) {
@@ -73,11 +69,7 @@ func (r productRepositoryImpl) GetProductByID(product *entity.Product) (*model.P
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*model.Product, error) {
@@ -113,11 +105,7 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r productRepositoryImpl) DeleteProductByID(product *entity.Product) (bool, error) {

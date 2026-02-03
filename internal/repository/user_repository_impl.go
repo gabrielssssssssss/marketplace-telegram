@@ -40,11 +40,7 @@ func (r userRepositoryImpl) CreateUser(user *entity.User) (*model.User, error) {
 		user.UpdatedAt,
 	).Scan(&response.RecoveryKey)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r userRepositoryImpl) GetUserByID(user *entity.User) (*model.User, error) {
@@ -83,11 +79,7 @@ func (r userRepositoryImpl) GetUserByID(user *entity.User) (*model.User, error) 
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.User) (*model.User, error) {
@@ -126,11 +118,7 @@ func (r userRepositoryImpl) GetUserByRecoveryKey(user *entity.User) (*model.User
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r *userRepositoryImpl) UpdateUserByID(user *entity.User) (*model.User, error) {
@@ -184,11 +172,7 @@ func (r *userRepositoryImpl) UpdateUserByID(user *entity.User) (*model.User, err
 		&response.UpdatedAt,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &response, nil
+	return &response, err
 }
 
 func (r userRepositoryImpl) DeleteUser(user *entity.User) (bool, error) {
