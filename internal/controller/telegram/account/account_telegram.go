@@ -24,7 +24,7 @@ func NewAccountHandler(UserService *service.UserService) AccountHandler {
 }
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.UserService.FindUserByID(&entity.User{UserId: update.Message.From.ID})
+	user, err := handler.UserService.GetUserByID(&entity.User{UserId: update.Message.From.ID})
 	if err != nil {
 		newUser := entity.User{
 			UserId:      update.Message.From.ID,
@@ -122,7 +122,7 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 		CallbackQueryID: cb.ID,
 	})
 
-	user, err := handler.UserService.FindUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
+	user, err := handler.UserService.GetUserByID(&entity.User{UserId: cb.Message.Message.Chat.ID})
 	if err != nil {
 		log.Error().
 			Err(err).

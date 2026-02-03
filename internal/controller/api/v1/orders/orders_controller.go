@@ -56,7 +56,7 @@ func (controller OrderController) FetchOrderByID(c *gin.Context) {
 		ID: orderID,
 	}
 
-	order, err := controller.OrderService.FindOrderByID(&findOrder)
+	order, err := controller.OrderService.GetOrderByID(&findOrder)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -95,7 +95,7 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 		UserID: userID,
 	}
 
-	orders, err := controller.OrderService.FindOrdersByUserID(&findOrder)
+	orders, err := controller.OrderService.GetOrdersByUserID(&findOrder)
 	if err != nil {
 		log.Error().
 			Err(err).

@@ -88,7 +88,7 @@ func (handler *PaymentHandler) HandlerPaymentCurrency(ctx context.Context, b *bo
 	currency := strings.Split(cb.Data, "_")[2]
 	chatID := cb.Message.Message.Chat.ID
 
-	createdPayment, err := handler.PaymentService.CreatePayment(&entity.Payment{UserID: chatID, Currency: currency})
+	createdPayment, err := handler.PaymentService.RegisterPayment(&entity.Payment{UserID: chatID, Currency: currency})
 	if err != nil {
 		log.Error().
 			Err(err).

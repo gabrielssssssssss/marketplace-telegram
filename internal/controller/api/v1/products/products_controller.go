@@ -55,7 +55,7 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 		ID: productID,
 	}
 
-	product, err := controller.ProductService.FindProductByID(&findProduct)
+	product, err := controller.ProductService.GetProductByID(&findProduct)
 	if err != nil {
 		log.Error().
 			Err(err).

@@ -36,7 +36,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.UserService.FindUserByID(&entity.User{UserId: userID})
+	user, err := controller.UserService.GetUserByID(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).

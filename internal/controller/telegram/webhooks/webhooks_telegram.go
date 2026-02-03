@@ -39,7 +39,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		Status:             r.URL.Query().Get("result"),
 	}
 
-	findPayment, err := webhook.PaymentService.FindPayment(&payment)
+	findPayment, err := webhook.PaymentService.GetPaymentByID(&payment)
 	if err != nil || findPayment.ID == "" {
 		log.Error().
 			Err(err).
@@ -80,7 +80,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 			ConfirmedAt:        time.Now(),
 			Status:             payment.Status,
 		}
-		confirmPayment, err := webhook.PaymentService.ConfirmPayment(&updatePayment)
+		confirmPayment, err := webhook.PaymentService.ModifyPaymentByID(&updatePayment)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -92,7 +92,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 		currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
 
-		user, err := webhook.UserService.FindUserByID(&entity.User{UserId: confirmPayment.UserID})
+		user, err := webhook.UserService.GetUserByID(&entity.User{UserId: confirmPayment.UserID})
 		if err != nil {
 			log.Error().
 				Err(err).

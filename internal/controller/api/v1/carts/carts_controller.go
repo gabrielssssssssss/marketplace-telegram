@@ -56,7 +56,7 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 		ID: cartID,
 	}
 
-	cart, err := controller.CartService.FindCartByID(&findCart)
+	cart, err := controller.CartService.GetCartByID(&findCart)
 	if err != nil {
 		log.Error().
 			Err(err).
@@ -95,7 +95,7 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 		UserID: userID,
 	}
 
-	carts, err := controller.CartService.FindCartsByUserID(&findCarts)
+	carts, err := controller.CartService.GetCartsByUserID(&findCarts)
 	if err != nil {
 		log.Error().
 			Err(err).
