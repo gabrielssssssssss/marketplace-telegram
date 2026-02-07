@@ -14,6 +14,5 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-marketplace-telegram ./cmd/marketplace-telegram/main.go
 
-EXPOSE 5432:5432
 
 CMD ["/docker-marketplace-telegram"]

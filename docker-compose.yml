@@ -1,0 +1,27 @@
+version: "3"
+services:
+  marketplace-telegram:
+    image: marketplace-telegram
+    depends_on:
+      - postgres
+    ports:
+      - "8020:8020"
+    networks:
+      - marketplace-networks
+    restart: on-failure
+  postgres:
+    image: postgres:latest
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432:5432"
+    networks:
+      - marketplace-networks
+    volumes:
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      
+networks:
+  marketplace-networks:
+
