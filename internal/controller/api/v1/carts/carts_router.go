@@ -6,9 +6,17 @@ import (
 )
 
 func (controller *CartController) Route(rg *gin.RouterGroup) {
-	rg.GET("/users/:id/carts", middlewares.Grant(), controller.FetchCartsByUserID)
-	rg.POST("/carts", middlewares.Grant(), controller.InsertCart)
-	rg.GET("/carts/:id", middlewares.Grant(), controller.FetchCartByID)
-	rg.PUT("/carts/:id", middlewares.Grant(), controller.EditCartByID)
-	rg.DELETE("/carts/:id", middlewares.Grant(), controller.DiscardCartByID)
+	carts := rg.Group("/carts", middlewares.Authorization, middlewares.Grant())
+	{
+		carts.POST("", controller.InsertCart)
+		carts.GET("/:id", controller.FetchCartByID)
+		carts.PUT("/:id", controller.EditCartByID)
+		carts.DELETE("/:id", controller.DiscardCartByID)
+	}
+
+	rg.GET("/users/:id/carts",
+		middlewares.Authorization,
+		middlewares.Grant(),
+		controller.FetchCartsByUserID,
+	)
 }

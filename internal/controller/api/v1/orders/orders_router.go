@@ -6,8 +6,15 @@ import (
 )
 
 func (controller *OrderController) Route(rg *gin.RouterGroup) {
-	rg.GET("/users/:id/orders", middlewares.Grant(), controller.FetchOrdersByUserID)
-	rg.POST("/orders", middlewares.Grant(), controller.InsertOrder)
-	rg.GET("/orders/:id", middlewares.Grant(), controller.FetchOrderByID)
-	rg.DELETE("/orders/:id", middlewares.Grant(), controller.DiscardOrderByID)
+	orders := rg.Group("/orders", middlewares.Authorization, middlewares.Grant())
+	{
+		orders.POST("", controller.InsertOrder)
+		orders.GET("/:id", controller.FetchOrderByID)
+		orders.DELETE("/:id", controller.DiscardOrderByID)
+	}
+	rg.GET("/users/:id/orders",
+		middlewares.Authorization,
+		middlewares.Grant(),
+		controller.FetchOrdersByUserID,
+	)
 }

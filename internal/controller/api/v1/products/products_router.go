@@ -6,8 +6,11 @@ import (
 )
 
 func (controller *ProductController) Route(rg *gin.RouterGroup) {
-	rg.POST("/products", middlewares.Grant(), controller.InsertProduct)
-	rg.GET("/products/:id", middlewares.Grant(), controller.FetchProductByID)
-	rg.PUT("/products/:id", middlewares.Grant(), controller.EditProductByID)
-	rg.DELETE("/products/:id", middlewares.Grant(), controller.DiscardProductByID)
+	products := rg.Group("/products", middlewares.Authorization, middlewares.Grant())
+	{
+		products.POST("", controller.InsertProduct)
+		products.GET("/:id", controller.FetchProductByID)
+		products.PUT("/:id", controller.EditProductByID)
+		products.DELETE("/:id", controller.DiscardProductByID)
+	}
 }

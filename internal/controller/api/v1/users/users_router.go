@@ -6,7 +6,18 @@ import (
 )
 
 func (controller *UserController) Route(rg *gin.RouterGroup) {
-	rg.GET("/users", controller.FetchUserByID)
-	rg.DELETE("/users", middlewares.Grant(), controller.DiscardUserByID)
-	rg.PUT("/users", middlewares.Grant(), controller.EditUserByID)
+	rg.GET("/users",
+		middlewares.Authorization,
+		controller.FetchUserByID,
+	)
+	rg.DELETE("/users",
+		middlewares.Authorization,
+		middlewares.Grant(),
+		controller.DiscardUserByID,
+	)
+	rg.PUT("/users",
+		middlewares.Authorization,
+		middlewares.Grant(),
+		controller.EditUserByID,
+	)
 }
