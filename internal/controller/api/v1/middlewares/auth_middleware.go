@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -12,7 +13,7 @@ import (
 func Authorization(c *gin.Context) {
 	authorization := c.GetHeader("Authorization")
 	if authorization == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing_token", "message": "Unauthorized"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, model.Error{Error: "missing_token", Message: "Unauthorized"})
 		return
 	}
 
@@ -24,7 +25,7 @@ func Authorization(c *gin.Context) {
 			Str("session", authorization).
 			Msg("Failed to process verify session token")
 
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid_token", "message": "Unauthorized"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
 		return
 	}
 

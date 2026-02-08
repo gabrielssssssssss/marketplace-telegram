@@ -101,7 +101,7 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 // @Accept          json
 // @Produce         json
 // @Param           Authorization  header  string  true  "Insert your admin JWT token"
-// @Success         204
+// @Success         200  {object}  model.ProductResponse
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [put]
@@ -114,7 +114,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 		return
 	}
 
-	_, err := controller.ProductService.ModifyProductByID(&entity.Product{
+	product, err := controller.ProductService.ModifyProductByID(&entity.Product{
 		ID:        productID,
 		Details:   &req.Details,
 		Price:     &req.Price,
@@ -132,11 +132,11 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 	}
 
 	log.Info().
-		Str("status_code", "204").
+		Str("status_code", "200").
 		Str("product_id", productID).
 		Msg("Edit product request processed successfully")
 
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
 // DiscardProductByID godoc

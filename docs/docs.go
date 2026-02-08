@@ -119,8 +119,11 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -450,8 +453,11 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -578,8 +584,11 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.UserResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -879,6 +888,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_gabrielssssssssss_marketplace-telegram_internal_model.UserResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.User"
+                },
+                "message": {
                     "type": "string"
                 }
             }

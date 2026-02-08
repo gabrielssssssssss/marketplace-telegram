@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/helper"
+	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -13,7 +14,7 @@ func Grant() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorization := c.GetHeader("Authorization")
 		if authorization == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing_token", "message": "Unauthorized"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.Error{Error: "missing_token", Message: "Unauthorized"})
 			return
 		}
 
@@ -25,7 +26,7 @@ func Grant() gin.HandlerFunc {
 				Int64("user_id", userID).
 				Msg("Failed to give grant access for user request")
 
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid_token", "message": "Unauthorized"})
+			c.JSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
 			return
 		}
 
@@ -37,7 +38,7 @@ func Grant() gin.HandlerFunc {
 				Int64("user_id", userID).
 				Msg("Failed to give grant access for user request")
 
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid_token", "message": "Unauthorized"})
+			c.JSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
 			return
 		}
 

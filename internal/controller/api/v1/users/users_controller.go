@@ -168,7 +168,7 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 // @Accept         json
 // @Produce        json
 // @Param          Authorization  header  string  true  "Insert your admin JWT token"
-// @Success        204
+// @Success        200  {object}  model.UserResponse
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /users/:id [put]
@@ -193,7 +193,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		return
 	}
 
-	_, err = controller.UserService.ModifyUserByID(&entity.User{
+	user, err := controller.UserService.ModifyUserByID(&entity.User{
 		UserId:      userID,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
@@ -218,5 +218,5 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		Int64("user_id", req.UserId).
 		Msg("Edit user request processed successfully")
 
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, model.UserResponse{Message: "success", Data: *user})
 }

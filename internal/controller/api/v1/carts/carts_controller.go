@@ -148,7 +148,7 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 // @Accept          json
 // @Produce         json
 // @Param           Authorization  header  string  true  "Insert your admin JWT token"
-// @Success         204
+// @Success         200  {object}  model.CartResponse
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /carts/:id [put]
@@ -159,7 +159,7 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 		return
 	}
 
-	_, err := controller.CartService.ModifyCartByID(&entity.Cart{
+	cart, err := controller.CartService.ModifyCartByID(&entity.Cart{
 		ID:        c.Param("id"),
 		UserID:    req.UserID,
 		ProductID: req.ProductID,
@@ -177,11 +177,11 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 	}
 
 	log.Info().
-		Str("status_code", "204").
+		Str("status_code", "200").
 		Str("cart_id", c.Param("id")).
 		Msg("Edit cart request processed successfully")
 
-	c.Status(http.StatusNoContent)
+	c.JSON(http.StatusOK, model.CartResponse{Message: "success", Data: *cart})
 }
 
 // DiscardCartByID    godoc

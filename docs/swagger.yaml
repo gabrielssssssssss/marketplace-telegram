@@ -110,6 +110,13 @@ definitions:
       username:
         type: string
     type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.User'
+      message:
+        type: string
+    type: object
 host: localhost:6060
 info:
   contact: {}
@@ -211,8 +218,10 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartResponse'
         "400":
           description: Bad Request
           schema:
@@ -430,8 +439,10 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse'
         "400":
           description: Bad Request
           schema:
@@ -515,8 +526,10 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.UserResponse'
         "400":
           description: Bad Request
           schema:

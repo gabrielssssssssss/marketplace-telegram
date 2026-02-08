@@ -15,3 +15,8 @@ type User struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
+
+type UserResponse struct {
+	Message string `json:"message"`
+	Data    User   `json:"data"`
+}
