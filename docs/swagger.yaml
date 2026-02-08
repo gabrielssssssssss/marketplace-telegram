@@ -1,9 +1,69 @@
 basePath: /api/v1
 definitions:
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.Cart:
+    properties:
+      cart_id:
+        type: string
+      created_at:
+        type: string
+      product_id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartResponse:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Cart'
+      message:
+        type: string
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartsResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Cart'
+        type: array
+      message:
+        type: string
+    type: object
   github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error:
     properties:
       error:
         type: string
+      message:
+        type: string
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.Order:
+    properties:
+      amount:
+        type: number
+      order_at:
+        type: string
+      order_id:
+        type: string
+      product:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.OrderResponse:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Order'
+      message:
+        type: string
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.OrdersResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Order'
+        type: array
       message:
         type: string
     type: object
@@ -58,6 +118,112 @@ info:
   title: Swagger Marketplace API
   version: "1.0"
 paths:
+  /carts/:
+    post:
+      consumes:
+      - application/json
+      description: post cart data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Insert cart data
+      tags:
+      - carts
+  /carts/:id:
+    delete:
+      consumes:
+      - application/json
+      description: delete cart data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Discard cart data
+      tags:
+      - carts
+    get:
+      consumes:
+      - application/json
+      description: get cart data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get cart data
+      tags:
+      - carts
+    put:
+      consumes:
+      - application/json
+      description: put cart data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Edit cart data
+      tags:
+      - carts
   /me/:
     get:
       consumes:
@@ -87,6 +253,86 @@ paths:
       summary: Get current user profile
       tags:
       - me
+  /orders/:
+    post:
+      consumes:
+      - application/json
+      description: post order data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.OrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Insert order data
+      tags:
+      - orders
+  /orders/:id:
+    delete:
+      consumes:
+      - application/json
+      description: delete order data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Discard order data
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: get order data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.OrderResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get order data
+      tags:
+      - orders
   /products/:
     post:
       consumes:
@@ -103,6 +349,8 @@ paths:
       responses:
         "201":
           description: Created
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse'
         "400":
           description: Bad Request
           schema:
@@ -280,4 +528,54 @@ paths:
       summary: Edit user profile by userID
       tags:
       - users
+  /users/:id/carts:
+    get:
+      consumes:
+      - application/json
+      description: get all carts from userID data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.CartsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get user carts data
+      tags:
+      - carts
+  /users/:id/orders:
+    get:
+      consumes:
+      - application/json
+      description: get all orders from userID data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.OrdersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get user orders data
+      tags:
+      - orders
 swagger: "2.0"

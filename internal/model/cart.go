@@ -9,3 +9,13 @@ type Cart struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type CartResponse struct {
+	Message string `json:"message"`
+	Data    Cart   `json:"data"`
+}
+
+type CartsResponse struct {
+	Message string `json:"message"`
+	Data    []Cart `json:"data"`
+}

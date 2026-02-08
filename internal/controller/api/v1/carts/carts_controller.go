@@ -20,10 +20,21 @@ func NewCartController(CartService *service.CartService) CartController {
 	return CartController{CartService: *CartService}
 }
 
+// InsertCart    godoc
+// @Summary      Insert cart data
+// @Description  post cart data
+// @Tags         carts
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header  string  true  "Insert your admin JWT token"
+// @Success      201  {object}  model.CartResponse
+// @Failure      400  {object}  model.Error
+// @Failure      500  {object}  model.Error
+// @Router         /carts/ [post]
 func (controller CartController) InsertCart(c *gin.Context) {
 	var req model.Cart
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
+		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
 
@@ -37,7 +48,7 @@ func (controller CartController) InsertCart(c *gin.Context) {
 			Str("component", "controller.CartService.RegisterCart").
 			Msg("Failed to insert cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "insert_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "insert_cart_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -45,9 +56,19 @@ func (controller CartController) InsertCart(c *gin.Context) {
 		Str("status_code", "201").
 		Msg("Insert cart request processed successfully")
 
-	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": cart})
+	c.JSON(http.StatusCreated, model.CartResponse{Message: "success", Data: *cart})
 }
 
+// FetchCartByID    godoc
+// @Summary         Get cart data
+// @Description     get cart data
+// @Tags            carts
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         200  {object}  model.CartResponse
+// @Failure         500  {object}  model.Error
+// @Router          /carts/:id [get]
 func (controller CartController) FetchCartByID(c *gin.Context) {
 	cartID := c.Param("id")
 
@@ -61,7 +82,7 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 			Str("cart_id", cartID).
 			Msg("Failed to fetch cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_cart_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -70,9 +91,19 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 		Str("cart_id", cartID).
 		Msg("Fetch cart request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": cart})
+	c.JSON(http.StatusOK, model.CartResponse{Message: "success", Data: *cart})
 }
 
+// FetchCartsByUserID  godoc
+// @Summary            Get user carts data
+// @Description        get all carts from userID data
+// @Tags               carts
+// @Accept             json
+// @Produce            json
+// @Param              Authorization  header  string  true  "Insert your admin JWT token"
+// @Success            200  {object}  model.CartsResponse
+// @Failure            500  {object}  model.Error
+// @Router             /users/:id/carts [get]
 func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 	params := c.Param("id")
 
@@ -84,7 +115,7 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 			Int64("user_id", userID).
 			Msg("Failed to fetch cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_cart_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -98,7 +129,7 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 			Int64("user_id", userID).
 			Msg("Failed to fetch cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_cart_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -107,13 +138,24 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 		Int64("user_id", userID).
 		Msg("Fetch cart request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": carts})
+	c.JSON(http.StatusOK, model.CartsResponse{Message: "success", Data: *carts})
 }
 
+// EditCartByID     godoc
+// @Summary         Edit cart data
+// @Description     put cart data
+// @Tags            carts
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         204
+// @Failure         400  {object}  model.Error
+// @Failure         500  {object}  model.Error
+// @Router          /carts/:id [put]
 func (controller CartController) EditCartByID(c *gin.Context) {
 	var req model.Cart
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
+		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
 
@@ -130,7 +172,7 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 			Str("cart_id", c.Param("id")).
 			Msg("Failed to edit cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "edit_cart_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -142,6 +184,17 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// DiscardCartByID    godoc
+// @Summary           Discard cart data
+// @Description       delete cart data
+// @Tags              carts
+// @Accept            json
+// @Produce           json
+// @Param             Authorization  header  string  true  "Insert your admin JWT token"
+// @Success           204
+// @Failure           400  {object}  model.Error
+// @Failure           500  {object}  model.Error
+// @Router            /carts/:id [delete]
 func (controller CartController) DiscardCartByID(c *gin.Context) {
 	cartID := c.Param("id")
 
@@ -155,7 +208,7 @@ func (controller CartController) DiscardCartByID(c *gin.Context) {
 			Str("cart_id", cartID).
 			Msg("Failed to fetch cart request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "discard_cart_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "discard_cart_failed", Message: "InternalServerError"})
 		return
 	}
 

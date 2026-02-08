@@ -12,3 +12,13 @@ type Order struct {
 	Amount  float64         `json:"amount"`
 	OrderAt time.Time       `json:"order_at"`
 }
+
+type OrderResponse struct {
+	Message string `json:"message"`
+	Data    Order  `json:"data"`
+}
+
+type OrdersResponse struct {
+	Message string  `json:"message"`
+	Data    []Order `json:"data"`
+}

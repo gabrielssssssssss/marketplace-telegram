@@ -26,7 +26,7 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 // @Accept         json
 // @Produce        json
 // @Param          Authorization  header  string  true  "Insert your admin JWT token"
-// @Success        201
+// @Success        201	{object}  model.ProductResponse
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /products/ [post]
@@ -55,7 +55,7 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 		Str("status_code", "201").
 		Msg("Insert product request processed successfully")
 
-	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": product})
+	c.JSON(http.StatusCreated, model.ProductResponse{Message: "success", Data: *product})
 }
 
 // FetchProductByID godoc

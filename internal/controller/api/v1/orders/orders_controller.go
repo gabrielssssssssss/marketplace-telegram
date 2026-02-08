@@ -19,6 +19,17 @@ func NewOrderController(OrderService *service.OrderService) OrderController {
 	return OrderController{OrderService: *OrderService}
 }
 
+// InsertOrder   godoc
+// @Summary      Insert order data
+// @Description  post order data
+// @Tags         orders
+// @Accept       json
+// @Produce      json
+// @Param        Authorization  header  string  true  "Insert your admin JWT token"
+// @Success      201  {object}  model.OrderResponse
+// @Failure      400  {object}  model.Error
+// @Failure      500  {object}  model.Error
+// @Router         /orders/ [post]
 func (controller OrderController) InsertOrder(c *gin.Context) {
 	var req model.Order
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -45,9 +56,19 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 		Str("status_code", "201").
 		Msg("Insert order request processed successfully")
 
-	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": order})
+	c.JSON(http.StatusCreated, model.OrderResponse{Message: "success", Data: *order})
 }
 
+// FetchOrderByID   godoc
+// @Summary         Get order data
+// @Description     get order data
+// @Tags            orders
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         200  {object}  model.OrderResponse
+// @Failure         500  {object}  model.Error
+// @Router          /orders/:id [get]
 func (controller OrderController) FetchOrderByID(c *gin.Context) {
 	orderID := c.Param("id")
 
@@ -61,7 +82,7 @@ func (controller OrderController) FetchOrderByID(c *gin.Context) {
 			Str("order_id", orderID).
 			Msg("Failed to fetch order request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_order_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_order_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -70,9 +91,19 @@ func (controller OrderController) FetchOrderByID(c *gin.Context) {
 		Str("cart_id", orderID).
 		Msg("Fetch order request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": order})
+	c.JSON(http.StatusOK, model.OrderResponse{Message: "success", Data: *order})
 }
 
+// FetchOrdersByUserID godoc
+// @Summary            Get user orders data
+// @Description        get all orders from userID data
+// @Tags               orders
+// @Accept             json
+// @Produce            json
+// @Param              Authorization  header  string  true  "Insert your admin JWT token"
+// @Success            200  {object}  model.OrdersResponse
+// @Failure            500  {object}  model.Error
+// @Router             /users/:id/orders [get]
 func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 	params := c.Param("id")
 
@@ -84,7 +115,7 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 			Int64("user_id", userID).
 			Msg("Failed to fetch order request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_order_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_order_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -98,7 +129,7 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 			Int64("user_id", userID).
 			Msg("Failed to fetch order request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_order_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_order_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -107,9 +138,20 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 		Int64("order_id", userID).
 		Msg("Fetch order request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": orders})
+	c.JSON(http.StatusOK, model.OrdersResponse{Message: "success", Data: *orders})
 }
 
+// DiscardOrderByID   godoc
+// @Summary           Discard order data
+// @Description       delete order data
+// @Tags              orders
+// @Accept            json
+// @Produce           json
+// @Param             Authorization  header  string  true  "Insert your admin JWT token"
+// @Success           204
+// @Failure           400  {object}  model.Error
+// @Failure           500  {object}  model.Error
+// @Router            /orders/:id [delete]
 func (controller OrderController) DiscardOrderByID(c *gin.Context) {
 	orderID := c.Param("id")
 
@@ -123,7 +165,7 @@ func (controller OrderController) DiscardOrderByID(c *gin.Context) {
 			Str("order_id", orderID).
 			Msg("Failed to fetch order request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "discard_order_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "discard_order_failed", Message: "InternalServerError"})
 		return
 	}
 
