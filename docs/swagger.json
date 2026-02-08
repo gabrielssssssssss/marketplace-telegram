@@ -10,9 +10,9 @@
     "host": "localhost:6060",
     "basePath": "/api/v1",
     "paths": {
-        "/users/{id}": {
+        "/me/": {
             "get": {
-                "description": "get json by ID",
+                "description": "get profile data from JWT token",
                 "consumes": [
                     "application/json"
                 ],
@@ -20,15 +20,15 @@
                     "application/json"
                 ],
                 "tags": [
-                    "accounts"
+                    "me"
                 ],
-                "summary": "Fetch user info",
+                "summary": "Get current user profile",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
+                        "type": "string",
+                        "description": "Insert your JWT token",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -53,6 +53,297 @@
                     }
                 }
             }
+        },
+        "/products/": {
+            "post": {
+                "description": "post product data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Insert product data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/:id": {
+            "get": {
+                "description": "get product data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get product data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "put product data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Edit product data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete product data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Discard product data",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/:id": {
+            "get": {
+                "description": "get profile data from userID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user profile by userID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "delete user data from userID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Edit user profile by userID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete user data from userID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Discard user profile by userID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Insert your admin JWT token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -61,6 +352,40 @@
             "properties": {
                 "error": {
                     "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_gabrielssssssssss_marketplace-telegram_internal_model.Product": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "product_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Product"
                 },
                 "message": {
                     "type": "string"

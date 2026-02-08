@@ -114,7 +114,7 @@ func (handler *AccountHandler) renderAccountMenu(ctx context.Context, b *bot.Bot
 			Msg("Failed to process jwt generation")
 		return
 	}
-
+	fmt.Println(newSession)
 	webAppUrl := os.Getenv("TELEGRAM_WEB_APP") + "?token=" + newSession
 	markup := &models.InlineKeyboardMarkup{
 		InlineKeyboard: [][]models.InlineKeyboardButton{

@@ -19,10 +19,21 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 	return ProductController{ProductService: *ProductService}
 }
 
+// InsertProduct   godoc
+// @Summary        Insert product data
+// @Description    post product data
+// @Tags           products
+// @Accept         json
+// @Produce        json
+// @Param          Authorization  header  string  true  "Insert your admin JWT token"
+// @Success        201
+// @Failure        400  {object}  model.Error
+// @Failure        500  {object}  model.Error
+// @Router         /products/ [post]
 func (controller ProductController) InsertProduct(c *gin.Context) {
 	var req model.Product
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
+		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
 
@@ -36,7 +47,7 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 			Str("component", "controller.ProductService.RegisterProduct").
 			Msg("Failed to insert product request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "insert_product_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "insert_product_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -47,6 +58,17 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "success", "data": product})
 }
 
+// FetchProductByID godoc
+// @Summary         Get product data
+// @Description     get product data
+// @Tags            products
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         200  {object}  model.ProductResponse
+// @Failure         400  {object}  model.Error
+// @Failure         500  {object}  model.Error
+// @Router          /products/:id [get]
 func (controller ProductController) FetchProductByID(c *gin.Context) {
 	productID := c.Param("id")
 
@@ -60,7 +82,7 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 			Str("product_id", productID).
 			Msg("Failed to fetch product request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "find_product_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_product_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -69,17 +91,28 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 		Str("product_id", productID).
 		Msg("Fetch product request processed successfully")
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": product})
+	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
+// EditProductByID  godoc
+// @Summary         Edit product data
+// @Description     put product data
+// @Tags            products
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         204
+// @Failure         400  {object}  model.Error
+// @Failure         500  {object}  model.Error
+// @Router          /products/:id [put]
 func (controller ProductController) EditProductByID(c *gin.Context) {
+	productID := c.Param("id")
+
 	var req model.Product
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
+		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
-
-	productID := c.Param("id")
 
 	_, err := controller.ProductService.ModifyProductByID(&entity.Product{
 		ID:        productID,
@@ -94,7 +127,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 			Str("product_id", productID).
 			Msg("Failed to edit product request")
 
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "edit_product_failed", "message": "InternalServerError"})
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "edit_product_failed", Message: "InternalServerError"})
 		return
 	}
 
@@ -106,6 +139,17 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// DiscardProductByID godoc
+// @Summary           Discard product data
+// @Description       delete product data
+// @Tags              products
+// @Accept            json
+// @Produce           json
+// @Param             Authorization  header  string  true  "Insert your admin JWT token"
+// @Success           204
+// @Failure           400  {object}  model.Error
+// @Failure           500  {object}  model.Error
+// @Router            /products/:id [delete]
 func (controller ProductController) DiscardProductByID(c *gin.Context) {
 	productID := c.Param("id")
 

@@ -7,6 +7,28 @@ definitions:
       message:
         type: string
     type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.Product:
+    properties:
+      created_at:
+        type: string
+      details:
+        items:
+          type: integer
+        type: array
+      price:
+        type: integer
+      product_id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Product'
+      message:
+        type: string
+    type: object
   github_com_gabrielssssssssss_marketplace-telegram_internal_model.User:
     properties:
       balance:
@@ -36,17 +58,17 @@ info:
   title: Swagger Marketplace API
   version: "1.0"
 paths:
-  /users/{id}:
+  /me/:
     get:
       consumes:
       - application/json
-      description: get json by ID
+      description: get profile data from JWT token
       parameters:
-      - description: User ID
-        in: path
-        name: id
+      - description: Insert your JWT token
+        in: header
+        name: Authorization
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -62,7 +84,200 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
-      summary: Fetch user info
+      summary: Get current user profile
       tags:
-      - accounts
+      - me
+  /products/:
+    post:
+      consumes:
+      - application/json
+      description: post product data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Insert product data
+      tags:
+      - products
+  /products/:id:
+    delete:
+      consumes:
+      - application/json
+      description: delete product data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Discard product data
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: get product data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.ProductResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get product data
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: put product data
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Edit product data
+      tags:
+      - products
+  /users/:id:
+    delete:
+      consumes:
+      - application/json
+      description: delete user data from userID
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Discard user profile by userID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: get profile data from userID
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Get user profile by userID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: delete user data from userID
+      parameters:
+      - description: Insert your admin JWT token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_gabrielssssssssss_marketplace-telegram_internal_model.Error'
+      summary: Edit user profile by userID
+      tags:
+      - users
 swagger: "2.0"
