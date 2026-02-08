@@ -21,6 +21,17 @@ func NewUserController(UserService *service.UserService) UserController {
 	return UserController{UserService: *UserService}
 }
 
+// FetchUserByID godoc
+// @Summary      Fetch user info
+// @Description  get json by ID
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "User ID"
+// @Success      200  {object}  model.User
+// @Failure      401  {object}  model.Error
+// @Failure      500  {object}  model.Error
+// @Router       /users/{id} [get]
 func (controller UserController) FetchUserByID(c *gin.Context) {
 	authorization := c.GetHeader("Authorization")
 
@@ -32,7 +43,10 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid_token", "message": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, model.Error{
+			Error:   "invalid_token",
+			Message: "Unauthorized",
+		})
 		return
 	}
 

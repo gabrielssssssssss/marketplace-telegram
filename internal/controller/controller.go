@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/gabrielssssssssss/marketplace-telegram/config"
-	"github.com/gabrielssssssssss/marketplace-telegram/docs"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/carts"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/middlewares"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller/api/v1/orders"
@@ -25,12 +24,6 @@ import (
 	"github.com/go-telegram/bot"
 )
 
-// @contact.name   API Support
-// @contact.url    http://www.swagger.io/support
-// @contact.email  support@swagger.io
-
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 func Controller() {
 	gin.SetMode(gin.ReleaseMode)
 	engine := gin.Default()
@@ -44,13 +37,6 @@ func Controller() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	docs.SwaggerInfo.Title = "Swagger Example API"
-	docs.SwaggerInfo.Description = "This is a sample server Petstore server."
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "petstore.swagger.io"
-	docs.SwaggerInfo.BasePath = "/v2"
-	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	userRepo := repository.NewUserRepository(db)
 	paymentRepo := repository.NewPaymentRepository(db)
