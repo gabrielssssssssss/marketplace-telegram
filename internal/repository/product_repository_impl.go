@@ -52,7 +52,6 @@ func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*mode
 	query := `
 	SELECT
 		id,
-		private_details,
 		public_details,
 		price,
 		created_at,
@@ -68,7 +67,6 @@ func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*mode
 		product.ID,
 	).Scan(
 		&response.ID,
-		&response.PrivateDetails,
 		&response.PublicDetails,
 		&response.Price,
 		&response.CreatedAt,

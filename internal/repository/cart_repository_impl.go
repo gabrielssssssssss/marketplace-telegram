@@ -120,8 +120,8 @@ func (r *cartRepositoryImpl) UpdateCartByID(cart *entity.Cart) (*model.Cart, err
 	query := `
     UPDATE cart
     SET 
-		user_id      = COALESCE($1, user_id),
-		product_id   = COALESCE($2, product_id),
+		user_id      = COALESCE(NULLIF($1, 0), user_id),
+		product_id   = COALESCE(NULLIF($2, 0), product_id),
 		updated_at   = COALESCE($3, updated_at)
     WHERE id = $4
     RETURNING

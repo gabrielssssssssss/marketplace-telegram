@@ -128,13 +128,13 @@ func (r *userRepositoryImpl) UpdateUserByID(user *entity.User) (*model.User, err
 	query := `
     UPDATE users
     SET 
-		username     = COALESCE($1, username),
-		firstname    = COALESCE($2, firstname),
-		lastname     = COALESCE($3, lastname),
-		balance      = COALESCE($4, balance),
-		role         = COALESCE($5, role),
-		recovery_key = COALESCE($6, recovery_key),
-		updated_at   = COALESCE($7, updated_at)
+		username     = COALESCE(NULLIF($1, ''), username),
+		firstname    = COALESCE(NULLIF($2, ''), firstname),
+		lastname     = COALESCE(NULLIF($3, ''), lastname),
+		balance      = COALESCE(NULLIF($4, 0), balance),
+		role         = COALESCE(NULLIF($5, ''), role),
+		recovery_key = COALESCE(NULLIF($6, ''), recovery_key),
+		updated_at   = $7
     WHERE user_id = $8
     RETURNING
 		user_id,

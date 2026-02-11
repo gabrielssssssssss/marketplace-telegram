@@ -75,14 +75,14 @@ func (r *paymentRepositoryImpl) UpdatePaymentByID(payment *entity.Payment) (*mod
 	query := `
     UPDATE payments
     SET 
-        value_coin           = COALESCE($1, value_coin),
-        value_forwarded_coin = COALESCE($2, value_forwarded_coin),
-        currency             = COALESCE($3, currency),
-        status               = COALESCE($4, status),
-        address_in           = COALESCE($5, address_in),
-        address_out          = COALESCE($6, address_out),
-        txid_in              = COALESCE($7, txid_in),
-        txid_out             = COALESCE($8, txid_out),
+        value_coin           = COALESCE(NULLIF($1, 0), value_coin),
+        value_forwarded_coin = COALESCE(NULLIF($1, 0), value_forwarded_coin),
+        currency             = COALESCE(NULLIF($1, ''), currency),
+        status               = COALESCE(NULLIF($1, ''), status),
+        address_in           = COALESCE(NULLIF($1, ''), address_in),
+        address_out          = COALESCE(NULLIF($1, ''), address_out),
+        txid_in              = COALESCE(NULLIF($1, ''), txid_in),
+        txid_out             = COALESCE(NULLIF($1, ''), txid_out),
         confirmed_at         = COALESCE($9, confirmed_at)
     WHERE id = $10
     RETURNING
