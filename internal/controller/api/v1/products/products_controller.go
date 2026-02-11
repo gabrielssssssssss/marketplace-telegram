@@ -38,8 +38,9 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	}
 
 	product, err := controller.ProductService.RegisterProduct(&entity.Product{
-		Details: &req.Details,
-		Price:   &req.Price,
+		PublicDetails:  &req.PublicDetails,
+		PrivateDetails: &req.PrivateDetails,
+		Price:          &req.Price,
 	})
 	if err != nil {
 		log.Error().
@@ -145,10 +146,11 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 	}
 
 	product, err := controller.ProductService.ModifyProductByID(&entity.Product{
-		ID:        productID,
-		Details:   &req.Details,
-		Price:     &req.Price,
-		UpdatedAt: time.Now(),
+		ID:             productID,
+		PublicDetails:  &req.PublicDetails,
+		PrivateDetails: &req.PrivateDetails,
+		Price:          &req.Price,
+		UpdatedAt:      time.Now(),
 	})
 	if err != nil {
 		log.Error().

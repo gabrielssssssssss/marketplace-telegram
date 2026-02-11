@@ -12,13 +12,15 @@ func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Pr
 
 	query := `
 		INSERT INTO products (
-			details,
+			private_details,
+			public_details,
 			price
 		)
 		VALUES ($1, $2)
 		RETURNING
 			id,
-			details,
+			private_details,
+			public_details,
 			price,
 			created_at,
 			updated_at
@@ -28,11 +30,13 @@ func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Pr
 
 	err := r.db.QueryRow(
 		query,
-		product.Details,
+		product.PrivateDetails,
+		product.PublicDetails,
 		product.Price,
 	).Scan(
 		&response.ID,
-		&response.Details,
+		&response.PrivateDetails,
+		&response.PublicDetails,
 		&response.Price,
 		&response.CreatedAt,
 		&response.UpdatedAt,
@@ -48,7 +52,8 @@ func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*mode
 	query := `
 	SELECT
 		id,
-		details,
+		private_details,
+		public_details,
 		price,
 		created_at,
 		updated_at
@@ -63,7 +68,8 @@ func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*mode
 		product.ID,
 	).Scan(
 		&response.ID,
-		&response.Details,
+		&response.PrivateDetails,
+		&response.PublicDetails,
 		&response.Price,
 		&response.CreatedAt,
 		&response.UpdatedAt,
@@ -79,7 +85,7 @@ func (r productRepositoryImpl) SelectAllProducts() (*[]model.Product, error) {
 	query := `
 	SELECT
 		id,
-		details,
+		public_details,
 		price,
 		created_at,
 		updated_at
@@ -98,7 +104,7 @@ func (r productRepositoryImpl) SelectAllProducts() (*[]model.Product, error) {
 		var product model.Product
 		err = rows.Scan(
 			&product.ID,
-			&product.Details,
+			&product.PublicDetails,
 			&product.Price,
 			&product.CreatedAt,
 			&product.UpdatedAt,
@@ -116,13 +122,15 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 	query := `
     UPDATE products
     SET 
-		details      = COALESCE(NULLIF($1, '')::jsonb, details),
-		price        = COALESCE($2, price),
-		updated_at   = COALESCE($3, updated_at)
+		private_details      = COALESCE(NULLIF($1, '')::jsonb, private_details),
+		public_details       = COALESCE(NULLIF($1, '')::jsonb, public_details),
+		price                = COALESCE($2, price),
+		updated_at           = COALESCE($3, updated_at)
     WHERE id = $4
     RETURNING
 		id,
-		details,
+		private_details,
+		public_details,
 		created_at,
 		updated_at
     `
@@ -131,13 +139,15 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 
 	err := r.db.QueryRow(
 		query,
-		product.Details,
+		product.PrivateDetails,
+		product.PublicDetails,
 		product.Price,
 		product.UpdatedAt,
 		product.ID,
 	).Scan(
 		&response.ID,
-		&response.Details,
+		&response.PrivateDetails,
+		&response.PublicDetails,
 		&response.CreatedAt,
 		&response.UpdatedAt,
 	)
