@@ -72,6 +72,43 @@ func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*mode
 	return &response, err
 }
 
+func (r productRepositoryImpl) SelectAllProducts() (*[]model.Product, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `
+	SELECT
+		id,
+		details,
+		price,
+		created_at,
+		updated_at
+	FROM products
+	`
+
+	var response []model.Product
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return &response, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product model.Product
+		err = rows.Scan(
+			&product.ID,
+			&product.Details,
+			&product.Price,
+			&product.CreatedAt,
+			&product.UpdatedAt,
+		)
+		response = append(response, product)
+	}
+
+	return &response, err
+}
+
 func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()

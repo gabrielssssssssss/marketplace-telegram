@@ -17,3 +17,8 @@ type ProductResponse struct {
 	Message string  `json:"message"`
 	Data    Product `json:"data"`
 }
+
+type ProductsResponse struct {
+	Message string    `json:"message"`
+	Data    []Product `json:"data"`
+}

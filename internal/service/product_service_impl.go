@@ -13,6 +13,10 @@ func (s *productServiceImpl) GetProductByID(product *entity.Product) (*model.Pro
 	return s.repository.SelectProductByID(product)
 }
 
+func (s *productServiceImpl) GetAllProducts() (*[]model.Product, error) {
+	return s.repository.SelectAllProducts()
+}
+
 func (s *productServiceImpl) ModifyProductByID(product *entity.Product) (*model.Product, error) {
 	return s.repository.UpdateProductByID(product)
 }

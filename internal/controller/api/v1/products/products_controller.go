@@ -94,6 +94,36 @@ func (controller ProductController) FetchProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
+// FetchAllProducts godoc
+// @Summary         Get products data
+// @Description     get products data
+// @Tags            products
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your JWT token"
+// @Success         200  {object}  model.ProductsResponse
+// @Failure         400  {object}  model.Error
+// @Failure         500  {object}  model.Error
+// @Router          /products [get]
+func (controller ProductController) FetchAllProducts(c *gin.Context) {
+	products, err := controller.ProductService.GetAllProducts()
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.ProductService.GetAllProducts").
+			Msg("Failed to fetch product request")
+
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_products_failed", Message: "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "200").
+		Msg("Fetch all products request processed successfully")
+
+	c.JSON(http.StatusOK, model.ProductsResponse{Message: "success", Data: *products})
+}
+
 // EditProductByID  godoc
 // @Summary         Edit product data
 // @Description     put product data

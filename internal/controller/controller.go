@@ -25,7 +25,9 @@ import (
 )
 
 func Controller() {
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
+	// gin.DefaultWriter = io.Discard
+
 	engine := gin.Default()
 
 	db, err := config.NewPostgresDatabase()
@@ -60,8 +62,8 @@ func Controller() {
 	restoreHandler := tgRestore.NewRestoreHandler(&userService)
 	webhookHandler := tgWebhooks.NewPaymentWebhook(&paymentService, &userService)
 
+	engine.Use(middlewares.CORS())
 	apiV1 := engine.Group("/api/v1/")
-	apiV1.Use(middlewares.CORS())
 	{
 		swagger.Route(apiV1)
 		userCtrl.Route(apiV1)
