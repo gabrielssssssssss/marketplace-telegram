@@ -38,9 +38,9 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	}
 
 	product, err := controller.ProductService.RegisterProduct(&entity.Product{
+		Price:          &req.Price,
 		PublicDetails:  &req.PublicDetails,
 		PrivateDetails: &req.PrivateDetails,
-		Price:          &req.Price,
 	})
 	if err != nil {
 		log.Error().

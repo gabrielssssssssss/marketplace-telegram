@@ -9,6 +9,7 @@ func (controller *CartController) Route(rg *gin.RouterGroup) {
 	carts := rg.Group("/carts", middlewares.Authorization, middlewares.Grant())
 	{
 		carts.POST("", controller.InsertCart)
+		carts.GET("", controller.FetchCarts)
 		carts.GET("/:id", controller.FetchCartByID)
 		carts.PUT("/:id", controller.EditCartByID)
 		carts.DELETE("/:id", controller.DiscardCartByID)

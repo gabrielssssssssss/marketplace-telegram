@@ -16,7 +16,7 @@ func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Pr
 			public_details,
 			price
 		)
-		VALUES ($1, $2)
+		VALUES ($1, $2, $3)
 		RETURNING
 			id,
 			private_details,
@@ -126,7 +126,7 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 		public_details       = COALESCE(NULLIF($1, '')::jsonb, public_details),
 		price                = COALESCE($2, price),
 		updated_at           = COALESCE($3, updated_at)
-    WHERE id = $4
+    WHERE id = $5
     RETURNING
 		id,
 		private_details,

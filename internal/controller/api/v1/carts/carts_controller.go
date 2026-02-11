@@ -2,9 +2,11 @@ package carts
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/entity"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/service"
@@ -38,8 +40,22 @@ func (controller CartController) InsertCart(c *gin.Context) {
 		return
 	}
 
+	authorization := c.GetHeader("Authorization")
+
+	userID, err := helper.GetUserID(authorization, os.Getenv("JWT_SECRET_KEY"))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.UserService.FindUserByID").
+			Int64("user_id", userID).
+			Msg("Failed to fetch user request")
+
+		c.JSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
+		return
+	}
+
 	cart, err := controller.CartService.RegisterCart(&entity.Cart{
-		UserID:    req.UserID,
+		UserID:    userID,
 		ProductID: req.ProductID,
 	})
 	if err != nil {
@@ -57,6 +73,53 @@ func (controller CartController) InsertCart(c *gin.Context) {
 		Msg("Insert cart request processed successfully")
 
 	c.JSON(http.StatusCreated, model.CartResponse{Message: "success", Data: *cart})
+}
+
+// FetchCarts    godoc
+// @Summary         Get cart data
+// @Description     get cart data
+// @Tags            carts
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         200  {object}  model.CartsResponse
+// @Failure         500  {object}  model.Error
+// @Router          /carts [get]
+func (controller CartController) FetchCarts(c *gin.Context) {
+	authorization := c.GetHeader("Authorization")
+
+	userID, err := helper.GetUserID(authorization, os.Getenv("JWT_SECRET_KEY"))
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.UserService.FindUserByID").
+			Int64("user_id", userID).
+			Msg("Failed to fetch user request")
+
+		c.JSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
+		return
+	}
+
+	cart, err := controller.CartService.GetCartsByUserID(&entity.Cart{
+		UserID: userID,
+	})
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.CartService.GetCartsByUserID").
+			Int64("user_id", userID).
+			Msg("Failed to fetch carts request")
+
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_carts_failed", Message: "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "200").
+		Int64("user_id", userID).
+		Msg("Fetch carts request processed successfully")
+
+	c.JSON(http.StatusOK, model.CartsResponse{Message: "success", Data: *cart})
 }
 
 // FetchCartByID    godoc
