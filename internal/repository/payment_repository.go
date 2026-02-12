@@ -8,11 +8,11 @@ import (
 )
 
 type PaymentRepository interface {
-	InsertPayment(payment *entity.Payment) (*model.Payment, error)
-	SelectPaymentByID(payment *entity.Payment) (*model.Payment, error)
-	SelectPaymentsByUserID(payment *entity.Payment) (*[]model.Payment, error)
-	UpdatePaymentByID(payment *entity.Payment) (*model.Payment, error)
-	DeletePaymentByID(payment *entity.Payment) (bool, error)
+	Create(payment *entity.Payment) (*model.Payment, error)
+	Payment(payment *entity.Payment) (*model.Payment, error)
+	UserPayment(payment *entity.Payment) (*[]model.Payment, error)
+	Update(payment *entity.Payment) (*model.Payment, error)
+	Delete(payment *entity.Payment) (bool, error)
 }
 
 type paymentRepositoryImpl struct {

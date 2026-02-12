@@ -7,9 +7,9 @@ import (
 )
 
 type PaymentService interface {
-	RegisterPayment(payment *entity.Payment) (*model.Payment, error)
-	GetPaymentByID(payment *entity.Payment) (*model.Payment, error)
-	ModifyPaymentByID(payment *entity.Payment) (*model.Payment, error)
+	Register(payment *entity.Payment) (*model.Payment, error)
+	GetPayment(payment *entity.Payment) (*model.Payment, error)
+	Modify(payment *entity.Payment) (*model.Payment, error)
 }
 
 type paymentServiceImpl struct {

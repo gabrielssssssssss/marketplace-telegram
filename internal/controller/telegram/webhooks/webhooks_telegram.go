@@ -39,7 +39,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		Status:             r.URL.Query().Get("result"),
 	}
 
-	findPayment, err := webhook.PaymentService.GetPaymentByID(&payment)
+	findPayment, err := webhook.PaymentService.GetPayment(&payment)
 	if err != nil || findPayment.ID == "" {
 		log.Error().
 			Err(err).
@@ -69,7 +69,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		log.Info().Msg("pending payment processed successfully")
 
 	case "sent":
-		confirmPayment, err := webhook.PaymentService.ModifyPaymentByID(&entity.Payment{
+		confirmPayment, err := webhook.PaymentService.Modify(&entity.Payment{
 			ID:                 payment.ID,
 			AddressIn:          payment.AddressIn,
 			AddressOut:         payment.AddressOut,
