@@ -42,8 +42,11 @@ func Grant() gin.HandlerFunc {
 			return
 		}
 
-		if userRole == "admin" {
-			c.Next()
+		if userRole != "admin" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, model.Error{Error: "grant_authorization", Message: "Unauthorized"})
+			return
 		}
+
+		c.Next()
 	}
 }

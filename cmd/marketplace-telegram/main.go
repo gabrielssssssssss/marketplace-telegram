@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	_ "github.com/gabrielssssssssss/marketplace-telegram/docs"
+	"github.com/gabrielssssssssss/marketplace-telegram/helper"
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/controller"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -24,5 +26,6 @@ func init() {
 // @BasePath  /api/v1
 func main() {
 	gotenv.Load(".env")
+	fmt.Println(helper.NewJwtToken(123456789, "user", os.Getenv("JWT_SECRET_KEY")))
 	controller.Controller()
 }
