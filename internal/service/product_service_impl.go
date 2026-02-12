@@ -9,8 +9,12 @@ func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Pr
 	return s.repository.InsertProduct(product)
 }
 
-func (s *productServiceImpl) GetProductByID(product *entity.Product) (*model.Product, error) {
-	return s.repository.SelectProductByID(product)
+func (s *productServiceImpl) GetProductPublic(product *entity.Product) (*model.Product, error) {
+	return s.repository.SelectProductPublic(product)
+}
+
+func (s *productServiceImpl) GetProductPrivate(product *entity.Product) (*model.Product, error) {
+	return s.repository.SelectProductPublic(product)
 }
 
 func (s *productServiceImpl) GetAllProducts() (*[]model.Product, error) {

@@ -45,7 +45,38 @@ func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Pr
 	return &response, err
 }
 
-func (r productRepositoryImpl) SelectProductByID(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) SelectProductPublic(product *entity.Product) (*model.Product, error) {
+	_, cancel := config.NewPostgresContext()
+	defer cancel()
+
+	query := `
+	SELECT
+		id,
+		public_details,
+		price,
+		created_at,
+		updated_at
+	FROM products
+	WHERE id = $1
+	`
+
+	var response model.Product
+
+	err := r.db.QueryRow(
+		query,
+		product.ID,
+	).Scan(
+		&response.ID,
+		&response.PublicDetails,
+		&response.Price,
+		&response.CreatedAt,
+		&response.UpdatedAt,
+	)
+
+	return &response, err
+}
+
+func (r productRepositoryImpl) SelectProductPrivate(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

@@ -9,7 +9,8 @@ import (
 
 type ProductRepository interface {
 	InsertProduct(product *entity.Product) (*model.Product, error)
-	SelectProductByID(product *entity.Product) (*model.Product, error)
+	SelectProductPublic(product *entity.Product) (*model.Product, error)
+	SelectProductPrivate(product *entity.Product) (*model.Product, error)
 	SelectAllProducts() (*[]model.Product, error)
 	UpdateProductByID(product *entity.Product) (*model.Product, error)
 	DeleteProductByID(product *entity.Product) (bool, error)

@@ -59,7 +59,7 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// FetchProductByID godoc
+// FetchProductPublic godoc
 // @Summary         Get product data
 // @Description     get product data
 // @Tags            products
@@ -70,10 +70,46 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [get]
-func (controller ProductController) FetchProductByID(c *gin.Context) {
+func (controller ProductController) FetchProductPublic(c *gin.Context) {
 	productID := c.Param("id")
 
-	product, err := controller.ProductService.GetProductByID(&entity.Product{
+	product, err := controller.ProductService.GetProductPublic(&entity.Product{
+		ID: productID,
+	})
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("component", "controller.ProductService.FindProductByID").
+			Str("product_id", productID).
+			Msg("Failed to fetch product request")
+
+		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_product_failed", Message: "InternalServerError"})
+		return
+	}
+
+	log.Info().
+		Str("status_code", "200").
+		Str("product_id", productID).
+		Msg("Fetch product request processed successfully")
+
+	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
+}
+
+// FetchProductPrivate godoc
+// @Summary         Get product data
+// @Description     get product data
+// @Tags            products
+// @Accept          json
+// @Produce         json
+// @Param           Authorization  header  string  true  "Insert your admin JWT token"
+// @Success         200  {object}  model.ProductResponse
+// @Failure         400  {object}  model.Error
+// @Failure         500  {object}  model.Error
+// @Router          /products/:id [get]
+func (controller ProductController) FetchProductPrivate(c *gin.Context) {
+	productID := c.Param("id")
+
+	product, err := controller.ProductService.GetProductPrivate(&entity.Product{
 		ID: productID,
 	})
 	if err != nil {
