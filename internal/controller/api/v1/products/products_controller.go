@@ -19,7 +19,7 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 	return ProductController{ProductService: *ProductService}
 }
 
-// InsertProduct   godoc
+// Create   	   godoc
 // @Summary        Insert product data
 // @Description    post product data
 // @Tags           products
@@ -30,14 +30,14 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /products/ [post]
-func (controller ProductController) InsertProduct(c *gin.Context) {
+func (controller ProductController) Create(c *gin.Context) {
 	var req model.Product
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
 
-	product, err := controller.ProductService.RegisterProduct(&entity.Product{
+	product, err := controller.ProductService.Register(&entity.Product{
 		Price:          &req.Price,
 		PublicDetails:  &req.PublicDetails,
 		PrivateDetails: &req.PrivateDetails,
@@ -45,7 +45,7 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.RegisterProduct").
+			Str("component", "controller.ProductService.Register").
 			Msg("Failed to insert product request")
 
 		c.JSON(http.StatusInternalServerError, model.Error{Error: "insert_product_failed", Message: "InternalServerError"})
@@ -59,7 +59,7 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// FetchProductPublic godoc
+// GetPublic 		godoc
 // @Summary         Get product data
 // @Description     get product data
 // @Tags            products
@@ -70,16 +70,16 @@ func (controller ProductController) InsertProduct(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [get]
-func (controller ProductController) FetchProductPublic(c *gin.Context) {
+func (controller ProductController) GetPublic(c *gin.Context) {
 	productID := c.Param("id")
 
-	product, err := controller.ProductService.GetProductPublic(&entity.Product{
+	product, err := controller.ProductService.GetPublic(&entity.Product{
 		ID: productID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.FindProductByID").
+			Str("component", "controller.ProductService.GetPublic").
 			Str("product_id", productID).
 			Msg("Failed to fetch product request")
 
@@ -95,7 +95,7 @@ func (controller ProductController) FetchProductPublic(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// FetchProductPrivate godoc
+// GetPrivate       godoc
 // @Summary         Get product data
 // @Description     get product data
 // @Tags            products
@@ -106,16 +106,16 @@ func (controller ProductController) FetchProductPublic(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [get]
-func (controller ProductController) FetchProductPrivate(c *gin.Context) {
+func (controller ProductController) GetPrivate(c *gin.Context) {
 	productID := c.Param("id")
 
-	product, err := controller.ProductService.GetProductPrivate(&entity.Product{
+	product, err := controller.ProductService.GetPrivate(&entity.Product{
 		ID: productID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.FindProductByID").
+			Str("component", "controller.ProductService.GetPrivate").
 			Str("product_id", productID).
 			Msg("Failed to fetch product request")
 
@@ -131,7 +131,7 @@ func (controller ProductController) FetchProductPrivate(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// FetchAllProducts godoc
+// GetAll 			godoc
 // @Summary         Get products data
 // @Description     get products data
 // @Tags            products
@@ -142,12 +142,12 @@ func (controller ProductController) FetchProductPrivate(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products [get]
-func (controller ProductController) FetchAllProducts(c *gin.Context) {
-	products, err := controller.ProductService.GetAllProducts()
+func (controller ProductController) GetAll(c *gin.Context) {
+	products, err := controller.ProductService.GetAll()
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.GetAllProducts").
+			Str("component", "controller.ProductService.GetAll").
 			Msg("Failed to fetch product request")
 
 		c.JSON(http.StatusInternalServerError, model.Error{Error: "find_products_failed", Message: "InternalServerError"})
@@ -161,7 +161,7 @@ func (controller ProductController) FetchAllProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductsResponse{Message: "success", Data: *products})
 }
 
-// EditProductByID  godoc
+// Update  			godoc
 // @Summary         Edit product data
 // @Description     put product data
 // @Tags            products
@@ -172,7 +172,7 @@ func (controller ProductController) FetchAllProducts(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [put]
-func (controller ProductController) EditProductByID(c *gin.Context) {
+func (controller ProductController) Update(c *gin.Context) {
 	productID := c.Param("id")
 
 	var req model.Product
@@ -181,7 +181,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 		return
 	}
 
-	product, err := controller.ProductService.ModifyProductByID(&entity.Product{
+	product, err := controller.ProductService.Modify(&entity.Product{
 		ID:             productID,
 		PublicDetails:  &req.PublicDetails,
 		PrivateDetails: &req.PrivateDetails,
@@ -191,7 +191,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.ModifyProductByID").
+			Str("component", "controller.ProductService.Modify").
 			Str("product_id", productID).
 			Msg("Failed to edit product request")
 
@@ -207,7 +207,7 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// DiscardProductByID godoc
+// Delete 			  godoc
 // @Summary           Discard product data
 // @Description       delete product data
 // @Tags              products
@@ -218,16 +218,16 @@ func (controller ProductController) EditProductByID(c *gin.Context) {
 // @Failure           400  {object}  model.Error
 // @Failure           500  {object}  model.Error
 // @Router            /products/:id [delete]
-func (controller ProductController) DiscardProductByID(c *gin.Context) {
+func (controller ProductController) Delete(c *gin.Context) {
 	productID := c.Param("id")
 
-	_, err := controller.ProductService.RemoveProductByID(&entity.Product{
+	_, err := controller.ProductService.Remove(&entity.Product{
 		ID: productID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.ProductService.RemoveProductByID").
+			Str("component", "controller.ProductService.Remove").
 			Str("product_id", productID).
 			Msg("Failed to fetch product request")
 

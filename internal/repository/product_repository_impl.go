@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) Create(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -45,7 +45,7 @@ func (r productRepositoryImpl) InsertProduct(product *entity.Product) (*model.Pr
 	return &response, err
 }
 
-func (r productRepositoryImpl) SelectProductPublic(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) Public(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -76,13 +76,14 @@ func (r productRepositoryImpl) SelectProductPublic(product *entity.Product) (*mo
 	return &response, err
 }
 
-func (r productRepositoryImpl) SelectProductPrivate(product *entity.Product) (*model.Product, error) {
+func (r productRepositoryImpl) Private(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
 	query := `
 	SELECT
 		id,
+		private_details,
 		public_details,
 		price,
 		created_at,
@@ -98,6 +99,7 @@ func (r productRepositoryImpl) SelectProductPrivate(product *entity.Product) (*m
 		product.ID,
 	).Scan(
 		&response.ID,
+		&response.PrivateDetails,
 		&response.PublicDetails,
 		&response.Price,
 		&response.CreatedAt,
@@ -107,7 +109,7 @@ func (r productRepositoryImpl) SelectProductPrivate(product *entity.Product) (*m
 	return &response, err
 }
 
-func (r productRepositoryImpl) SelectAllProducts() (*[]model.Product, error) {
+func (r productRepositoryImpl) List() (*[]model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -144,7 +146,7 @@ func (r productRepositoryImpl) SelectAllProducts() (*[]model.Product, error) {
 	return &response, err
 }
 
-func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*model.Product, error) {
+func (r *productRepositoryImpl) Update(product *entity.Product) (*model.Product, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -184,7 +186,7 @@ func (r *productRepositoryImpl) UpdateProductByID(product *entity.Product) (*mod
 	return &response, err
 }
 
-func (r productRepositoryImpl) DeleteProductByID(product *entity.Product) (bool, error) {
+func (r productRepositoryImpl) Delete(product *entity.Product) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

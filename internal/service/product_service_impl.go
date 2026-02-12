@@ -5,26 +5,26 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (s *productServiceImpl) RegisterProduct(product *entity.Product) (*model.Product, error) {
-	return s.repository.InsertProduct(product)
+func (s *productServiceImpl) Register(product *entity.Product) (*model.Product, error) {
+	return s.repository.Create(product)
 }
 
-func (s *productServiceImpl) GetProductPublic(product *entity.Product) (*model.Product, error) {
-	return s.repository.SelectProductPublic(product)
+func (s *productServiceImpl) GetPublic(product *entity.Product) (*model.Product, error) {
+	return s.repository.Public(product)
 }
 
-func (s *productServiceImpl) GetProductPrivate(product *entity.Product) (*model.Product, error) {
-	return s.repository.SelectProductPublic(product)
+func (s *productServiceImpl) GetPrivate(product *entity.Product) (*model.Product, error) {
+	return s.repository.Private(product)
 }
 
-func (s *productServiceImpl) GetAllProducts() (*[]model.Product, error) {
-	return s.repository.SelectAllProducts()
+func (s *productServiceImpl) GetAll() (*[]model.Product, error) {
+	return s.repository.List()
 }
 
-func (s *productServiceImpl) ModifyProductByID(product *entity.Product) (*model.Product, error) {
-	return s.repository.UpdateProductByID(product)
+func (s *productServiceImpl) Modify(product *entity.Product) (*model.Product, error) {
+	return s.repository.Update(product)
 }
 
-func (s *productServiceImpl) RemoveProductByID(product *entity.Product) (bool, error) {
-	return s.repository.DeleteProductByID(product)
+func (s *productServiceImpl) Remove(product *entity.Product) (bool, error) {
+	return s.repository.Delete(product)
 }

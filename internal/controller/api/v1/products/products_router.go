@@ -8,11 +8,11 @@ import (
 func (controller *ProductController) Route(rg *gin.RouterGroup) {
 	products := rg.Group("/products", middlewares.Authorization)
 	{
-		products.POST("", controller.InsertProduct, middlewares.Grant())
-		products.GET("", controller.FetchAllProducts)
-		products.GET("/:id", controller.FetchProductPublic)
-		products.GET("/:id/hidden", controller.FetchProductPrivate, middlewares.Grant())
-		products.PUT("/:id", controller.EditProductByID, middlewares.Grant())
-		products.DELETE("/:id", controller.DiscardProductByID, middlewares.Grant())
+		products.GET("", controller.GetAll)
+		products.GET("/:id", controller.GetPublic)
+		products.POST("", controller.Create, middlewares.Grant())
+		products.GET("/:id/hidden", controller.GetPrivate, middlewares.Grant())
+		products.PUT("/:id", controller.Update, middlewares.Grant())
+		products.DELETE("/:id", controller.Delete, middlewares.Grant())
 	}
 }

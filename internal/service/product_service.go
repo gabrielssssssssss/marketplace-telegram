@@ -7,12 +7,12 @@ import (
 )
 
 type ProductService interface {
-	RegisterProduct(product *entity.Product) (*model.Product, error)
-	GetProductPrivate(product *entity.Product) (*model.Product, error)
-	GetProductPublic(product *entity.Product) (*model.Product, error)
-	GetAllProducts() (*[]model.Product, error)
-	ModifyProductByID(product *entity.Product) (*model.Product, error)
-	RemoveProductByID(product *entity.Product) (bool, error)
+	Register(product *entity.Product) (*model.Product, error)
+	GetPrivate(product *entity.Product) (*model.Product, error)
+	GetPublic(product *entity.Product) (*model.Product, error)
+	GetAll() (*[]model.Product, error)
+	Modify(product *entity.Product) (*model.Product, error)
+	Remove(product *entity.Product) (bool, error)
 }
 
 type productServiceImpl struct {

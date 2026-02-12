@@ -8,12 +8,12 @@ import (
 )
 
 type ProductRepository interface {
-	InsertProduct(product *entity.Product) (*model.Product, error)
-	SelectProductPublic(product *entity.Product) (*model.Product, error)
-	SelectProductPrivate(product *entity.Product) (*model.Product, error)
-	SelectAllProducts() (*[]model.Product, error)
-	UpdateProductByID(product *entity.Product) (*model.Product, error)
-	DeleteProductByID(product *entity.Product) (bool, error)
+	Create(product *entity.Product) (*model.Product, error)
+	Public(product *entity.Product) (*model.Product, error)
+	Private(product *entity.Product) (*model.Product, error)
+	List() (*[]model.Product, error)
+	Update(product *entity.Product) (*model.Product, error)
+	Delete(product *entity.Product) (bool, error)
 }
 
 type productRepositoryImpl struct {
