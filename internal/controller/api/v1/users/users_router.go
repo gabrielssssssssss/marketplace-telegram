@@ -12,8 +12,8 @@ func (controller *UserController) Route(rg *gin.RouterGroup) {
 	)
 	users := rg.Group("/users", middlewares.Authorization, middlewares.Grant())
 	{
-		users.GET("/:id", controller.FetchUserByID)
-		users.PUT("/:id", controller.EditUserByID)
-		users.DELETE("/:id", controller.DiscardUserByID)
+		users.GET("/:id", controller.GetUser)
+		users.PUT("/:id", controller.Modify)
+		users.DELETE("/:id", controller.Remove)
 	}
 }

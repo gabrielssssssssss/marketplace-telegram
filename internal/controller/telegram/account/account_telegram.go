@@ -24,7 +24,7 @@ func NewAccountHandler(UserService *service.UserService) AccountHandler {
 }
 
 func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, update *models.Update) {
-	user, err := handler.UserService.GetUserByID(&entity.User{UserId: update.Message.From.ID})
+	user, err := handler.UserService.GetUser(&entity.User{UserId: update.Message.From.ID})
 	if err != nil {
 		newUser := entity.User{
 			UserId:      update.Message.From.ID,
@@ -50,11 +50,11 @@ func (handler *AccountHandler) HandlerStart(ctx context.Context, b *bot.Bot, upd
 			newUser.Role = "admin"
 		}
 
-		user, err = handler.UserService.RegisterUser(&newUser)
+		user, err = handler.UserService.Register(&newUser)
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "handler.UserService.RegisterUser").
+				Str("component", "handler.UserService.Register").
 				Int64("user_id", update.Message.From.ID).
 				Msg("Failed to process register user")
 			return
@@ -95,11 +95,11 @@ func (handler *AccountHandler) HandlerAccount(ctx context.Context, b *bot.Bot, u
 }
 
 func (handler *AccountHandler) renderAccountMenu(ctx context.Context, b *bot.Bot, cb *models.CallbackQuery, chatID int64) {
-	user, err := handler.UserService.GetUserByID(&entity.User{UserId: chatID})
+	user, err := handler.UserService.GetUser(&entity.User{UserId: chatID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "handler.UserService.FindUserByID").
+			Str("component", "handler.UserService.GetUser").
 			Int64("user_id", chatID).
 			Msg("Failed to process start callback")
 		return

@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r userRepositoryImpl) InsertUser(user *entity.User) (*model.User, error) {
+func (r userRepositoryImpl) Create(user *entity.User) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -43,7 +43,7 @@ func (r userRepositoryImpl) InsertUser(user *entity.User) (*model.User, error) {
 	return &response, err
 }
 
-func (r userRepositoryImpl) SelectUserByID(user *entity.User) (*model.User, error) {
+func (r userRepositoryImpl) User(user *entity.User) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -82,7 +82,7 @@ func (r userRepositoryImpl) SelectUserByID(user *entity.User) (*model.User, erro
 	return &response, err
 }
 
-func (r userRepositoryImpl) SelectUserByRecoveryKey(user *entity.User) (*model.User, error) {
+func (r userRepositoryImpl) UserByKey(user *entity.User) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -121,7 +121,7 @@ func (r userRepositoryImpl) SelectUserByRecoveryKey(user *entity.User) (*model.U
 	return &response, err
 }
 
-func (r *userRepositoryImpl) UpdateUserByID(user *entity.User) (*model.User, error) {
+func (r *userRepositoryImpl) Update(user *entity.User) (*model.User, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -175,7 +175,7 @@ func (r *userRepositoryImpl) UpdateUserByID(user *entity.User) (*model.User, err
 	return &response, err
 }
 
-func (r userRepositoryImpl) DeleteUserByID(user *entity.User) (bool, error) {
+func (r userRepositoryImpl) Delete(user *entity.User) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

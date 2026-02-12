@@ -91,17 +91,17 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 
 		currencyPrice := helper.CurrencyPrice(confirmPayment.Currency) * confirmPayment.ValueForwardedCoin
 
-		user, err := webhook.UserService.GetUserByID(&entity.User{UserId: confirmPayment.UserID})
+		user, err := webhook.UserService.GetUser(&entity.User{UserId: confirmPayment.UserID})
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "webhook.UserService.FindUser").
+				Str("component", "webhook.UserService.GetUser").
 				Str("payment_id", payment.ID).
 				Msg("Failed to process update user finding")
 			return
 		}
 
-		_, err = webhook.UserService.ModifyUserByID(&entity.User{
+		_, err = webhook.UserService.Modify(&entity.User{
 			UserId:    confirmPayment.UserID,
 			Balance:   user.Balance + currencyPrice,
 			UpdatedAt: time.Now(),
@@ -109,7 +109,7 @@ func (webhook *PaymentWebhook) WebhookPayment(w http.ResponseWriter, r *http.Req
 		if err != nil {
 			log.Error().
 				Err(err).
-				Str("component", "webhook.UserService.UpdateUserBalance").
+				Str("component", "webhook.UserService.Modify").
 				Str("payment_id", payment.ID).
 				Msg("Failed to process update user balance")
 			return

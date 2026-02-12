@@ -48,11 +48,11 @@ func (controller UserController) Me(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.UserService.GetUserByID(&entity.User{UserId: userID})
+	user, err := controller.UserService.GetUser(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.FindUserByID").
+			Str("component", "controller.UserService.GetUser").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -68,7 +68,7 @@ func (controller UserController) Me(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": user})
 }
 
-// FetchUserByID godoc
+// GetUser       godoc
 // @Summary      Get user profile by userID
 // @Description  get profile data from userID
 // @Tags         users
@@ -80,7 +80,7 @@ func (controller UserController) Me(c *gin.Context) {
 // @Failure      401  {object}  model.Error
 // @Failure      500  {object}  model.Error
 // @Router       /users/:id [get]
-func (controller UserController) FetchUserByID(c *gin.Context) {
+func (controller UserController) GetUser(c *gin.Context) {
 	param := c.Param("id")
 
 	userID, err := strconv.ParseInt(param, 10, 64)
@@ -95,11 +95,11 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.UserService.GetUserByID(&entity.User{UserId: userID})
+	user, err := controller.UserService.GetUser(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.FindUserByID").
+			Str("component", "controller.UserService.GetUser").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -115,7 +115,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": user})
 }
 
-// DiscardUserByID godoc
+// Remove 		   godoc
 // @Summary        Discard user profile by userID
 // @Description    delete user data from userID
 // @Tags           users
@@ -126,7 +126,7 @@ func (controller UserController) FetchUserByID(c *gin.Context) {
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /users/:id [delete]
-func (controller UserController) DiscardUserByID(c *gin.Context) {
+func (controller UserController) Remove(c *gin.Context) {
 	param := c.Param("id")
 
 	userID, err := strconv.ParseInt(param, 10, 64)
@@ -141,11 +141,11 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 		return
 	}
 
-	_, err = controller.UserService.RemoveUserByID(&entity.User{UserId: userID})
+	_, err = controller.UserService.Remove(&entity.User{UserId: userID})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.RemoveUserByID").
+			Str("component", "controller.UserService.Remove").
 			Int64("user_id", userID).
 			Msg("Failed to discard user request")
 
@@ -161,7 +161,7 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-// DiscardUserByID godoc
+// Modify 		   godoc
 // @Summary        Edit user profile by userID
 // @Description    delete user data from userID
 // @Tags           users
@@ -172,7 +172,7 @@ func (controller UserController) DiscardUserByID(c *gin.Context) {
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /users/:id [put]
-func (controller UserController) EditUserByID(c *gin.Context) {
+func (controller UserController) Modify(c *gin.Context) {
 	param := c.Param("id")
 
 	userID, err := strconv.ParseInt(param, 10, 64)
@@ -193,7 +193,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := controller.UserService.ModifyUserByID(&entity.User{
+	user, err := controller.UserService.Modify(&entity.User{
 		UserId:      userID,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
@@ -205,7 +205,7 @@ func (controller UserController) EditUserByID(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.ModifyUserByID").
+			Str("component", "controller.UserService.Modify").
 			Int64("user_id", req.UserId).
 			Msg("Failed to discard user request")
 
