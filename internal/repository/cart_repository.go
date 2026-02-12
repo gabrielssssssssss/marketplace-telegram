@@ -8,11 +8,11 @@ import (
 )
 
 type CartRepository interface {
-	InsertCart(cart *entity.Cart) (*model.Cart, error)
-	SelectCartByID(cart *entity.Cart) (*model.Cart, error)
-	SelectCartsByUserID(cart *entity.Cart) (*[]model.Cart, error)
-	UpdateCartByID(cart *entity.Cart) (*model.Cart, error)
-	DeleteCartByID(cart *entity.Cart) (bool, error)
+	Create(cart *entity.Cart) (*model.Cart, error)
+	Cart(cart *entity.Cart) (*model.Cart, error)
+	Carts(cart *entity.Cart) (*[]model.Cart, error)
+	Update(cart *entity.Cart) (*model.Cart, error)
+	Delete(cart *entity.Cart) (bool, error)
 }
 
 type cartRepositoryImpl struct {

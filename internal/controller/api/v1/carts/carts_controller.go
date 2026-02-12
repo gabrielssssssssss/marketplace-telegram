@@ -22,7 +22,7 @@ func NewCartController(CartService *service.CartService) CartController {
 	return CartController{CartService: *CartService}
 }
 
-// InsertCart    godoc
+// Create    	 godoc
 // @Summary      Insert cart data
 // @Description  post cart data
 // @Tags         carts
@@ -33,7 +33,7 @@ func NewCartController(CartService *service.CartService) CartController {
 // @Failure      400  {object}  model.Error
 // @Failure      500  {object}  model.Error
 // @Router         /carts/ [post]
-func (controller CartController) InsertCart(c *gin.Context) {
+func (controller CartController) Create(c *gin.Context) {
 	var req model.Cart
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
@@ -46,7 +46,7 @@ func (controller CartController) InsertCart(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.FindUserByID").
+			Str("component", "controller.UserService.GetUserID").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -54,14 +54,14 @@ func (controller CartController) InsertCart(c *gin.Context) {
 		return
 	}
 
-	cart, err := controller.CartService.RegisterCart(&entity.Cart{
+	cart, err := controller.CartService.Register(&entity.Cart{
 		UserID:    userID,
 		ProductID: req.ProductID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.RegisterCart").
+			Str("component", "controller.CartService.Register").
 			Msg("Failed to insert cart request")
 
 		c.JSON(http.StatusInternalServerError, model.Error{Error: "insert_cart_failed", Message: "InternalServerError"})
@@ -75,9 +75,9 @@ func (controller CartController) InsertCart(c *gin.Context) {
 	c.JSON(http.StatusCreated, model.CartResponse{Message: "success", Data: *cart})
 }
 
-// FetchCarts    godoc
-// @Summary         Get cart data
-// @Description     get cart data
+// Carts    		godoc
+// @Summary         Get carts data
+// @Description     get carts data
 // @Tags            carts
 // @Accept          json
 // @Produce         json
@@ -85,14 +85,14 @@ func (controller CartController) InsertCart(c *gin.Context) {
 // @Success         200  {object}  model.CartsResponse
 // @Failure         500  {object}  model.Error
 // @Router          /carts [get]
-func (controller CartController) FetchCarts(c *gin.Context) {
+func (controller CartController) Carts(c *gin.Context) {
 	authorization := c.GetHeader("Authorization")
 
 	userID, err := helper.GetUserID(authorization, os.Getenv("JWT_SECRET_KEY"))
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.UserService.FindUserByID").
+			Str("component", "controller.UserService.GetUserID").
 			Int64("user_id", userID).
 			Msg("Failed to fetch user request")
 
@@ -100,13 +100,13 @@ func (controller CartController) FetchCarts(c *gin.Context) {
 		return
 	}
 
-	cart, err := controller.CartService.GetCartsByUserID(&entity.Cart{
+	cart, err := controller.CartService.GetCarts(&entity.Cart{
 		UserID: userID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.GetCartsByUserID").
+			Str("component", "controller.CartService.GetCarts").
 			Int64("user_id", userID).
 			Msg("Failed to fetch carts request")
 
@@ -122,7 +122,7 @@ func (controller CartController) FetchCarts(c *gin.Context) {
 	c.JSON(http.StatusOK, model.CartsResponse{Message: "success", Data: *cart})
 }
 
-// FetchCartByID    godoc
+// Cart    			godoc
 // @Summary         Get cart data
 // @Description     get cart data
 // @Tags            carts
@@ -132,16 +132,16 @@ func (controller CartController) FetchCarts(c *gin.Context) {
 // @Success         200  {object}  model.CartResponse
 // @Failure         500  {object}  model.Error
 // @Router          /carts/:id [get]
-func (controller CartController) FetchCartByID(c *gin.Context) {
+func (controller CartController) Cart(c *gin.Context) {
 	cartID := c.Param("id")
 
-	cart, err := controller.CartService.GetCartByID(&entity.Cart{
+	cart, err := controller.CartService.GetCart(&entity.Cart{
 		ID: cartID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.FindCartByID").
+			Str("component", "controller.CartService.GetCart").
 			Str("cart_id", cartID).
 			Msg("Failed to fetch cart request")
 
@@ -157,7 +157,7 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.CartResponse{Message: "success", Data: *cart})
 }
 
-// FetchCartsByUserID  godoc
+// UserCarts  		   godoc
 // @Summary            Get user carts data
 // @Description        get all carts from userID data
 // @Tags               carts
@@ -167,7 +167,7 @@ func (controller CartController) FetchCartByID(c *gin.Context) {
 // @Success            200  {object}  model.CartsResponse
 // @Failure            500  {object}  model.Error
 // @Router             /users/:id/carts [get]
-func (controller CartController) FetchCartsByUserID(c *gin.Context) {
+func (controller CartController) UserCarts(c *gin.Context) {
 	params := c.Param("id")
 
 	userID, err := strconv.ParseInt(params, 10, 64)
@@ -182,13 +182,13 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 		return
 	}
 
-	carts, err := controller.CartService.GetCartsByUserID(&entity.Cart{
+	carts, err := controller.CartService.GetCarts(&entity.Cart{
 		UserID: userID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.FindCartsByUserID").
+			Str("component", "controller.CartService.GetCarts").
 			Int64("user_id", userID).
 			Msg("Failed to fetch cart request")
 
@@ -204,7 +204,7 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.CartsResponse{Message: "success", Data: *carts})
 }
 
-// EditCartByID     godoc
+// Update     		godoc
 // @Summary         Edit cart data
 // @Description     put cart data
 // @Tags            carts
@@ -215,14 +215,14 @@ func (controller CartController) FetchCartsByUserID(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /carts/:id [put]
-func (controller CartController) EditCartByID(c *gin.Context) {
+func (controller CartController) Update(c *gin.Context) {
 	var req model.Cart
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
 		return
 	}
 
-	cart, err := controller.CartService.ModifyCartByID(&entity.Cart{
+	cart, err := controller.CartService.Modify(&entity.Cart{
 		ID:        c.Param("id"),
 		UserID:    req.UserID,
 		ProductID: req.ProductID,
@@ -231,7 +231,7 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.ModifyCartByID").
+			Str("component", "controller.CartService.Modify").
 			Str("cart_id", c.Param("id")).
 			Msg("Failed to edit cart request")
 
@@ -247,7 +247,7 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.CartResponse{Message: "success", Data: *cart})
 }
 
-// DiscardCartByID    godoc
+// Delete    		  godoc
 // @Summary           Discard cart data
 // @Description       delete cart data
 // @Tags              carts
@@ -258,16 +258,16 @@ func (controller CartController) EditCartByID(c *gin.Context) {
 // @Failure           400  {object}  model.Error
 // @Failure           500  {object}  model.Error
 // @Router            /carts/:id [delete]
-func (controller CartController) DiscardCartByID(c *gin.Context) {
+func (controller CartController) Delete(c *gin.Context) {
 	cartID := c.Param("id")
 
-	_, err := controller.CartService.RemoveCartByID(&entity.Cart{
+	_, err := controller.CartService.Remove(&entity.Cart{
 		ID: cartID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.CartService.RemoveCartByID").
+			Str("component", "controller.CartService.Remove").
 			Str("cart_id", cartID).
 			Msg("Failed to fetch cart request")
 

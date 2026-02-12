@@ -7,11 +7,11 @@ import (
 )
 
 type CartService interface {
-	RegisterCart(cart *entity.Cart) (*model.Cart, error)
-	GetCartByID(cart *entity.Cart) (*model.Cart, error)
-	GetCartsByUserID(cart *entity.Cart) (*[]model.Cart, error)
-	ModifyCartByID(cart *entity.Cart) (*model.Cart, error)
-	RemoveCartByID(cart *entity.Cart) (bool, error)
+	Register(cart *entity.Cart) (*model.Cart, error)
+	GetCart(cart *entity.Cart) (*model.Cart, error)
+	GetCarts(cart *entity.Cart) (*[]model.Cart, error)
+	Modify(cart *entity.Cart) (*model.Cart, error)
+	Remove(cart *entity.Cart) (bool, error)
 }
 
 type cartServiceImpl struct {

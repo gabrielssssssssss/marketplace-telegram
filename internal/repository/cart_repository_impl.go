@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r cartRepositoryImpl) InsertCart(cart *entity.Cart) (*model.Cart, error) {
+func (r cartRepositoryImpl) Create(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -41,7 +41,7 @@ func (r cartRepositoryImpl) InsertCart(cart *entity.Cart) (*model.Cart, error) {
 	return &response, err
 }
 
-func (r cartRepositoryImpl) SelectCartByID(cart *entity.Cart) (*model.Cart, error) {
+func (r cartRepositoryImpl) Cart(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -72,7 +72,7 @@ func (r cartRepositoryImpl) SelectCartByID(cart *entity.Cart) (*model.Cart, erro
 	return &response, err
 }
 
-func (r cartRepositoryImpl) SelectCartsByUserID(cart *entity.Cart) (*[]model.Cart, error) {
+func (r cartRepositoryImpl) Carts(cart *entity.Cart) (*[]model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -113,7 +113,7 @@ func (r cartRepositoryImpl) SelectCartsByUserID(cart *entity.Cart) (*[]model.Car
 	return &response, err
 }
 
-func (r *cartRepositoryImpl) UpdateCartByID(cart *entity.Cart) (*model.Cart, error) {
+func (r *cartRepositoryImpl) Update(cart *entity.Cart) (*model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -151,7 +151,7 @@ func (r *cartRepositoryImpl) UpdateCartByID(cart *entity.Cart) (*model.Cart, err
 	return &response, err
 }
 
-func (r cartRepositoryImpl) DeleteCartByID(cart *entity.Cart) (bool, error) {
+func (r cartRepositoryImpl) Delete(cart *entity.Cart) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

@@ -8,16 +8,16 @@ import (
 func (controller *CartController) Route(rg *gin.RouterGroup) {
 	carts := rg.Group("/carts", middlewares.Authorization, middlewares.Grant())
 	{
-		carts.POST("", controller.InsertCart)
-		carts.GET("", controller.FetchCarts)
-		carts.GET("/:id", controller.FetchCartByID)
-		carts.PUT("/:id", controller.EditCartByID)
-		carts.DELETE("/:id", controller.DiscardCartByID)
+		carts.POST("", controller.Create)
+		carts.GET("", controller.Carts)
+		carts.GET("/:id", controller.Cart)
+		carts.PUT("/:id", controller.Update)
+		carts.DELETE("/:id", controller.Delete)
 	}
 
 	rg.GET("/users/:id/carts",
 		middlewares.Authorization,
 		middlewares.Grant(),
-		controller.FetchCartsByUserID,
+		controller.UserCarts,
 	)
 }
