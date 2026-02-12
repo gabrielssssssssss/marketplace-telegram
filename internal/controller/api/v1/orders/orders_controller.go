@@ -19,7 +19,7 @@ func NewOrderController(OrderService *service.OrderService) OrderController {
 	return OrderController{OrderService: *OrderService}
 }
 
-// InsertOrder   godoc
+// Register      godoc
 // @Summary      Insert order data
 // @Description  post order data
 // @Tags         orders
@@ -30,14 +30,14 @@ func NewOrderController(OrderService *service.OrderService) OrderController {
 // @Failure      400  {object}  model.Error
 // @Failure      500  {object}  model.Error
 // @Router         /orders/ [post]
-func (controller OrderController) InsertOrder(c *gin.Context) {
+func (controller OrderController) Register(c *gin.Context) {
 	var req model.Order
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request", "message": "StatusBadRequest"})
 		return
 	}
 
-	order, err := controller.OrderService.RegisterOrder(&entity.Order{
+	order, err := controller.OrderService.Register(&entity.Order{
 		UserID:  req.UserID,
 		Product: req.Product,
 		Amount:  req.Amount,
@@ -45,7 +45,7 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.OrderService.RegisterOrder").
+			Str("component", "controller.OrderService.Register").
 			Msg("Failed to insert order request")
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "insert_order_failed", "message": "InternalServerError"})
@@ -59,7 +59,7 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated, model.OrderResponse{Message: "success", Data: *order})
 }
 
-// FetchOrderByID   godoc
+// GetOrder   		godoc
 // @Summary         Get order data
 // @Description     get order data
 // @Tags            orders
@@ -69,16 +69,16 @@ func (controller OrderController) InsertOrder(c *gin.Context) {
 // @Success         200  {object}  model.OrderResponse
 // @Failure         500  {object}  model.Error
 // @Router          /orders/:id [get]
-func (controller OrderController) FetchOrderByID(c *gin.Context) {
+func (controller OrderController) GetOrder(c *gin.Context) {
 	orderID := c.Param("id")
 
-	order, err := controller.OrderService.GetOrderByID(&entity.Order{
+	order, err := controller.OrderService.GetOrder(&entity.Order{
 		ID: orderID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.OrderService.FindOrderByID").
+			Str("component", "controller.OrderService.GetOrder").
 			Str("order_id", orderID).
 			Msg("Failed to fetch order request")
 
@@ -94,7 +94,7 @@ func (controller OrderController) FetchOrderByID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.OrderResponse{Message: "success", Data: *order})
 }
 
-// FetchOrdersByUserID godoc
+// GetUserOrders 	   godoc
 // @Summary            Get user orders data
 // @Description        get all orders from userID data
 // @Tags               orders
@@ -104,7 +104,7 @@ func (controller OrderController) FetchOrderByID(c *gin.Context) {
 // @Success            200  {object}  model.OrdersResponse
 // @Failure            500  {object}  model.Error
 // @Router             /users/:id/orders [get]
-func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
+func (controller OrderController) GetUserOrders(c *gin.Context) {
 	params := c.Param("id")
 
 	userID, err := strconv.ParseInt(params, 10, 64)
@@ -119,13 +119,13 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 		return
 	}
 
-	orders, err := controller.OrderService.GetOrdersByUserID(&entity.Order{
+	orders, err := controller.OrderService.GetUserOrders(&entity.Order{
 		UserID: userID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.OrderService.FindOrdersByUserID").
+			Str("component", "controller.OrderService.GetUserOrders").
 			Int64("user_id", userID).
 			Msg("Failed to fetch order request")
 
@@ -141,7 +141,7 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 	c.JSON(http.StatusOK, model.OrdersResponse{Message: "success", Data: *orders})
 }
 
-// DiscardOrderByID   godoc
+// Remove   		  godoc
 // @Summary           Discard order data
 // @Description       delete order data
 // @Tags              orders
@@ -152,16 +152,16 @@ func (controller OrderController) FetchOrdersByUserID(c *gin.Context) {
 // @Failure           400  {object}  model.Error
 // @Failure           500  {object}  model.Error
 // @Router            /orders/:id [delete]
-func (controller OrderController) DiscardOrderByID(c *gin.Context) {
+func (controller OrderController) Remove(c *gin.Context) {
 	orderID := c.Param("id")
 
-	_, err := controller.OrderService.RemoveOrderByID(&entity.Order{
+	_, err := controller.OrderService.Remove(&entity.Order{
 		ID: orderID,
 	})
 	if err != nil {
 		log.Error().
 			Err(err).
-			Str("component", "controller.OrderService.RemoveOrderByID").
+			Str("component", "controller.OrderService.Remove").
 			Str("order_id", orderID).
 			Msg("Failed to fetch order request")
 

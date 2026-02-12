@@ -8,10 +8,10 @@ import (
 )
 
 type OrderRepository interface {
-	InsertOrder(orders *entity.Order) (*model.Order, error)
-	SelectOrderByID(orders *entity.Order) (*model.Order, error)
-	SelectOrdersByUserID(orders *entity.Order) (*[]model.Order, error)
-	DeleteOrderByID(orders *entity.Order) (bool, error)
+	Create(orders *entity.Order) (*model.Order, error)
+	Order(orders *entity.Order) (*model.Order, error)
+	UserOrders(orders *entity.Order) (*[]model.Order, error)
+	Delete(orders *entity.Order) (bool, error)
 }
 
 type orderRepositoryImpl struct {

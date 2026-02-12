@@ -6,7 +6,7 @@ import (
 	"github.com/gabrielssssssssss/marketplace-telegram/internal/model"
 )
 
-func (r orderRepositoryImpl) InsertOrder(order *entity.Order) (*model.Order, error) {
+func (r orderRepositoryImpl) Create(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -43,7 +43,7 @@ func (r orderRepositoryImpl) InsertOrder(order *entity.Order) (*model.Order, err
 	return &response, err
 }
 
-func (r *orderRepositoryImpl) SelectOrderByID(order *entity.Order) (*model.Order, error) {
+func (r *orderRepositoryImpl) Order(order *entity.Order) (*model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -76,7 +76,7 @@ func (r *orderRepositoryImpl) SelectOrderByID(order *entity.Order) (*model.Order
 	return &response, err
 }
 
-func (r *orderRepositoryImpl) SelectOrdersByUserID(orders *entity.Order) (*[]model.Order, error) {
+func (r *orderRepositoryImpl) UserOrders(orders *entity.Order) (*[]model.Order, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 
@@ -119,7 +119,7 @@ func (r *orderRepositoryImpl) SelectOrdersByUserID(orders *entity.Order) (*[]mod
 	return &response, nil
 }
 
-func (r *orderRepositoryImpl) DeleteOrderByID(order *entity.Order) (bool, error) {
+func (r *orderRepositoryImpl) Delete(order *entity.Order) (bool, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

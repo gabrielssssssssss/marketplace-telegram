@@ -10,9 +10,9 @@ func (controller *ProductController) Route(rg *gin.RouterGroup) {
 	{
 		products.GET("", controller.GetAll)
 		products.GET("/:id", controller.GetPublic)
-		products.POST("", controller.Create, middlewares.Grant())
+		products.POST("", controller.Register, middlewares.Grant())
 		products.GET("/:id/hidden", controller.GetPrivate, middlewares.Grant())
-		products.PUT("/:id", controller.Update, middlewares.Grant())
-		products.DELETE("/:id", controller.Delete, middlewares.Grant())
+		products.PUT("/:id", controller.Modify, middlewares.Grant())
+		products.DELETE("/:id", controller.Remove, middlewares.Grant())
 	}
 }

@@ -72,7 +72,7 @@ func (r cartRepositoryImpl) Cart(cart *entity.Cart) (*model.Cart, error) {
 	return &response, err
 }
 
-func (r cartRepositoryImpl) Carts(cart *entity.Cart) (*[]model.Cart, error) {
+func (r cartRepositoryImpl) UserCarts(cart *entity.Cart) (*[]model.Cart, error) {
 	_, cancel := config.NewPostgresContext()
 	defer cancel()
 

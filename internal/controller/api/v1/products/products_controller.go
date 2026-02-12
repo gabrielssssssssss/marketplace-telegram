@@ -19,7 +19,7 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 	return ProductController{ProductService: *ProductService}
 }
 
-// Create   	   godoc
+// Register   	   godoc
 // @Summary        Insert product data
 // @Description    post product data
 // @Tags           products
@@ -30,7 +30,7 @@ func NewProductController(ProductService *service.ProductService) ProductControl
 // @Failure        400  {object}  model.Error
 // @Failure        500  {object}  model.Error
 // @Router         /products/ [post]
-func (controller ProductController) Create(c *gin.Context) {
+func (controller ProductController) Register(c *gin.Context) {
 	var req model.Product
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, model.Error{Error: "invalid_request", Message: "StatusBadRequest"})
@@ -161,7 +161,7 @@ func (controller ProductController) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductsResponse{Message: "success", Data: *products})
 }
 
-// Update  			godoc
+// Modify  			godoc
 // @Summary         Edit product data
 // @Description     put product data
 // @Tags            products
@@ -172,7 +172,7 @@ func (controller ProductController) GetAll(c *gin.Context) {
 // @Failure         400  {object}  model.Error
 // @Failure         500  {object}  model.Error
 // @Router          /products/:id [put]
-func (controller ProductController) Update(c *gin.Context) {
+func (controller ProductController) Modify(c *gin.Context) {
 	productID := c.Param("id")
 
 	var req model.Product
@@ -207,7 +207,7 @@ func (controller ProductController) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, model.ProductResponse{Message: "success", Data: *product})
 }
 
-// Delete 			  godoc
+// Remove 			  godoc
 // @Summary           Discard product data
 // @Description       delete product data
 // @Tags              products
@@ -218,7 +218,7 @@ func (controller ProductController) Update(c *gin.Context) {
 // @Failure           400  {object}  model.Error
 // @Failure           500  {object}  model.Error
 // @Router            /products/:id [delete]
-func (controller ProductController) Delete(c *gin.Context) {
+func (controller ProductController) Remove(c *gin.Context) {
 	productID := c.Param("id")
 
 	_, err := controller.ProductService.Remove(&entity.Product{

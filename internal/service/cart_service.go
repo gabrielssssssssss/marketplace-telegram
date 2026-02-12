@@ -9,7 +9,7 @@ import (
 type CartService interface {
 	Register(cart *entity.Cart) (*model.Cart, error)
 	GetCart(cart *entity.Cart) (*model.Cart, error)
-	GetCarts(cart *entity.Cart) (*[]model.Cart, error)
+	GetUserCarts(cart *entity.Cart) (*[]model.Cart, error)
 	Modify(cart *entity.Cart) (*model.Cart, error)
 	Remove(cart *entity.Cart) (bool, error)
 }

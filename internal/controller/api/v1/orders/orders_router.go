@@ -8,13 +8,13 @@ import (
 func (controller *OrderController) Route(rg *gin.RouterGroup) {
 	orders := rg.Group("/orders", middlewares.Authorization, middlewares.Grant())
 	{
-		orders.POST("", controller.InsertOrder)
-		orders.GET("/:id", controller.FetchOrderByID)
-		orders.DELETE("/:id", controller.DiscardOrderByID)
+		orders.POST("", controller.Register)
+		orders.GET("/:id", controller.GetOrder)
+		orders.DELETE("/:id", controller.Remove)
 	}
 	rg.GET("/users/:id/orders",
 		middlewares.Authorization,
 		middlewares.Grant(),
-		controller.FetchOrdersByUserID,
+		controller.GetUserOrders,
 	)
 }

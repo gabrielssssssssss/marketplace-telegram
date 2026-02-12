@@ -7,10 +7,10 @@ import (
 )
 
 type OrderService interface {
-	RegisterOrder(order *entity.Order) (*model.Order, error)
-	GetOrderByID(order *entity.Order) (*model.Order, error)
-	GetOrdersByUserID(order *entity.Order) (*[]model.Order, error)
-	RemoveOrderByID(order *entity.Order) (bool, error)
+	Register(order *entity.Order) (*model.Order, error)
+	GetOrder(order *entity.Order) (*model.Order, error)
+	GetUserOrders(order *entity.Order) (*[]model.Order, error)
+	Remove(order *entity.Order) (bool, error)
 }
 
 type orderServiceImpl struct {

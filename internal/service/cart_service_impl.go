@@ -13,8 +13,8 @@ func (s *cartServiceImpl) GetCart(cart *entity.Cart) (*model.Cart, error) {
 	return s.repository.Cart(cart)
 }
 
-func (s *cartServiceImpl) GetCarts(cart *entity.Cart) (*[]model.Cart, error) {
-	return s.repository.Carts(cart)
+func (s *cartServiceImpl) GetUserCarts(cart *entity.Cart) (*[]model.Cart, error) {
+	return s.repository.UserCarts(cart)
 }
 
 func (s *cartServiceImpl) Modify(cart *entity.Cart) (*model.Cart, error) {

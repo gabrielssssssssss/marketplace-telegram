@@ -10,7 +10,7 @@ import (
 type CartRepository interface {
 	Create(cart *entity.Cart) (*model.Cart, error)
 	Cart(cart *entity.Cart) (*model.Cart, error)
-	Carts(cart *entity.Cart) (*[]model.Cart, error)
+	UserCarts(cart *entity.Cart) (*[]model.Cart, error)
 	Update(cart *entity.Cart) (*model.Cart, error)
 	Delete(cart *entity.Cart) (bool, error)
 }
