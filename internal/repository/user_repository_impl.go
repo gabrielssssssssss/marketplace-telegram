@@ -128,24 +128,24 @@ func (r *userRepositoryImpl) Update(user *entity.User) (*model.User, error) {
 	query := `
     UPDATE users
     SET 
-		username     = COALESCE(NULLIF($1, ''), username),
-		firstname    = COALESCE(NULLIF($2, ''), firstname),
-		lastname     = COALESCE(NULLIF($3, ''), lastname),
-		balance      = COALESCE(NULLIF($4, 0), balance),
-		role         = COALESCE(NULLIF($5, ''), role),
-		recovery_key = COALESCE(NULLIF($6, ''), recovery_key),
-		updated_at   = $7
+        username     = COALESCE(NULLIF($1, ''), username),
+        firstname    = COALESCE(NULLIF($2, ''), firstname),
+        lastname     = COALESCE(NULLIF($3, ''), lastname),
+        balance      = COALESCE(NULLIF($4::numeric, 0), balance), -- Ajout du ::numeric
+        role         = COALESCE(NULLIF($5, ''), role),
+        recovery_key = COALESCE(NULLIF($6, ''), recovery_key),
+        updated_at   = $7
     WHERE user_id = $8
     RETURNING
-		user_id,
-		username,
-		firstname,
-		lastname,
-		role,
-		balance,
-		recovery_key,
-		created_at,
-		updated_at
+        user_id,
+        username,
+        firstname,
+        lastname,
+        role,
+        balance,
+        recovery_key,
+        created_at,
+        updated_at
     `
 
 	var response model.User

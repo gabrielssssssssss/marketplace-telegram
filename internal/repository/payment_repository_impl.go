@@ -73,32 +73,23 @@ func (r *paymentRepositoryImpl) Update(payment *entity.Payment) (*model.Payment,
 	defer cancel()
 
 	query := `
-    UPDATE payments
-    SET 
-        value_coin           = COALESCE(NULLIF($1, 0), value_coin),
-        value_forwarded_coin = COALESCE(NULLIF($1, 0), value_forwarded_coin),
-        currency             = COALESCE(NULLIF($1, ''), currency),
-        status               = COALESCE(NULLIF($1, ''), status),
-        address_in           = COALESCE(NULLIF($1, ''), address_in),
-        address_out          = COALESCE(NULLIF($1, ''), address_out),
-        txid_in              = COALESCE(NULLIF($1, ''), txid_in),
-        txid_out             = COALESCE(NULLIF($1, ''), txid_out),
-        confirmed_at         = COALESCE($9, confirmed_at)
-    WHERE id = $10
-    RETURNING
-        id,
-        user_id,
-        value_coin,
-        value_forwarded_coin,
-        currency,
-        status,
-        address_in,
-        address_out,
-        txid_in,
-        txid_out,
-        created_at,
-        confirmed_at
-    `
+		UPDATE payments
+		SET 
+			value_coin           = COALESCE(NULLIF($1::numeric, 0), value_coin),
+			value_forwarded_coin = COALESCE(NULLIF($2::numeric, 0), value_forwarded_coin),
+			currency             = COALESCE(NULLIF($3::text, ''), currency),
+			status               = COALESCE(NULLIF($4::text, ''), status),
+			address_in           = COALESCE(NULLIF($5::text, ''), address_in),
+			address_out          = COALESCE(NULLIF($6::text, ''), address_out),
+			txid_in              = COALESCE(NULLIF($7::text, ''), txid_in),
+			txid_out             = COALESCE(NULLIF($8::text, ''), txid_out),
+			confirmed_at         = COALESCE($9, confirmed_at)
+		WHERE id = $10
+		RETURNING
+			id, user_id, value_coin, value_forwarded_coin, currency, 
+			status, address_in, address_out, txid_in, txid_out, 
+			created_at, confirmed_at
+	`
 
 	var response model.Payment
 
@@ -125,8 +116,8 @@ func (r *paymentRepositoryImpl) Update(payment *entity.Payment) (*model.Payment,
 		&response.AddressOut,
 		&response.TxidIn,
 		&response.TxidOut,
-		&response.ConfirmedAt,
 		&response.CreatedAt,
+		&response.ConfirmedAt,
 	)
 
 	return &response, err

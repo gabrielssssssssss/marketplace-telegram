@@ -93,7 +93,7 @@ func (r *orderRepositoryImpl) UserOrders(orders *entity.Order) (*[]model.Order, 
 
 	var response []model.Order
 
-	rows, err := r.db.Query(query)
+	rows, err := r.db.Query(query, orders.UserID)
 
 	if err != nil {
 		return nil, err

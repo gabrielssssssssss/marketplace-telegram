@@ -40,22 +40,8 @@ func (controller CartController) Register(c *gin.Context) {
 		return
 	}
 
-	authorization := c.GetHeader("Authorization")
-
-	userID, err := helper.GetUserID(authorization, os.Getenv("JWT_SECRET_KEY"))
-	if err != nil {
-		log.Error().
-			Err(err).
-			Str("component", "controller.UserService.GetUserID").
-			Int64("user_id", userID).
-			Msg("Failed to fetch user request")
-
-		c.JSON(http.StatusUnauthorized, model.Error{Error: "invalid_token", Message: "Unauthorized"})
-		return
-	}
-
 	cart, err := controller.CartService.Register(&entity.Cart{
-		UserID:    userID,
+		UserID:    req.UserID,
 		ProductID: req.ProductID,
 	})
 	if err != nil {
